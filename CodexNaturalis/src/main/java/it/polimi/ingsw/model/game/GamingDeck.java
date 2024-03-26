@@ -1,5 +1,5 @@
 package it.polimi.ingsw.model.game;
-import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.*;
 public class GamingDeck {
     private int numCards;
 
