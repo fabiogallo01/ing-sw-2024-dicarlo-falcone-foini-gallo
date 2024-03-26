@@ -9,7 +9,7 @@ public abstract class Card {
 
     // Getter of side
     public boolean getSide() {
-        return this.side;
+        return side;
     }
 
     /* Constructor of class Card
