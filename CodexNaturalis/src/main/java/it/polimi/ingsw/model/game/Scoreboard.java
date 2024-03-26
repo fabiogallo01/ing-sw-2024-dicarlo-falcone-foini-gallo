@@ -3,12 +3,6 @@ import java.util.*;
 
 public class Scoreboard {
     HashMap<Player, Integer> scores;
-
-    public Scoreboard(HashMap<Player, Integer> scores) {
-
-        this.scores = scores;
-    }
-
     public Scoreboard(HashMap<Player, Integer> scores) {
         this.scores = scores;
     }
