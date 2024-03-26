@@ -4,6 +4,13 @@ import java.util.*;
 
 public class GameTable {
     private static final ObjectiveCard[] commonObjectives;
+    GamingDeck resourceDeck;
+    GamingDeck goldDeck;
+    GamingDeck startingDeck;
+    ObjectiveDeck objectiveDeck;
+    PlayerArea[] playerAreas;
+    Scoreboard scoreboard;
+
     private int numPlayers;
     public int getNumPlayers() {
         return numPlayers;
