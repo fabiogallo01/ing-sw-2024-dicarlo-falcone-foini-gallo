@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
-public class Card {
+public abstract class Card {
     // Private attributes of class Card
     private boolean side;
     // Private attributes of class Card
@@ -9,7 +9,7 @@ public class Card {
 
     // Getter of side
     public boolean getSide() {
-        return side;
+        return this.side;
     }
 
     /* Constructor of class Card
