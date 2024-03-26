@@ -59,9 +59,12 @@ public class Player {
     }
 
     public ObjectiveCard[] drawSecretObjectiveCards(){
+        // This method is used for draw 2 cards from the objective deck
+        // It returns such cards
         // TODO
     }
     public ObjectiveCard chooseSecretObjective() {
+        // It calls the method "drawSecretObjectiveCards" for getting the 2 cards
         // TODO
     }
 

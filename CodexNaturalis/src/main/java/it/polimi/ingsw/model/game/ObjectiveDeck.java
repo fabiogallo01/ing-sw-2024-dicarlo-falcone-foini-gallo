@@ -1,14 +1,17 @@
 package it.polimi.ingsw.model.game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
+
+import java.util.ArrayList;
+
 public class ObjectiveDeck {
     // Attributes
     private int numCards;
-    private ObjectiveCard[] objectiveCards;
+    private ArrayList<ObjectiveCard> objectiveCards;
 
     // Methods
     public ObjectiveDeck(int numCards, ObjectiveCard[] objectiveCards){
         this.numCards = numCards;
-        this.objectiveCards = objectiveCards;
+        this.objectiveCards = new ArrayList<ObjectiveCard>(objectiveCards);
     }
 
     public int getNumCards(){
@@ -28,13 +31,10 @@ public class ObjectiveDeck {
     }
 
     public static ObjectiveCard drawTopCard(){
-        /*
-        ObjectiveCard topCard
-        setNumCards(getNumCards()-1)
+        ObjectiveCard top =  getObjectiveCards()[getNumCards()-1];
 
-        setObjectiveCard()
-
-        return getObjectiveCards()[getNumCards()-1];
+        setNumCard(getNumCards()-1)
+        return top;
         */
     }
 
