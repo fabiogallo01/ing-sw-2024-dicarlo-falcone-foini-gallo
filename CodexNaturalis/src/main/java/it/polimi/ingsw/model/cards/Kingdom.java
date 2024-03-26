@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.cards;
 
 public enum Kingdom {
-    animalKingdom,
-    plantKingdom,
-    fungiKingdom,
-    insectKingdom,
-    none;
+    ANIMALKINGDOM,
+    PLANTKINGDOM,
+    FUNGIKINGDOM,
+    INSECTKINGDOM,
+    NONE;
 }
 
