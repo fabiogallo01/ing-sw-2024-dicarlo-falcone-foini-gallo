@@ -13,15 +13,10 @@ public abstract class Card {
     }
 
     // Constructor of class Card
-    public Card(boolean side) {
+    public Card(boolean side, Corner[] frontCorners, Corner[] backCorners ) {
         this.side = side;
-        // Initialize the corner arrays with Corner objects
-        for (int i = 0; i < frontCorners.length; i++) {
-            frontCorners[i] = new Corner();
-        }
-        for (int i = 0; i < backCorners.length; i++) {
-            backCorners[i] = new Corner();
-        }
+        this.frontCorners = frontCorners;
+        this.backCorners = backCorners;
     }
 
     public Corner[] getBackCorners() {
