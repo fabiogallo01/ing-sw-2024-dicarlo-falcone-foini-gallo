@@ -1,8 +1,7 @@
 package it.polimi.ingsw.model.game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
 import java.util.*;
-
-import java.util.ArrayList;
 
 public class ObjectiveDeck {
     // Attributes
@@ -27,24 +26,20 @@ public class ObjectiveDeck {
         return deck;
     }
 
-    public void setDeck(ArrayList<ObjectiveCard> deck){
-        this.deck = deck;
-    }
-
     public boolean isEmpty(){
         return numCards == 0;
     }
 
-    // Method for shuffle the deck
-    public static void shuffle(){
+    // Method for shuffle deck
+    public void shuffleDeck(){
         List<ObjectiveCard> cardsList = new ArrayList<>(deck);
         Collections.shuffle(cardsList);
         deck.clear();
-        deck.addAll(cardList);
+        deck.addAll(cardsList);
     }
 
     // Method for returning the top card of the deck
-    // It also remove that card from the deck
+    // It also removes that card from the deck
     // Throw exception if the deck is empty
     public ObjectiveCard drawTopCard() throws EmptyObjectiveDeckException{
         if(this.isEmpty()){
