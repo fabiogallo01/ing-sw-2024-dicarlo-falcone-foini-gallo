@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
-public class GamingCard {
+public class GamingCard extends Card{
     private Kingdom kingdom;
     private int points;
 

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
-public class GoldCard extends Card {
+public class GoldCard extends GamingCard {
     private Kingdom[] resources = new Kingdom[5];
     private ConditionPoint conditionPoint;
 
