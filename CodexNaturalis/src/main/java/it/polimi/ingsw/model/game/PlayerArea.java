@@ -1,14 +1,14 @@
 package it.polimi.ingsw.model.game;
 import it.polimi.ingsw.model.cards.*;
-import java.util.HashMap;
+import java.util.*;
 
 public class PlayerArea {
     // Attributes
     private HashMap<int[][], Boolean> area;
-    private Card[] cards;
+    private ArrayList<Card> cards;
 
     // Methods
-    public PlayerArea(HashMap<int[][], Boolean> area, Card[] cards) {
+    public PlayerArea(HashMap<int[][], Boolean> area, ArrayList<Card> cards) {
         this.area = area;
         this.cards = cards;
     }
@@ -21,12 +21,19 @@ public class PlayerArea {
         this.area = area;
     }
 
-    public Card[] getCards() {
+    public ArrayList<Card> getCards() {
         return cards;
     }
 
-    public void setCards(Card[] cards) {
+    public void setCards(ArrayList<Card> cards) {
         this.cards = cards;
+    }
+
+    public void addCard(Card card, int[] positionArea){
+        // "Add" card to the HashMap
+
+        // Add card in the list
+        cards.add(card); // Polymorphism
     }
 
     public int countKingdoms(Kingdom kingdom){
