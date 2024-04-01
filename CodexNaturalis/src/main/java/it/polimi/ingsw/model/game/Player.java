@@ -15,13 +15,13 @@ public class Player {
     private ArrayList<GamingCard> hand;
 
     // Methods
-    public Player(String username, int score, boolean isYourTurn, PlayerArea playerArea, Color color, StarterCard starterCard, ArrayList<GamingCard> hand){
+    public Player(String username, int score, boolean isYourTurn, PlayerArea playerArea, Color color, ObjectiveCard secretObjective, StarterCard starterCard, ArrayList<GamingCard> hand){
         this.username = username;
         this.score = score;
         this.isYourTurn = isYourTurn;
         this.playerArea = playerArea;
         this.color = color;
-        this.secretObjective = chooseSecretObjective();
+        this.secretObjective = secretObjective;
         this.starterCard = starterCard;
         this.hand = hand;
     }
@@ -76,36 +76,9 @@ public class Player {
         if(hand.size() != 3){
             throw new InvalidNumCardsPlayerHandException("Invalid number of cards for player's hand. Must be 3.");
         }
-        else {
+        else{
             this.hand = hand;
         }
-    }
-
-    public ObjectiveCard[] drawSecretObjectiveCards(){
-        // This method is used for draw 2 cards from the objective deck
-        // It returns such cards
-        // TODO
-    }
-    public ObjectiveCard chooseSecretObjective() {
-        // It calls the method "drawSecretObjectiveCards" for getting the 2 cards
-        ObjectiveCard[] objectiveCards = drawSecretObjectiveCards();
-        // TODO
-    }
-
-    public GamingCard drawResourceCardDeck(){
-        // TODO
-    }
-
-    public GamingCard drawResourceCardTable(int position){
-        // TODO
-    }
-
-    public GamingCard drawGoldCardDeck(){
-        // TODO
-    }
-
-    public GamingCard drawGoldCardTable(int position){
-        // TODO
     }
 
     /*
@@ -117,7 +90,38 @@ public class Player {
 
         At the end, the selected card is removed from the player's hand
     */
-    public void playCard(int position){
-        // TODO
+    public void playCard(int positionCardHand, int[] positionArea) throws InvalidPlayCardIndexException, InvalidPositionAreaException, InvalidPlayException {
+        if (positionCardHand < 1 || positionCardHand > 3) {
+            throw new InvalidPlayCardIndexException("Invalid selection of the card from hand.");
+        }
+        else if(!isValidPosition(positionArea)){
+            throw new InvalidPositionAreaException("Not valid index's position.");
+        }
+        else{
+            // Get the card form hand
+            GamingCard cardToPlay = hand.get(positionCardHand-1);
+
+            // Check if the card is actually playable given the game's rules
+            if (!isPlayable(cardToPlay)) {
+                throw new InvalidPlayException("You can't play this card in this position");
+            }
+            else{ //The card is playable
+                // Add the card in the given position
+                playerArea.addCard(cardToPlay, positionArea);
+
+                // Remove the card from the player's hand
+                hand.remove(positionCardHand-1);
+            }
+        }
+    }
+
+    private boolean isValidPosition(int[] position) {
+        // Check if the position is valid in the matrix
+        // Return true if the position is valid, false otherwise
+    }
+
+    private boolean isPlayable(GamingCard card) {
+        // Check if the card is actually playable given the game's rules and current player's area
+        // Return true if the card is playable, false otherwise
     }
 }
