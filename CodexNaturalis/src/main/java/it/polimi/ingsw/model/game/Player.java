@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.game;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.exception.*;
+import java.util.*;
 
 public class Player {
     // Attributes
@@ -9,16 +11,18 @@ public class Player {
     private PlayerArea playerArea;
     private final Color color;
     private final ObjectiveCard secretObjective;
-    private Card[] hand;
+    private final StarterCard starterCard;
+    private ArrayList<GamingCard> hand;
 
     // Methods
-    public Player(String username, int score, boolean isYourTurn, PlayerArea playerArea, Color color, Card[] hand){
+    public Player(String username, int score, boolean isYourTurn, PlayerArea playerArea, Color color, StarterCard starterCard, ArrayList<GamingCard> hand){
         this.username = username;
         this.score = score;
         this.isYourTurn = isYourTurn;
         this.playerArea = playerArea;
         this.color = color;
         this.secretObjective = chooseSecretObjective();
+        this.starterCard = starterCard;
         this.hand = hand;
     }
 
@@ -30,16 +34,27 @@ public class Player {
         return score;
     }
 
-    public void setScore(int score){
-        this.score = score;
+    public void setScore(int score) throws NegativeScoreException {
+        if (score < 0) {
+            throw new NegativeScoreException("You can't assign a negative score");
+        } else {
+            this.score = score;
+        }
     }
-
     public boolean getIsYourTurn(){
         return isYourTurn;
     }
 
     public void setIsYourTurn(boolean isYourTurn){
         this.isYourTurn = isYourTurn;
+    }
+
+    public PlayerArea getPlayerArea(){
+        return playerArea;
+    }
+
+    public void setPlayerArea(PlayerArea playerArea){
+        this.playerArea = playerArea;
     }
 
     public Color getColor(){
@@ -50,12 +65,20 @@ public class Player {
         return secretObjective;
     }
 
-    public Card[] getHand(){
+    public StarterCard getStarterCard(){
+        return starterCard;
+    }
+    public ArrayList<GamingCard> getHand(){
         return hand;
     }
 
-    public void setHand(Card[] hand){
-        this.hand = hand;
+    public void setHand(ArrayList<GamingCard> hand) throws InvalidNumCardsPlayerHandException{
+        if(hand.size() != 3){
+            throw new InvalidNumCardsPlayerHandException("Invalid number of cards for player's hand. Must be 3.");
+        }
+        else {
+            this.hand = hand;
+        }
     }
 
     public ObjectiveCard[] drawSecretObjectiveCards(){
@@ -65,14 +88,15 @@ public class Player {
     }
     public ObjectiveCard chooseSecretObjective() {
         // It calls the method "drawSecretObjectiveCards" for getting the 2 cards
+        ObjectiveCard[] objectiveCards = drawSecretObjectiveCards();
         // TODO
     }
 
-    public GamingCard drawGamingCardDeck(){
+    public GamingCard drawResourceCardDeck(){
         // TODO
     }
 
-    public GamingCard drawGamingCardTable(int position){
+    public GamingCard drawResourceCardTable(int position){
         // TODO
     }
 
@@ -84,11 +108,16 @@ public class Player {
         // TODO
     }
 
-    public void playCard(int position){
-        // TODO
-    }
+    /*
+        Method for play a card from the hand.
+        It raises multiple exception given by:
+        - Card "position" invalid
+        - Card played
+        - Player area
 
-    public void removeCardHand(Card card){
+        At the end, the selected card is removed from the player's hand
+    */
+    public void playCard(int position){
         // TODO
     }
 }
