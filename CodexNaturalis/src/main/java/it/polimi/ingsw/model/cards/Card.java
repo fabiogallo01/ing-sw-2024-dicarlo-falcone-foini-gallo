@@ -6,6 +6,7 @@ public abstract class Card {
     // Private attributes of class Card
     private Corner[] frontCorners = new Corner[4];
     private Corner[] backCorners = new Corner[4];
+    private int[] inGamePosition;
 
     // Getter of side
     public boolean getSide() {
@@ -17,6 +18,9 @@ public abstract class Card {
         this.side = side;
         this.frontCorners = frontCorners;
         this.backCorners = backCorners;
+        this.inGamePosition = new int[2];
+        this.inGamePosition[0] = -1;
+        this.inGamePosition[1] = -1; // At the beginning the cards do not have a position.
     }
 
     public Corner[] getBackCorners() {
@@ -33,5 +37,13 @@ public abstract class Card {
 
     public void setFrontCorners(Corner[] frontCorners) {
         this.frontCorners = frontCorners;
+    }
+
+    public int[] getInGamePosition(){
+        return inGamePosition;
+    }
+
+    public void setInGamePosition(int[] inGamePosition){
+        this.inGamePosition = inGamePosition;
     }
 }
