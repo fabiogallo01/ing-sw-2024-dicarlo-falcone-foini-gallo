@@ -3,10 +3,10 @@ package it.polimi.ingsw.model.cards;
 public class Corner {
     private boolean visible;
     private boolean empty;
-    private Object object;
+    private GameObject object;
     private Kingdom kingdom;
 
-    public Corner(boolean visible, boolean empty, Object object, Kingdom kingdom) {
+    public Corner(boolean visible, boolean empty, GameObject object, Kingdom kingdom) {
         this.visible = visible;
         this.empty = empty;
         this.object = object;
@@ -29,11 +29,11 @@ public class Corner {
         this.empty = empty;
     }
 
-    public Object getObject() {
+    public GameObject getObject() {
         return object;
     }
 
-    public void setObject(Object object) {
+    public void setObject(GameObject object) {
         this.object = object;
     }
 

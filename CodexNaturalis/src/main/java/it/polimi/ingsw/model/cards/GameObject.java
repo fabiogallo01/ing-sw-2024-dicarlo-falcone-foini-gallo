@@ -1,9 +1,8 @@
 package it.polimi.ingsw.model.cards;
 
-public enum Object {
+public enum GameObject {
     QUILL,
     INKWELL,
     MANUSCRIPT,
     NONE
 }
-

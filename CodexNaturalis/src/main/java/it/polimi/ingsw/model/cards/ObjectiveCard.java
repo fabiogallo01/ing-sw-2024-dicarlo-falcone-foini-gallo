@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.cards;
 public class ObjectiveCard {
     private int points;
     private boolean isSecret;
-    private Object[] object;
+    private GameObject[] object;
     private Pattern pattern;
     private Kingdom frontKingdom;
 
@@ -20,7 +20,7 @@ public class ObjectiveCard {
         return isSecret;
     }
 
-    public Object[] getObject() {
+    public GameObject[] getObject() {
         return object;
     }
 
