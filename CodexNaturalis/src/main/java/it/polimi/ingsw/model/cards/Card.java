@@ -8,11 +8,6 @@ public abstract class Card {
     private Corner[] backCorners = new Corner[4];
     private int[] inGamePosition;
 
-    // Getter of side
-    public boolean getSide() {
-        return side;
-    }
-
     // Constructor of class Card
     public Card(boolean side, Corner[] frontCorners, Corner[] backCorners ) {
         this.side = side;
@@ -23,6 +18,13 @@ public abstract class Card {
         this.inGamePosition[1] = -1; // At the beginning the cards do not have a position.
     }
 
+    public boolean getSide(){
+        return side;
+    }
+
+    public void setSide(boolean side){
+        this.side = side;
+    }
     public Corner[] getBackCorners() {
         return backCorners;
     }
