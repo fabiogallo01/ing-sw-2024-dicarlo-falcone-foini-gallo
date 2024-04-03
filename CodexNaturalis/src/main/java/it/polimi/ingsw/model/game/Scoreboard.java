@@ -4,13 +4,12 @@ import java.util.*;
 public class Scoreboard {
     private HashMap<Player, Integer> scores;
     public Scoreboard() {
-        scores = new HashMap<Player, Integer>();
+        scores = new HashMap<>();
     }
 
     public HashMap<Player, Integer> getScores() {
         return scores;
     }
-
 
     public void setScores(HashMap<Player, Integer> scores) {
         this.scores = scores;

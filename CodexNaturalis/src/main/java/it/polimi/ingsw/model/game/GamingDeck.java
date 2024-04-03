@@ -31,8 +31,8 @@ public class GamingDeck {
         deck.addAll(cardsList);
     }
 
-    public boolean isEmpty() {
-        return getNumCards() == 0;
+    public boolean isEmpty(){
+        return numCards == 0;
     }
 
     public Card drawTopCard() throws EmptyDeckException {
@@ -41,7 +41,7 @@ public class GamingDeck {
         } else {
             Card top = deck.get(deck.size() - 1);
             deck.remove(deck.size() - 1);
-            setNumCards(getNumCards() - 1);
+            numCards--;
             return top;
         }
     }
