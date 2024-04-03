@@ -3,31 +3,106 @@ import it.polimi.ingsw.model.cards.*;
 import java.util.*;
 
 public class GameTable {
-    private static final ObjectiveCard[] commonObjectives;
-    GamingDeck resourceDeck;
-    GamingDeck goldDeck;
-    GamingDeck startingDeck;
-    ObjectiveDeck objectiveDeck;
-    PlayerArea[] playerAreas;
-    Scoreboard scoreboard;
 
-    private int numPlayers;
-    public final int getNumPlayers() {
+    private GamingDeck resourceDeck;
+    private GamingDeck goldDeck;
+    private GamingDeck starterDeck;
+    private ObjectiveDeck objectiveDeck;
+    private ArrayList<GamingCard> visibleCard;
+    private static ObjectiveCard[] commonObjectives;
+    private final int numPlayers;
+    private ArrayList<Player> players;
+    private Scoreboard scoreboard;
+
+    public GameTable(int numPlayers) {
+        this.numPlayers = numPlayers;
+    }
+
+    public GamingDeck getResourceDeck() {
+        return resourceDeck;
+    }//ho già il getter da gaming deck, tengo quello?
+
+    public void setResourceDeck(ArrayList<Card> cards) {//? vorrei GamingCard, oppure cambio uml, inoltre non sarebbe meglio in costruttore?
+         this.resourceDeck = new GamingDeck(40);
+    }
+
+    private GamingCard[] createResourceCards(){}
+
+    public GamingDeck getGoldDeck() {
+        return goldDeck;
+    }
+
+    public void setGoldDeck(GamingDeck goldDeck) {
+        this.goldDeck = goldDeck;
+    }
+
+    private GoldCard[] createGoldCards(){}
+
+    public GamingDeck getStarterDeck() {
+        return starterDeck;
+    }
+
+    public void setStarterDeck(GamingDeck starterDeck) {
+        this.starterDeck = starterDeck;
+    }
+
+    private StarterCard[] createStarterCards(){}
+
+    public ObjectiveDeck getObjectiveDeck() {
+        return objectiveDeck;
+    }
+
+    public void setObjectiveDeck(ObjectiveDeck objectiveDeck) {
+        this.objectiveDeck = objectiveDeck;
+    }
+
+    private ObjectiveCard[] createObjectiveCards(){}
+
+    public ArrayList<GamingCard> getVisibleCard() {
+        return visibleCard;
+    }
+
+    public void setVisibleCard(ArrayList<GamingCard> visibleCard) {
+        this.visibleCard = visibleCard;
+    }
+
+    public void addVisibleCard(GamingCard gamingCard){
+
+    }
+
+    public static ObjectiveCard[] getCommonObjectives() {
+        return commonObjectives;
+    }
+
+    public static void setCommonObjectives(ObjectiveCard[] commonObjectives) {
+        GameTable.commonObjectives = commonObjectives;
+    }
+
+    public int getNumPlayers() {
         return numPlayers;
     }
 
-    public void setNumPlayers(int numPlayers) {
-        this.numPlayers = numPlayers;
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
     }
 
     public void addPlayer(Player player){}
 
-    public void addCardArea(Player player, Card card){}
+    public Scoreboard getScoreboard() {
+        return scoreboard;
+    }
+
+    public void setScoreboard(Scoreboard scoreboard) {
+        this.scoreboard = scoreboard;
+    }
 
     public void playTurn(Player player){}
 
     public boolean isEnded(){
-        return false;
+        return true;
     }
-
 }

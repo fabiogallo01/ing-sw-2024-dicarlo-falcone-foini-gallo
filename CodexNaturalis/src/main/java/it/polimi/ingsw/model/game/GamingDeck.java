@@ -7,9 +7,9 @@ public class GamingDeck {
     private int numCards;
     private ArrayList<Card> deck;
 
-    public GamingDeck(int numCards, ArrayList<Card> deck) {
+    public GamingDeck(int numCards) {
         this.numCards = numCards;
-        this.deck = deck;
+        this.deck = new ArrayList<Card>();
     }
 
     public int getNumCards() {
