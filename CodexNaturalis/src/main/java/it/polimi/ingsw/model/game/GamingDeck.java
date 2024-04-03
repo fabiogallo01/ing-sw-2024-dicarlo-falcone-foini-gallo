@@ -4,7 +4,7 @@ import java.util.*;
 
 public class GamingDeck {
     private int numCards;
-    ArrayList<Card> deck;
+    private ArrayList<Card> deck;
 
     public GamingDeck(ArrayList<Card> deck, int numCards) {
         this.deck = deck;
@@ -15,11 +15,7 @@ public class GamingDeck {
         return deck;
     }
 
-    public void setDeck(ArrayList<Card> deck) {
-        this.deck = deck;
-    }
-
-    public void setNumCards(int numCards) {
+    private void setNumCards(int numCards) {
         this.numCards = numCards;
     }
     public int getNumCards() {
