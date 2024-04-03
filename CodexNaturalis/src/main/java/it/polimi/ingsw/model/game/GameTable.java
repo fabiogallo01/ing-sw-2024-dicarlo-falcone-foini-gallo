@@ -12,15 +12,13 @@ public class GameTable {
     Scoreboard scoreboard;
 
     private int numPlayers;
-    public int getNumPlayers() {
+    public final int getNumPlayers() {
         return numPlayers;
     }
 
     public void setNumPlayers(int numPlayers) {
         this.numPlayers = numPlayers;
     }
-
-
 
     public void addPlayer(Player player){}
 
