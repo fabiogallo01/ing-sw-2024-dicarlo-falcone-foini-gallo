@@ -103,7 +103,7 @@ public class Player {
 
             // Check if the card is actually playable given the game's rules
             String mistake = isPlayable(cardToPlay, positionArea);
-            if (mistake.equals("None")) {
+            if (!mistake.equals("None")) {
                 throw new InvalidPlayException("You can't play this card in this position. Mistake: " + mistake);
             }
             else{ //The card is playable
