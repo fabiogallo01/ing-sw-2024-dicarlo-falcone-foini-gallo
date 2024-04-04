@@ -20,10 +20,10 @@ public class GameTable {
 
     public GamingDeck getResourceDeck() {
         return resourceDeck;
-    }//ho già il getter da gaming deck, tengo quello?
+    }
 
-    public void setResourceDeck(ArrayList<Card> cards) {//? vorrei GamingCard, oppure cambio uml, inoltre non sarebbe meglio in costruttore?
-         this.resourceDeck = new GamingDeck(40);
+    public void setResourceDeck(ArrayList<Card> cards, int numCards) {//Ci serve questo metodo? se sì c'è qualcosa da correggere
+         this.resourceDeck = new GamingDeck(numCards);
     }
 
     private GamingCard[] createResourceCards(){}

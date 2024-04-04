@@ -26,14 +26,14 @@ public class GamingDeck {
 
     public void shuffleDeck() {
         List<Card> cardsList = new ArrayList<>(deck);
-        Collections.shuffle(cardsList);
+        Collections.shuffle(cardsList);//si può fare shuffle sul deck direttamente?
         deck.clear();
         deck.addAll(cardsList);
     }
 
     public boolean isEmpty(){
         return numCards == 0;
-    }
+    }//metodo isEmpty() esiste già per gli arraylist
 
     public Card drawTopCard() throws EmptyDeckException {
         if (this.isEmpty()) {
