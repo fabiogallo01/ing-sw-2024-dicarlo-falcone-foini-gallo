@@ -139,40 +139,6 @@ public class GameTable {
         starterCards.add( new StarterCard());
         starterCards.add( new StarterCard());
         starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
         starterCards.add( new StarterCard());*/
         this.starterDeck = new GamingDeck(starterCards);
     }
@@ -185,7 +151,26 @@ public class GameTable {
         this.objectiveDeck = objectiveDeck;
     }
 
-    private ObjectiveCard[] createObjectiveCards(){}
+    private void createObjectiveCards(){
+        ArrayList<ObjectiveCard> objectiveCards = new ArrayList<>();
+        /*objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());
+        objectiveCards.add(new ObjectiveCard());*/
+        this.objectiveDeck = new ObjectiveDeck(objectiveCards);
+    }
 
     public ArrayList<GamingCard> getVisibleCard() {
         return visibleCard;

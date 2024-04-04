@@ -25,7 +25,8 @@ public class GamingDeck {
     public Card drawTopCard() throws EmptyDeckException {
         if (deck.isEmpty()) {
             throw new EmptyDeckException("This deck is empty, you can't draw from this deck.");
-        } else{
+        }
+        else{
             return deck.removeLast();
         }
     }
