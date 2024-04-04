@@ -9,7 +9,7 @@ public class GamingDeck {
 
     public GamingDeck(int numCards) {
         this.numCards = numCards;
-        this.deck = new ArrayList<Card>();
+        this.deck = new ArrayList<Card>(numCards);
     }
 
     public int getNumCards() {
@@ -25,17 +25,26 @@ public class GamingDeck {
     }
 
     public void shuffleDeck() {
-        List<Card> cardsList = new ArrayList<>(deck);
-        Collections.shuffle(cardsList);//si può fare shuffle sul deck direttamente?
-        deck.clear();
-        deck.addAll(cardsList);
+        //List<Card> cardsList = new ArrayList<>(deck);
+        //Collections.shuffle(cardsList);//si può fare shuffle sul deck direttamente?
+        Collections.shuffle(deck);
+        //deck.clear();
+        //deck.addAll(cardsList);
     }
 
-    public boolean isEmpty(){
+    /*public boolean isEmpty(){
         return numCards == 0;
-    }//metodo isEmpty() esiste già per gli arraylist
+    }//metodo isEmpty() esiste già per gli arraylist*/
 
     public Card drawTopCard() throws EmptyDeckException {
+        if (deck.isEmpty()) {
+            throw new EmptyDeckException("This deck is empty, you can't draw from this deck.");
+        } else{
+            return deck.removeLast();
+        }
+    }
+
+    /*public Card drawTopCard() throws EmptyDeckException {
         if (this.isEmpty()) {
             throw new EmptyDeckException("This deck is empty, you can't draw from this deck.");
         } else {
@@ -44,5 +53,5 @@ public class GamingDeck {
             numCards--;
             return top;
         }
-    }
+    }*/
 }

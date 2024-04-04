@@ -19,6 +19,7 @@ public class GameTable {
     }
 
     public GamingDeck getResourceDeck() {
+
         return resourceDeck;
     }
 
