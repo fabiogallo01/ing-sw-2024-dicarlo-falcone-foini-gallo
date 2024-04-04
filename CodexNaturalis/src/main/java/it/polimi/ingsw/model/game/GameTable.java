@@ -19,15 +19,57 @@ public class GameTable {
     }
 
     public GamingDeck getResourceDeck() {
-
         return resourceDeck;
     }
 
-    public void setResourceDeck(ArrayList<Card> cards, int numCards) {//Ci serve questo metodo? se sì c'è qualcosa da correggere
-         this.resourceDeck = new GamingDeck(numCards);
+    public void setResourceDeck(GamingDeck resourceDeck) {
+        this.resourceDeck = resourceDeck;
     }
 
-    private GamingCard[] createResourceCards(){}
+    private void createResourceDeck() {
+        ArrayList<Card> resourceCards = new ArrayList<>();
+        /*resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());
+        resourceCards.add( new GamingCard());*/
+        this.resourceDeck = new GamingDeck(resourceCards);
+    }
 
     public GamingDeck getGoldDeck() {
         return goldDeck;
