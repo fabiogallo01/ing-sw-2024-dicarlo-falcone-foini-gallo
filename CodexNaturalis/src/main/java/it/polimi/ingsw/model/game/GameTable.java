@@ -78,8 +78,51 @@ public class GameTable {
     public void setGoldDeck(GamingDeck goldDeck) {
         this.goldDeck = goldDeck;
     }
-
-    private GoldCard[] createGoldCards(){}
+    
+    private void createGoldDeck() {
+        ArrayList<Card> goldCards = new ArrayList<>();
+        /*goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());
+        goldCards.add( new GoldCard());*/
+        this.goldDeck = new GamingDeck(goldCards);
+    }
 
     public GamingDeck getStarterDeck() {
         return starterDeck;
@@ -88,8 +131,51 @@ public class GameTable {
     public void setStarterDeck(GamingDeck starterDeck) {
         this.starterDeck = starterDeck;
     }
-
-    private StarterCard[] createStarterCards(){}
+    
+    private void createStarterDeck() {
+        ArrayList<Card> starterCards = new ArrayList<>();
+        /*starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());
+        starterCards.add( new StarterCard());*/
+        this.starterDeck = new GamingDeck(starterCards);
+    }
 
     public ObjectiveDeck getObjectiveDeck() {
         return objectiveDeck;
