@@ -49,7 +49,7 @@ public class PlayerArea{
         // TODO
     }
 
-    public int countPattern(Pattern pattern){
+    public int countPattern(Kingdom kingdom, Pattern pattern){
         // TODO
     }
 
