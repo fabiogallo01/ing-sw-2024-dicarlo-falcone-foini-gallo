@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.game;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.exception.*;
 import java.util.*;
 
 public class GameTable {
@@ -276,5 +277,40 @@ public class GameTable {
 
     public boolean isEnded(){
         return true;
+    }
+
+    public GamingCard drawResourceCardDeck() throws EmptyDeckException {
+        try {
+            return (GamingCard) resourceDeck.drawTopCard();
+        } catch (EmptyDeckException e) {
+            throw e;
+        }
+    }
+
+    public GamingCard drawGoldCardDeck() throws EmptyDeckException {
+        try {
+            return (GamingCard) goldDeck.drawTopCard();
+        } catch (EmptyDeckException e) {
+            throw e;
+        }
+    }
+
+    public GamingCard drawCardFromTable(int position) throws InvalidDrawFromTableException{
+        if (position < 1 || position > visibleCard.size()){
+            throw new InvalidDrawFromTableException("Invalid draw from table. Select one of the cards.");
+        }else{
+            GamingCard selectedCard = visibleCard.get(position);
+
+            /*
+                Replace the selected card with a new one
+                Three cases:
+                1 - The corresponding deck is not empty => Draw from that one.
+                2 - The corresponding deck is empty => Draw from the other one.
+                3 - Both decks are empty => Do not add any card.
+            */
+            // TODO
+
+            return selectedCard;
+        }
     }
 }
