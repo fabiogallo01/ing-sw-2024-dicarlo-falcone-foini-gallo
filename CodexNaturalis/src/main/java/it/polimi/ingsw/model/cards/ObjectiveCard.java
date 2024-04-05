@@ -1,27 +1,34 @@
 package it.polimi.ingsw.model.cards;
 
 public class ObjectiveCard {
-    private int points;
+    private final int points;
     private boolean isSecret;
-    private GameObject[] object;
-    private Pattern pattern;
-    private Kingdom frontKingdom;
+    private final GameObject[] objects;
+    private final Pattern pattern;
+    private final Kingdom frontKingdom;
 
-    public ObjectiveCard(boolean side, int p, boolean secret, int[] numObject, Pattern pattern) {
-        this.points = p;
-        this.
+    public ObjectiveCard(int points, boolean isSecret, GameObject[] objects, Pattern pattern, Kingdom frontKingdom) {
+        this.points = points;
+        this.isSecret = isSecret;
+        this.objects = objects;
+        this.pattern = pattern;
+        this.frontKingdom = frontKingdom;
     }
 
     public int getPoints() {
         return points;
     }
 
-    public boolean getHidden() {
+    public boolean getIsSecret() {
         return isSecret;
     }
 
-    public GameObject[] getObject() {
-        return object;
+    public void setIsSecret(boolean isSecret){
+        this.isSecret = isSecret;
+    }
+
+    public GameObject[] getObjects() {
+        return objects;
     }
 
     public Pattern getPattern() {
@@ -31,10 +38,4 @@ public class ObjectiveCard {
     public Kingdom getFrontKingdom() {
         return frontKingdom;
     }
-
-    public int calculatePoints() {
-        return 0;
-        // TO DO
-    }
 }
-
