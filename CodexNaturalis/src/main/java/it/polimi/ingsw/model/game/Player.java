@@ -81,6 +81,14 @@ public class Player {
         }
     }
 
+    public void addCardHand(GamingCard card) throws HandAlreadyFullException{
+        if(hand.size() == 3){
+            throw new HandAlreadyFullException("You already have three cards, so you can't draw.");
+        }else{
+            hand.add(card);
+        }
+    }
+
     /*
         Method for play a card from the hand.
         It raises multiple exception given by:
@@ -261,5 +269,48 @@ public class Player {
             }
         }
         return "None"; // Correct position => Return "None"
+    }
+
+    // Method for calculate total points scored by the player given the three objectives (2 common + secret)
+    public int calculateObjectivePoints(ObjectiveCard[] commonObjectives){
+        // Collect all three objectives
+        ObjectiveCard[] objectives = new ObjectiveCard[3];
+        objectives[0] = commonObjectives[0];
+        objectives[1] = commonObjectives[1];
+        objectives[2] = secretObjective;
+
+        int totalPoint = 0;
+
+        // Points scored with common objectives
+        for(ObjectiveCard objective : objectives){
+            if(objective.getFrontKingdom() == Kingdom.NONE){ // Points given by number of objects
+                int totalObject = 0;
+                int minOccurence = 0;
+                GameObject[] gameObjects = objective.getObjects();
+
+                if(gameObjects[0] == GameObject.MANUSCRIPT){ // Case two manuscripts
+                    totalObject += playerArea.countObject(GameObject.MANUSCRIPT);
+                }else if(gameObjects[0] == GameObject.INKWELL){ // Case two inkwells
+                    totalObject += playerArea.countObject(GameObject.INKWELL);
+                }else if(gameObjects[1] == GameObject.QUILL){ // Case two quills
+                    totalObject += playerArea.countObject(GameObject.QUILL);
+                }else{ // Case all three objects
+                    minOccurence += Math.min(Math.min(playerArea.countObject(GameObject.QUILL), playerArea.countObject(GameObject.INKWELL)), playerArea.countObject(GameObject.MANUSCRIPT));
+                }
+                totalPoint += (totalObject/2)*2 + minOccurence*3;
+            }else if(objective.getPattern() != Pattern.NONE){ // Points given by number of patterns
+                Pattern pattern = objective.getPattern();
+                int numPatterns = playerArea.countPattern(objective.getFrontKingdom(), pattern);
+                if(pattern == Pattern.PRIMARYDIAGONAL || pattern == Pattern.SECONDARYDIAGONAL){ // Two points
+                    totalPoint += numPatterns*2;
+                }else{ // three points
+                    totalPoint += numPatterns*3;
+                }
+            }else{ // Points given by number of resources
+                int totalResources = playerArea.countKingdoms(objective.getFrontKingdom());
+                totalPoint += (totalResources/3)*2;
+            }
+        }
+        return totalPoint;
     }
 }
