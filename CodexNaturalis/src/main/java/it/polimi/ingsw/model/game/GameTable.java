@@ -165,7 +165,16 @@ public class GameTable {
         kingdoms[2] = Kingdom.NONE;
 
         starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
-
+        /*starterCards.add( new StarterCard(false,
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true,false,GameObject.NONE, Kingdom.INSECTKINGDOM),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
+                Kingdom.INSECTKINGDOM, Kingdom.NONE, Kingdom.NONE));*/
 
         frontCorner0 = new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM);
         frontCorner1 = new Corner(true, true, GameObject.NONE, Kingdom.NONE);
