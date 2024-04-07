@@ -7,4 +7,8 @@ public class StarterCard extends Card{
         super(side, fC, bC);
         this.backKingdoms = bK;
     }
+    public Kingdom[] getBackKingdoms() {
+        return backKingdoms;
+    }
 }
+

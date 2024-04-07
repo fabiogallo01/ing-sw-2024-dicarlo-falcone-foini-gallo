@@ -18,17 +18,5 @@ public class GoldCard extends GamingCard {
         return conditionPoint;
     }
 
-    //TODO
-    /*@Override
-    public void printFront() {
-        // Specific implementation of GoldCard
-        System.out.println("Front of GoldCard");
-    }
-
-    @Override
-    public void printBack() {
-        // Specific implementation of GoldCard
-        System.out.println("Back of GoldCard");
-    }*/
 }
 
