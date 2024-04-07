@@ -48,4 +48,12 @@ public abstract class Card {
     public void setInGamePosition(int[] inGamePosition){
         this.inGamePosition = inGamePosition;
     }
+
+    public void setVisibleCorner(int position)
+    {
+        if (getSide())
+        { getFrontCorners()[position].setVisible(False); }
+        else
+        { getBackCorners()[position].setVisible(False); }
+    }
 }
