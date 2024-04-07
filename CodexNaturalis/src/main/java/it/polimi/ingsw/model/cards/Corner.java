@@ -25,24 +25,13 @@ public class Corner {
         return empty;
     }
 
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
-    }
-
     public GameObject getObject() {
         return object;
-    }
-
-    public void setObject(GameObject object) {
-        this.object = object;
     }
 
     public Kingdom getKingdom() {
         return kingdom;
     }
 
-    public void setKingdom(Kingdom kingdom) {
-        this.kingdom = kingdom;
-    }
 }
 
