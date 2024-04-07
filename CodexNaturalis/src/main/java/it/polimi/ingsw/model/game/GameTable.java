@@ -9,7 +9,7 @@ public class GameTable {
     private GamingDeck goldDeck;
     private GamingDeck starterDeck;
     private ObjectiveDeck objectiveDeck;
-    private ArrayList<GamingCard> visibleCard;
+    private ArrayList<GamingCard> visibleCards;
     private static ObjectiveCard[] commonObjectives;
     private final int numPlayers;
     private ArrayList<Player> players;
@@ -196,6 +196,15 @@ public class GameTable {
         backCorners[2]=backCorner2;
         backCorners[3]=backCorner3;
 
+        /*
+        Corner[] backCorners = {
+            new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+            new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
+            new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
+            new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
+        };
+        */
+
         kingdoms = new Kingdom[3];
         kingdoms[0] = Kingdom.FUNGIKINGDOM;
         kingdoms[1] = Kingdom.NONE;
@@ -241,11 +250,11 @@ public class GameTable {
     }
 
     public ArrayList<GamingCard> getVisibleCard() {
-        return visibleCard;
+        return visibleCards;
     }
 
     public void setVisibleCard(ArrayList<GamingCard> visibleCard) {
-        this.visibleCard = visibleCard;
+        this.visibleCards = visibleCard;
     }
 
     public void addVisibleCard(GamingCard gamingCard){
@@ -305,11 +314,10 @@ public class GameTable {
     }
 
     public GamingCard drawCardFromTable(int position) throws InvalidDrawFromTableException{
-        if (position < 1 || position > visibleCard.size()){
-            throw new InvalidDrawFromTableException("Invalid draw from table. Select one of the cards.");
+        if (position < 0 || position > visibleCards.size()-1){
+            throw new InvalidDrawFromTableException("Invalid draw from table. Select one of the cards or draw from a deck.");
         }else{
-            GamingCard selectedCard = visibleCard.get(position);
-
+            GamingCard selectedCard = visibleCards.get(position);
             /*
                 Replace the selected card with a new one
                 Three cases:
@@ -317,8 +325,24 @@ public class GameTable {
                 2 - The corresponding deck is empty => Draw from the other one.
                 3 - Both decks are empty => Do not add any card.
             */
-            // TODO
 
+            try{ // Case 1
+                GamingCard topCardResource = (GamingCard) resourceDeck.drawTopCard();
+                visibleCards.set(position, topCardResource);
+            }
+            catch (EmptyDeckException e) {
+                try{ // Case 2
+                    GoldCard topCardGold = (GoldCard) goldDeck.drawTopCard();
+                    visibleCards.set(position, topCardGold);
+                } catch(EmptyDeckException ex){ // Case 3
+                    // Shift to the left
+                    for(int i = position; i < visibleCards.size()-1; i++){
+                        visibleCards.set(i, visibleCards.get(i+1));
+                    }
+                    //Remove last element
+                    visibleCards.removeLast();
+                }
+            }
             return selectedCard;
         }
     }
