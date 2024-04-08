@@ -18,6 +18,15 @@ public abstract class Card {
         this.inGamePosition[1] = -1; // At the beginning the cards do not have a position.
     }
 
+    public Card(boolean side, Corner[] frontCorners) {
+        this(side, frontCorners,new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE)
+        });
+    }
+
     public boolean getSide(){
         return side;
     }
@@ -52,8 +61,8 @@ public abstract class Card {
     public void setVisibleCorner(int position)
     {
         if (getSide())
-        { getFrontCorners()[position].setVisible(False); }
+        { getFrontCorners()[position].setVisible(false); }
         else
-        { getBackCorners()[position].setVisible(False); }
+        { getBackCorners()[position].setVisible(false); }
     }
 }

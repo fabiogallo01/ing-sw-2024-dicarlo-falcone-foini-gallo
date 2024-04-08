@@ -4,8 +4,8 @@ public class GamingCard extends Card{
     private Kingdom kingdom;
     private int points;
 
-    public GamingCard(boolean side, Kingdom king, int points, Corner[] fC, Corner[] bC) {
-        super(side, fC, bC);
+    public GamingCard(boolean side, Kingdom king, int points, Corner[] fC) {
+        super(side, fC);
         this.points = points;
         this.kingdom = king;
 
