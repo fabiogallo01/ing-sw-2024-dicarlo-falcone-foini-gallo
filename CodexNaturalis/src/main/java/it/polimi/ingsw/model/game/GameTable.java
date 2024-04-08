@@ -17,6 +17,15 @@ public class GameTable {
 
     public GameTable(int numPlayers) {
         this.numPlayers = numPlayers;
+        createResourceDeck();
+        createGoldDeck();
+        createStarterDeck();
+        createObjectiveDeck();
+        resourceDeck.shuffleDeck();
+        goldDeck.shuffleDeck();
+        starterDeck.shuffleDeck();
+        objectiveDeck.shuffleDeck();
+
     }
 
     public GamingDeck getResourceDeck() {
@@ -135,80 +144,45 @@ public class GameTable {
     
     private void createStarterDeck() {
         ArrayList<Card> starterCards = new ArrayList<>();
-        Corner[] frontCorners = new Corner[4];
-        Corner[] backCorners = new Corner[4];
+        Corner[] frontCorners;
+        Corner[] backCorners;
+        Kingdom[] kingdoms;
 
 
-        Corner frontCorner0 = new Corner(true, true, GameObject.NONE, Kingdom.NONE);
-        Corner frontCorner1 = new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM);
-        Corner frontCorner2 = new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM);
-        Corner frontCorner3 = new Corner(true, true, GameObject.NONE, Kingdom.NONE);
+        frontCorners = new Corner[]{
+            new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+            new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+            new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+            new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
 
-        frontCorners[0]=frontCorner0;
-        frontCorners[1]=frontCorner1;
-        frontCorners[2]=frontCorner2;
-        frontCorners[3]=frontCorner3;
+        backCorners = new Corner[] {
+            new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
+            new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+            new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+            new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
+        };
 
-        Corner backCorner0 = new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM);
-        Corner backCorner1 = new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM);
-        Corner backCorner2 = new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM);
-        Corner backCorner3 = new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM);
-
-        backCorners[0]=backCorner0;
-        backCorners[1]=backCorner1;
-        backCorners[2]=backCorner2;
-        backCorners[3]=backCorner3;
-
-        Kingdom[] kingdoms = new Kingdom[3];
-        kingdoms[0] = Kingdom.INSECTKINGDOM;
-        kingdoms[1] = Kingdom.NONE;
-        kingdoms[2] = Kingdom.NONE;
+        kingdoms = new Kingdom[]{ Kingdom.INSECTKINGDOM, Kingdom.NONE, Kingdom.NONE};
 
         starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
-        /*starterCards.add( new StarterCard(false,
-                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
-                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
-                new Corner(true,false,GameObject.NONE, Kingdom.INSECTKINGDOM),
-                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
-                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
-                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
-                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+
+
+        frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
-                Kingdom.INSECTKINGDOM, Kingdom.NONE, Kingdom.NONE));*/
-
-        frontCorner0 = new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM);
-        frontCorner1 = new Corner(true, true, GameObject.NONE, Kingdom.NONE);
-        frontCorner2 = new Corner(true, true, GameObject.NONE, Kingdom.NONE);
-        frontCorner3 = new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM);
-
-        frontCorners[0]=frontCorner0;
-        frontCorners[1]=frontCorner1;
-        frontCorners[2]=frontCorner2;
-        frontCorners[3]=frontCorner3;
-
-        backCorner0 = new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM);
-        backCorner1 = new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM);
-        backCorner2 = new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM);
-        backCorner3 = new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM);
-
-        backCorners[0]=backCorner0;
-        backCorners[1]=backCorner1;
-        backCorners[2]=backCorner2;
-        backCorners[3]=backCorner3;
-
-        /*
-        Corner[] backCorners = {
-            new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
-            new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
-            new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
-            new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
-        */
 
-        kingdoms = new Kingdom[3];
-        kingdoms[0] = Kingdom.FUNGIKINGDOM;
-        kingdoms[1] = Kingdom.NONE;
-        kingdoms[2] = Kingdom.NONE;
+        backCorners = new Corner[] {
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
+        };
+
+        kingdoms = new Kingdom[]{ Kingdom.FUNGIKINGDOM, Kingdom.NONE, Kingdom.NONE};
 
         starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
 
@@ -228,7 +202,7 @@ public class GameTable {
         this.objectiveDeck = objectiveDeck;
     }
 
-    private void createObjectiveCards(){
+    private void createObjectiveDeck(){
         ArrayList<ObjectiveCard> objectiveCards = new ArrayList<>();
         /*objectiveCards.add(new ObjectiveCard());
         objectiveCards.add(new ObjectiveCard());
@@ -258,7 +232,7 @@ public class GameTable {
     }
 
     public void addVisibleCard(GamingCard gamingCard){
-
+        visibleCards.add(gamingCard);
     }
 
     public static ObjectiveCard[] getCommonObjectives() {
@@ -281,7 +255,9 @@ public class GameTable {
         this.players = players;
     }
 
-    public void addPlayer(Player player){}
+    public void addPlayer(Player player){
+        players.add(player);
+    }
 
     public Scoreboard getScoreboard() {
         return scoreboard;
@@ -291,7 +267,9 @@ public class GameTable {
         this.scoreboard = scoreboard;
     }
 
-    public void playTurn(Player player){}
+    public void playTurn(Player player){
+
+    }
 
     public boolean isEnded(){
         return true;
