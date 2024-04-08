@@ -278,89 +278,55 @@ public class GameTable {
         ArrayList<ObjectiveCard> objectiveCards = new ArrayList<>();
 
         GameObject[] objects;
-        Pattern pattern;
-        Kingdom kingdom;
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.SECONDARYDIAGONAL;
-        kingdom = Kingdom.FUNGIKINGDOM;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.SECONDARYDIAGONAL, Kingdom.FUNGIKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.PRIMARYDIAGONAL;
-        kingdom = Kingdom.PLANTKINGDOM;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.PRIMARYDIAGONAL, Kingdom.PLANTKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.SECONDARYDIAGONAL;
-        kingdom = Kingdom.ANIMALKINGDOM;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.SECONDARYDIAGONAL, Kingdom.ANIMALKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.PRIMARYDIAGONAL;
-        kingdom = Kingdom.INSECTKINGDOM;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.PRIMARYDIAGONAL, Kingdom.INSECTKINGDOM));
 
         // in the next 4 cases, given the pattern, we put as the kingdom the one which appears in 2 out of 3 cards of the pattern
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.LOWERRIGHT;
-        kingdom = Kingdom.FUNGIKINGDOM;
-        objectiveCards.add(new ObjectiveCard(3, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.LOWERRIGHT, Kingdom.FUNGIKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.LOWERLEFT;
-        kingdom = Kingdom.PLANTKINGDOM;
-        objectiveCards.add(new ObjectiveCard(3, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.UPPERRIGHT;
-        kingdom = Kingdom.ANIMALKINGDOM;
-        objectiveCards.add(new ObjectiveCard(3, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.UPPERLEFT;
-        kingdom = Kingdom.INSECTKINGDOM;
-        objectiveCards.add(new ObjectiveCard(3, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.UPPERLEFT, Kingdom.INSECTKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.NONE;
-        kingdom = Kingdom.FUNGIKINGDOM;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.FUNGIKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.NONE;
-        kingdom = Kingdom.PLANTKINGDOM;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.PLANTKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.NONE;
-        kingdom = Kingdom.ANIMALKINGDOM;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.ANIMALKINGDOM));
 
         objects = new GameObject[]{GameObject.NONE};
-        pattern = Pattern.NONE;
-        kingdom = Kingdom.INSECTKINGDOM;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.INSECTKINGDOM));
 
         objects = new GameObject[]{GameObject.QUILL, GameObject.INKWELL, GameObject.MANUSCRIPT};
-        pattern = Pattern.NONE;
-        kingdom = Kingdom.NONE;
-        objectiveCards.add(new ObjectiveCard(3, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.NONE, Kingdom.NONE));
 
         objects = new GameObject[]{GameObject.MANUSCRIPT, GameObject.MANUSCRIPT};
-        pattern = Pattern.NONE;
-        kingdom = Kingdom.NONE;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.NONE));
 
         objects = new GameObject[]{GameObject.INKWELL, GameObject.INKWELL};
-        pattern = Pattern.NONE;
-        kingdom = Kingdom.NONE;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.NONE));
 
         objects = new GameObject[]{GameObject.QUILL, GameObject.QUILL};
-        pattern = Pattern.NONE;
-        kingdom = Kingdom.NONE;
-        objectiveCards.add(new ObjectiveCard(2, true, objects, pattern, kingdom));
+        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.NONE));
 
         this.objectiveDeck = new ObjectiveDeck(objectiveCards);
     }
