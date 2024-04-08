@@ -150,10 +150,10 @@ public class GameTable {
 
 
         frontCorners = new Corner[]{
-            new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+            new Corner(true, false, GameObject.NONE, Kingdom.NONE),
             new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
             new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
-            new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+            new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
 
         backCorners = new Corner[] {
@@ -170,8 +170,8 @@ public class GameTable {
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
-                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
-                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
 
@@ -187,10 +187,82 @@ public class GameTable {
         starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
 
 
-        /*starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());
-        starterCards.add( new StarterCard());*/
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE)
+        };
+
+        backCorners = new Corner[] {
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
+        };
+
+        kingdoms = new Kingdom[]{ Kingdom.PLANTKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.NONE};
+
+        starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE)
+        };
+
+        backCorners = new Corner[] {
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
+        };
+
+        kingdoms = new Kingdom[]{ Kingdom.ANIMALKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.NONE};
+
+        starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
+
+        backCorners = new Corner[] {
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
+        };
+
+        kingdoms = new Kingdom[]{ Kingdom.ANIMALKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.PLANTKINGDOM};
+
+        starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
+
+        backCorners = new Corner[] {
+                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
+        };
+
+        kingdoms = new Kingdom[]{ Kingdom.PLANTKINGDOM, Kingdom.ANIMALKINGDOM, Kingdom.FUNGIKINGDOM};
+
+        starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
+
+
         this.starterDeck = new GamingDeck(starterCards);
     }
 
