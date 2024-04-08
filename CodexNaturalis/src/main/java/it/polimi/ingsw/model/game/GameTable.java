@@ -33,7 +33,7 @@ public class GameTable {
         commonObjectives[2] = objectiveDeck.drawTopCard();
         for (int i = 0; i < numPlayers; i++) {
             Scanner scanner = new Scanner(System.in);
-            Player player = new Player(scanner.nextLine(), 0, false, new PlayerArea(new boolean[81][81], new ArrayList<Card>()), Color.GREEN, null, (StarterCard) starterDeck.drawTopCard(), new ArrayList<GamingCard>());
+            Player player = new Player(scanner.nextLine(), 0, false, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.GREEN, null, (StarterCard) starterDeck.drawTopCard(), new ArrayList<>());
             player.addCardHand((GamingCard) resourceDeck.drawTopCard());
             player.addCardHand((GamingCard) resourceDeck.drawTopCard());
             player.addCardHand((GamingCard) goldDeck.drawTopCard());
@@ -879,6 +879,89 @@ public class GameTable {
 
         goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 1, frontCorners, resources, ConditionPoint.INKWELL));
 
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE)
+        };
+
+        resources = new Kingdom[]{Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.ANIMALKINGDOM};
+
+        goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 2, frontCorners, resources, ConditionPoint.HIDDENCORNER));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
+
+        resources = new Kingdom[]{Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.PLANTKINGDOM};
+
+        goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 2, frontCorners, resources, ConditionPoint.HIDDENCORNER));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE)
+        };
+
+        resources = new Kingdom[]{Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.FUNGIKINGDOM};
+
+        goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 2, frontCorners, resources, ConditionPoint.HIDDENCORNER));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.INKWELL, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
+
+        resources = new Kingdom[]{Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM};
+
+        goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 3, frontCorners, resources, ConditionPoint.NONE));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
+
+        resources = new Kingdom[]{Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM};
+
+        goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 3, frontCorners, resources, ConditionPoint.NONE));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.QUILL, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE)
+        };
+
+        resources = new Kingdom[]{Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM};
+
+        goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 3, frontCorners, resources, ConditionPoint.NONE));
+
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
+
+        resources = new Kingdom[]{Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM};
+
+        goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 5, frontCorners, resources, ConditionPoint.NONE));
 
 
         this.goldDeck = new GamingDeck(goldCards);
