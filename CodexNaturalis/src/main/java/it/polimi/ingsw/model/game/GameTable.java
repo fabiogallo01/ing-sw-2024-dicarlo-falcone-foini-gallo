@@ -163,7 +163,7 @@ public class GameTable {
             new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
 
-        kingdoms = new Kingdom[]{ Kingdom.INSECTKINGDOM, Kingdom.NONE, Kingdom.NONE};
+        kingdoms = new Kingdom[]{ Kingdom.INSECTKINGDOM};
 
         starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
 
@@ -182,7 +182,7 @@ public class GameTable {
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
 
-        kingdoms = new Kingdom[]{ Kingdom.FUNGIKINGDOM, Kingdom.NONE, Kingdom.NONE};
+        kingdoms = new Kingdom[]{ Kingdom.FUNGIKINGDOM};
 
         starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
 
@@ -201,7 +201,7 @@ public class GameTable {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
         };
 
-        kingdoms = new Kingdom[]{ Kingdom.PLANTKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.NONE};
+        kingdoms = new Kingdom[]{ Kingdom.PLANTKINGDOM, Kingdom.FUNGIKINGDOM};
 
         starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
 
@@ -220,7 +220,7 @@ public class GameTable {
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
 
-        kingdoms = new Kingdom[]{ Kingdom.ANIMALKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.NONE};
+        kingdoms = new Kingdom[]{ Kingdom.ANIMALKINGDOM, Kingdom.INSECTKINGDOM};
 
         starterCards.add( new StarterCard(false, frontCorners, backCorners, kingdoms));
 
@@ -368,7 +368,11 @@ public class GameTable {
     }
 
     public boolean isEnded(){
-        return true;
+        for(Player player : players){
+            if (player.getScore()>=20)
+                return true;
+        }
+        return false;
     }
 
     public GamingCard drawResourceCardDeck() throws EmptyDeckException {
