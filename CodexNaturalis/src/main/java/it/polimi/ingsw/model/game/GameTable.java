@@ -1,8 +1,16 @@
 package it.polimi.ingsw.model.game;
+
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
+
 import java.util.*;
 
+/**
+ * Class to manage the game with all his players and cards
+ * It contains the 4 decks, the face up (visible) cards and common objectives that will be on the table, the players and the scoreboard
+ *
+ * @author Fabio Gallo
+ */
 public class GameTable {
 
     private GamingDeck resourceDeck;
@@ -15,6 +23,15 @@ public class GameTable {
     private ArrayList<Player> players;
     private Scoreboard scoreboard;
 
+    /**
+     * GameTable constructor, it builds all the decks and initializes the game
+     *
+     * @param numPlayers number of players
+     * @throws EmptyDeckException          if a player tries to draw from an empty deck
+     * @throws EmptyObjectiveDeckException if somehow a player tries to draw from an empty objective deck
+     * @throws HandAlreadyFullException    if a player tries to draw a card having already 3 cards
+     * @author Fabio Gallo
+     */
     public GameTable(int numPlayers) throws EmptyDeckException, EmptyObjectiveDeckException, HandAlreadyFullException {
         this.numPlayers = numPlayers;
         createResourceDeck();
@@ -25,6 +42,7 @@ public class GameTable {
         goldDeck.shuffleDeck();
         starterDeck.shuffleDeck();
         objectiveDeck.shuffleDeck();
+        this.visibleCards = new ArrayList<>();
         addVisibleCard((GamingCard) resourceDeck.drawTopCard());
         addVisibleCard((GamingCard) resourceDeck.drawTopCard());
         addVisibleCard((GamingCard) goldDeck.drawTopCard());
@@ -41,14 +59,31 @@ public class GameTable {
         scoreboard = new Scoreboard();
     }
 
+    /**
+     * Resource deck getter
+     *
+     * @return the resource deck
+     * @author Fabio Gallo
+     */
     public GamingDeck getResourceDeck() {
         return resourceDeck;
     }
 
+    /**
+     * Resource deck setter
+     *
+     * @param resourceDeck updated resource deck
+     * @author Fabio Gallo
+     */
     public void setResourceDeck(GamingDeck resourceDeck) {
         this.resourceDeck = resourceDeck;
     }
 
+    /**
+     * It creates the 40 resource cards and put them in the resource deck
+     *
+     * @author Fabio Gallo
+     */
     private void createResourceDeck() {
         ArrayList<Card> resourceCards = new ArrayList<>();
         Corner[] frontCorners;
@@ -464,14 +499,31 @@ public class GameTable {
         this.resourceDeck = new GamingDeck(resourceCards);
     }
 
+    /**
+     * Golden deck getter
+     *
+     * @return the golden deck
+     * @author Fabio Gallo
+     */
     public GamingDeck getGoldDeck() {
         return goldDeck;
     }
 
+    /**
+     * Golden deck setter
+     *
+     * @param goldDeck updated golden deck
+     * @author Fabio Gallo
+     */
     public void setGoldDeck(GamingDeck goldDeck) {
         this.goldDeck = goldDeck;
     }
 
+    /**
+     * It creates the 40 golden cards and put them in the golden deck
+     *
+     * @author Fabio Gallo
+     */
     private void createGoldDeck() {
         ArrayList<Card> goldCards = new ArrayList<>();
         Corner[] frontCorners;
@@ -967,14 +1019,31 @@ public class GameTable {
         this.goldDeck = new GamingDeck(goldCards);
     }
 
+    /**
+     * Starter deck getter
+     *
+     * @return the starter deck
+     * @author Fabio Gallo
+     */
     public GamingDeck getStarterDeck() {
         return starterDeck;
     }
 
+    /**
+     * Starter deck setter
+     *
+     * @param starterDeck updated starter deck
+     * @author Fabio Gallo
+     */
     public void setStarterDeck(GamingDeck starterDeck) {
         this.starterDeck = starterDeck;
     }
 
+    /**
+     * It creates the 6 starting cards and put them in the starting deck
+     *
+     * @author Fabio Gallo
+     */
     private void createStarterDeck() {
         ArrayList<Card> starterCards = new ArrayList<>();
         Corner[] frontCorners;
@@ -1099,14 +1168,32 @@ public class GameTable {
         this.starterDeck = new GamingDeck(starterCards);
     }
 
+    /**
+     * Objective deck getter
+     *
+     * @return the objective deck
+     * @author Fabio Gallo
+     */
     public ObjectiveDeck getObjectiveDeck() {
         return objectiveDeck;
     }
 
+
+    /**
+     * Objective deck setter
+     *
+     * @param objectiveDeck updated objective deck
+     * @author Fabio Gallo
+     */
     public void setObjectiveDeck(ObjectiveDeck objectiveDeck) {
         this.objectiveDeck = objectiveDeck;
     }
 
+    /**
+     * It creates the 16 objective cards and put them in the objective deck
+     *
+     * @author Fabio Gallo
+     */
     private void createObjectiveDeck() {
         ArrayList<ObjectiveCard> objectiveCards = new ArrayList<>();
 
@@ -1152,54 +1239,134 @@ public class GameTable {
         this.objectiveDeck = new ObjectiveDeck(objectiveCards);
     }
 
+    /**
+     * Visible cards getter
+     *
+     * @return the visible cards
+     * @author Fabio Gallo
+     */
     public ArrayList<GamingCard> getVisibleCard() {
         return visibleCards;
     }
 
+
+    /**
+     * Visible cards setter
+     *
+     * @param visibleCard updated visible cards
+     * @author Fabio Gallo
+     */
     public void setVisibleCard(ArrayList<GamingCard> visibleCard) {
         this.visibleCards = visibleCard;
     }
 
+    /**
+     * It adds a card to the visible cards
+     *
+     * @param gamingCard it is the card that is going to be put face up with the visible cards
+     * @author Fabio Gallo
+     */
+    // TO DO exception?
     public void addVisibleCard(GamingCard gamingCard) {
         visibleCards.add(gamingCard);
     }
 
+    /**
+     * Common objectives getter
+     *
+     * @return the common objectives
+     * @author Fabio Gallo
+     */
     public static ObjectiveCard[] getCommonObjectives() {
         return commonObjectives;
     }
 
+    /**
+     * Common objectives setter
+     *
+     * @param commonObjectives updated common objectives
+     * @author Fabio Gallo
+     */
     public static void setCommonObjectives(ObjectiveCard[] commonObjectives) {
         GameTable.commonObjectives = commonObjectives;
     }
 
+    /**
+     * NumPlayers getter
+     *
+     * @return the number of players
+     * @author Fabio Gallo
+     */
     public int getNumPlayers() {
         return numPlayers;
     }
 
+    /**
+     * Players getter
+     *
+     * @return the list (arraylist) of players
+     * @author Fabio Gallo
+     */
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
+    /**
+     * Players setter
+     *
+     * @param players updated players list
+     * @author Fabio Gallo
+     */
     public void setPlayers(ArrayList<Player> players) {
         this.players = players;
     }
 
+    /**
+     * Adds a player to the game
+     *
+     * @param player to be added
+     * @author Fabio Gallo
+     */
     public void addPlayer(Player player) {
         players.add(player);
     }
 
+    /**
+     * Scoreboard getter
+     *
+     * @return Scoreboard
+     * @author Fabio Gallo
+     */
     public Scoreboard getScoreboard() {
         return scoreboard;
     }
 
+    /**
+     * Scoreboard setter
+     *
+     * @param scoreboard updated scoreboard
+     * @author Fabio Gallo
+     */
     public void setScoreboard(Scoreboard scoreboard) {
         this.scoreboard = scoreboard;
     }
 
+    /**
+     * It manages the turn of the player
+     *
+     * @param player player whose turn it is
+     * @author Fabio Gallo
+     */
     public void playTurn(Player player) {
 
     }
 
+    /**
+     * Checks if a player got to at least 20 points and eventually starts the end of the game
+     *
+     * @return true or false
+     * @author Fabio Gallo
+     */
     public boolean isEnded() {
         for (Player player : players) {
             if (player.getScore() >= 20)
@@ -1208,6 +1375,13 @@ public class GameTable {
         return false;
     }
 
+    /**
+     * Method for the players to draw a resource card from the resource deck
+     *
+     * @return the drawn card
+     * @throws EmptyDeckException if the resource deck is empty
+     * @author Lorenzo Foini
+     */
     public GamingCard drawResourceCardDeck() throws EmptyDeckException {
         try {
             return (GamingCard) resourceDeck.drawTopCard();
@@ -1216,6 +1390,13 @@ public class GameTable {
         }
     }
 
+    /**
+     * Method for the players to draw a golden card from the golden deck
+     *
+     * @return the drawn card
+     * @throws EmptyDeckException if the golden deck is empty
+     * @author Lorenzo Foini
+     */
     public GamingCard drawGoldCardDeck() throws EmptyDeckException {
         try {
             return (GamingCard) goldDeck.drawTopCard();
@@ -1224,6 +1405,14 @@ public class GameTable {
         }
     }
 
+    /**
+     * Method for the players to draw a card from the face up (visible) cards (for both the golden and resource cards)
+     *
+     * @param position is the position where the card to be drawn is places
+     * @return the drawn card
+     * @throws InvalidDrawFromTableException if the players tries to draw a card out of the visibleCards range
+     * @author Lorenzo Foini
+     */
     public GamingCard drawCardFromTable(int position) throws InvalidDrawFromTableException {
         if (position < 0 || position > visibleCards.size() - 1) {
             throw new InvalidDrawFromTableException("Invalid draw from table. Select one of the cards or draw from a deck.");
