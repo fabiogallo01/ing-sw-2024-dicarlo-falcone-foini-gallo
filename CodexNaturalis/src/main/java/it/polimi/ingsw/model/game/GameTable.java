@@ -29,15 +29,14 @@ public class GameTable {
      * @param numPlayers number of players
      * @throws EmptyDeckException          if a player tries to draw from an empty deck
      * @throws EmptyObjectiveDeckException if somehow a player tries to draw from an empty objective deck
-     * @throws HandAlreadyFullException    if a player tries to draw a card having already 3 cards
      * @author Fabio Gallo
      */
-    public GameTable(int numPlayers) throws EmptyDeckException, EmptyObjectiveDeckException, HandAlreadyFullException {
+    public GameTable(int numPlayers) throws EmptyDeckException, EmptyObjectiveDeckException {
         this.numPlayers = numPlayers;
-        createResourceDeck();
-        createGoldDeck();
-        createStarterDeck();
-        createObjectiveDeck();
+        this.resourceDeck = createResourceDeck();
+        this.goldDeck = createGoldDeck();
+        this.starterDeck = createStarterDeck();
+        this.objectiveDeck = createObjectiveDeck();
         resourceDeck.shuffleDeck();
         goldDeck.shuffleDeck();
         starterDeck.shuffleDeck();
@@ -45,13 +44,14 @@ public class GameTable {
         this.visibleCards = new ArrayList<>();
         addVisibleCard((GamingCard) resourceDeck.drawTopCard());
         addVisibleCard((GamingCard) resourceDeck.drawTopCard());
-        addVisibleCard((GamingCard) goldDeck.drawTopCard());
-        addVisibleCard((GamingCard) goldDeck.drawTopCard());
+        addVisibleCard((GoldCard) goldDeck.drawTopCard());
+        addVisibleCard((GoldCard) goldDeck.drawTopCard());
         commonObjectives = new ObjectiveCard[]{
-                commonObjectives[1] = objectiveDeck.drawTopCard(),
-                commonObjectives[2] = objectiveDeck.drawTopCard()
+                objectiveDeck.drawTopCard(),
+                objectiveDeck.drawTopCard()
         };
-        for (int i = 0; i < numPlayers; i++) {
+        scoreboard = new Scoreboard();
+        /*for (int i = 0; i < numPlayers; i++) {
             Scanner scanner = new Scanner(System.in);
             ObjectiveCard[] secretObjectives = new ObjectiveCard[]{
                     objectiveDeck.drawTopCard(),
@@ -62,8 +62,7 @@ public class GameTable {
             player.addCardHand((GamingCard) resourceDeck.drawTopCard());
             player.addCardHand((GamingCard) resourceDeck.drawTopCard());
             player.addCardHand((GamingCard) goldDeck.drawTopCard());
-        }
-        scoreboard = new Scoreboard();
+        }*/
     }
 
     /**
@@ -91,7 +90,7 @@ public class GameTable {
      *
      * @author Fabio Gallo
      */
-    private void createResourceDeck() {
+    private GamingDeck createResourceDeck() {
         ArrayList<Card> resourceCards = new ArrayList<>();
         Corner[] frontCorners;
 
@@ -503,7 +502,7 @@ public class GameTable {
         resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 1, frontCorners));
 
 
-        this.resourceDeck = new GamingDeck(resourceCards);
+        return new GamingDeck(resourceCards);
     }
 
     /**
@@ -531,7 +530,7 @@ public class GameTable {
      *
      * @author Fabio Gallo
      */
-    private void createGoldDeck() {
+    private GamingDeck createGoldDeck() {
         ArrayList<Card> goldCards = new ArrayList<>();
         Corner[] frontCorners;
         Kingdom[] resources;
@@ -1023,7 +1022,7 @@ public class GameTable {
         goldCards.add(new GoldCard(false, Kingdom.INSECTKINGDOM, 5, frontCorners, resources, ConditionPoint.NONE));
 
 
-        this.goldDeck = new GamingDeck(goldCards);
+        return new GamingDeck(goldCards);
     }
 
     /**
@@ -1051,7 +1050,7 @@ public class GameTable {
      *
      * @author Fabio Gallo
      */
-    private void createStarterDeck() {
+    private GamingDeck createStarterDeck() {
         ArrayList<Card> starterCards = new ArrayList<>();
         Corner[] frontCorners;
         Corner[] backCorners;
@@ -1172,7 +1171,7 @@ public class GameTable {
         starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms));
 
 
-        this.starterDeck = new GamingDeck(starterCards);
+        return new GamingDeck(starterCards);
     }
 
     /**
@@ -1201,7 +1200,7 @@ public class GameTable {
      *
      * @author Fabio Gallo
      */
-    private void createObjectiveDeck() {
+    private ObjectiveDeck createObjectiveDeck() {
         ArrayList<ObjectiveCard> objectiveCards = new ArrayList<>();
 
         GameObject[] objects = new GameObject[]{GameObject.NONE};
@@ -1243,7 +1242,7 @@ public class GameTable {
         objects = new GameObject[]{GameObject.QUILL, GameObject.QUILL};
         objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.NONE));
 
-        this.objectiveDeck = new ObjectiveDeck(objectiveCards);
+        return new ObjectiveDeck(objectiveCards);
     }
 
     /**
@@ -1379,7 +1378,7 @@ public class GameTable {
             if (player.getScore() >= 20)
                 return true;
         }
-        return false;
+        return resourceDeck.deckSize()==0 && goldDeck.deckSize()==0;
     }
 
     /**
