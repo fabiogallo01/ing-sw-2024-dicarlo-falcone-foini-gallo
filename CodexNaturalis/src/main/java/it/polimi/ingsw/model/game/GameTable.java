@@ -47,11 +47,18 @@ public class GameTable {
         addVisibleCard((GamingCard) resourceDeck.drawTopCard());
         addVisibleCard((GamingCard) goldDeck.drawTopCard());
         addVisibleCard((GamingCard) goldDeck.drawTopCard());
-        commonObjectives[1] = objectiveDeck.drawTopCard();
-        commonObjectives[2] = objectiveDeck.drawTopCard();
+        commonObjectives = new ObjectiveCard[]{
+                commonObjectives[1] = objectiveDeck.drawTopCard(),
+                commonObjectives[2] = objectiveDeck.drawTopCard()
+        };
         for (int i = 0; i < numPlayers; i++) {
             Scanner scanner = new Scanner(System.in);
-            Player player = new Player(scanner.nextLine(), 0, false, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.GREEN, null, (StarterCard) starterDeck.drawTopCard(), new ArrayList<>());
+            ObjectiveCard[] secretObjectives = new ObjectiveCard[]{
+                    objectiveDeck.drawTopCard(),
+                    objectiveDeck.drawTopCard()
+            };
+            String name=scanner.nextLine();
+            Player player = new Player(name, 0, false, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.GREEN, null, (StarterCard) starterDeck.drawTopCard(), new ArrayList<>());
             player.addCardHand((GamingCard) resourceDeck.drawTopCard());
             player.addCardHand((GamingCard) resourceDeck.drawTopCard());
             player.addCardHand((GamingCard) goldDeck.drawTopCard());
