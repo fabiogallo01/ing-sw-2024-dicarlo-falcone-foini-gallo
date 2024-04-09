@@ -20,7 +20,6 @@ public abstract class Card {
         this.counted = false; // Parameter used for counting pattern for objective cards
     }
 
-    /*
     public Card(boolean side, Corner[] frontCorners) {
         this(side, frontCorners,new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -28,7 +27,7 @@ public abstract class Card {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         });
-    }*/
+    }
 
     public boolean getSide(){
         return side;
