@@ -154,6 +154,7 @@ public class Player {
     private String isPlayable(GamingCard cardToPlay, int[] position) {
         // Check if the card is actually playable given the game's rules and current player's area
         // Return "None" if the card is playable, otherwise what type of mistake
+        // PlayerArea's cells: true => cell is empty. false => there is a card in the cell
 
         /* Now we show which are the invalid plays.
             1. There is already a card in that position.
