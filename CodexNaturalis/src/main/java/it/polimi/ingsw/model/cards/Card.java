@@ -21,12 +21,18 @@ public abstract class Card {
     }
 
     public Card(boolean side, Corner[] frontCorners) {
-        this(side, frontCorners,new Corner[]{
+        this.side = side;
+        this.frontCorners = frontCorners;
+        this.backCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
-        });
+            };
+        this.inGamePosition = new int[2];
+        this.inGamePosition[0] = -1;
+        this.inGamePosition[1] = -1; // At the beginning the cards do not have a position
+        this.counted = false; // Parameter used for counting pattern for objective cards
     }
 
     public boolean getSide(){
