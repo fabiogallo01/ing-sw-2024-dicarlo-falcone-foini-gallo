@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PlayerArea{
     // Attributes
-    private boolean[][] area;
+    private boolean[][] area; // true => cell is empty. false => there is a card in the cell
     private ArrayList<Card> cards;
 
     // Methods
@@ -30,7 +30,7 @@ public class PlayerArea{
     }
 
     public void addCard(Card card, int[] positionArea){
-        // "Add" card to the HashMap
+        // "Add" card to the area
         // It is guaranteed that the position is valid.
         area[positionArea[0]][positionArea[1]] = false; // false = cell has a card inside.
 
@@ -44,18 +44,17 @@ public class PlayerArea{
         // It is guaranteed that the added card doesn't cover a corner which can't be covered
         for(Card cornerCard : cards) {
             int[] positionCornerCard = cornerCard.getInGamePosition();
-            boolean side = cornerCard.getSide();
             if (positionCornerCard[0] == positionArea[0] - 1 && positionCornerCard[1] == positionArea[1] - 1) { // Top left card
-                cornerCard.setVisibleCorner(side, 3); // Bottom right corner
+                cornerCard.setVisibleCorner(3); // Bottom right corner
             }
             else if (positionCornerCard[0] == positionArea[0] - 1 && positionCornerCard[1] == positionArea[1] + 1) { // Top right card
-                cornerCard.setVisibleCorner(side, 2); // Bottom left corner
+                cornerCard.setVisibleCorner(2); // Bottom left corner
             }
             else if (positionCornerCard[0] == positionArea[0] + 1 && positionCornerCard[1] == positionArea[1] - 1) { // Bottom left card
-                cornerCard.setVisibleCorner(side, 1); // Top right corner
+                cornerCard.setVisibleCorner(1); // Top right corner
             }
             else if (positionCornerCard[0] == positionArea[0] + 1 && positionCornerCard[1] == positionArea[1] + 1) { // Bottom right card
-                cornerCard.setVisibleCorner(side, 0); // Top left corner
+                cornerCard.setVisibleCorner(0); // Top left corner
             }
         }
     }
@@ -108,10 +107,6 @@ public class PlayerArea{
         return count;
     }
 
-    public int countPattern(Kingdom kingdom, Pattern pattern){
-        // TODO
-    }
-
     public int countHiddenCorner(){
         // Count the total number of hidden corners
         int count = 0;
@@ -134,5 +129,328 @@ public class PlayerArea{
             }
         }
         return count;
+    }
+
+    private boolean helperCountPattern(int[] secondCardPosition, int[] thirdCardPosition, Kingdom secondKingdom, Kingdom thirdKingdom){
+        for(Card cardTwo:cards){
+            if(!cardTwo.getCounted() && cardTwo.getInGamePosition() == secondCardPosition){
+                GamingCard secondCard = (GamingCard) cardTwo;
+                // Check kingdom
+                if(secondCard.getKingdom() == secondKingdom){
+                    // Get third card
+                    for(Card cardThree:cards){
+                        if(!cardThree.getCounted() && cardThree.getInGamePosition() == thirdCardPosition){
+                            GamingCard thirdCard = (GamingCard) cardThree;
+                            // Check kingdom
+                            if(thirdCard.getKingdom() == thirdKingdom){
+                                // Set to true parameter counted
+                                cardTwo.setCounted(true);
+                                cardThree.setCounted(true);
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private int[] helperSetPosition(int row, int column){
+        int[] position = new int[2];
+        position[0] = row;
+        position[1] = column;
+        return position;
+    }
+
+    public int countPattern(Kingdom kingdom, Pattern pattern){
+        int totalPattern = 0;
+
+        // Switch case base on kingdom's value
+        switch (kingdom){
+            case ANIMALKINGDOM -> {
+                if(pattern == Pattern.SECONDARYDIAGONAL){ // Case animal secondary diagonal pattern
+                    for(Card cardOne : cards){
+                        // Check indexes
+                        int[] firstCardPosition = cardOne.getInGamePosition();
+                        if(!((firstCardPosition[0] == 40 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 41 && firstCardPosition[1] == 39) ||
+                             (firstCardPosition[0] == 42 && firstCardPosition[1] == 38) ||
+                             firstCardPosition[0] < 2 || firstCardPosition[1] > 78 )){
+
+                            GamingCard firstCard = (GamingCard) cardOne;
+
+                            // Get position of the second card
+                            int[] secondCardPosition = helperSetPosition(firstCardPosition[0]-1, firstCardPosition[1]+1);
+
+                            // Get position of the third card
+                            int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]-2, firstCardPosition[1]+2);
+
+                            // Check kingdom
+                            // Check if the card is not counted
+                            // Check if there are two cards in the diagonal => area[x][y] is false
+                            if(firstCard.getKingdom() == Kingdom.ANIMALKINGDOM &&
+                               !firstCard.getCounted() &&
+                               !area[secondCardPosition[0]][secondCardPosition[1]] &&
+                               !area[thirdCardPosition[0]][thirdCardPosition[1]]){
+                                if(helperCountPattern(secondCardPosition, thirdCardPosition, Kingdom.ANIMALKINGDOM, Kingdom.ANIMALKINGDOM)){
+                                    cardOne.setCounted(true);
+                                    totalPattern++;
+                                }
+                            }
+                        }
+                    }
+                }
+                else{ // Case animal upper right pattern
+                    for(Card cardOne : cards){
+                        // Check indexes
+                        int[] firstCardPosition = cardOne.getInGamePosition();
+                        if(!((firstCardPosition[0] == 40 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 42 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 43 && firstCardPosition[1] == 39) ||
+                             firstCardPosition[0] < 3 || firstCardPosition[1] > 79 )){
+
+                            GamingCard firstCard = (GamingCard) cardOne;
+
+                            // Get position of the second card
+                            int[] secondCardPosition = helperSetPosition(firstCardPosition[0]-2, firstCardPosition[1]);
+
+                            // Get position of the third card
+                            int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]-3, firstCardPosition[1]+1);
+
+                            // Check kingdom
+                            // Check if the card is not counted
+                            // Check if there are two cards in the diagonal
+                            if(firstCard.getKingdom() == Kingdom.ANIMALKINGDOM &&
+                               !firstCard.getCounted() &&
+                               !area[secondCardPosition[0]][secondCardPosition[1]] &&
+                               !area[thirdCardPosition[0]][thirdCardPosition[1]]){
+                                if(helperCountPattern(secondCardPosition, thirdCardPosition, Kingdom.ANIMALKINGDOM, Kingdom.FUNGIKINGDOM)){
+                                    cardOne.setCounted(true);
+                                    totalPattern++;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+
+            case PLANTKINGDOM -> {
+                if(pattern == Pattern.PRIMARYDIAGONAL){ // Case plant primary diagonal pattern
+                    for(Card cardOne : cards){
+                        // Check indexes
+                        int[] firstCardPosition = cardOne.getInGamePosition();
+                        if(!((firstCardPosition[0] == 40 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 39 && firstCardPosition[1] == 39) ||
+                             (firstCardPosition[0] == 38 && firstCardPosition[1] == 38) ||
+                             firstCardPosition[0] > 78 || firstCardPosition[1] > 78 )){
+
+                            GamingCard firstCard = (GamingCard) cardOne;
+
+                            // Get position of the second card
+                            int[] secondCardPosition = helperSetPosition(firstCardPosition[0]+1, firstCardPosition[1]+1);
+
+                            // Get position of the third card
+                            int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]+2, firstCardPosition[1]+2);
+
+                            // Check kingdom
+                            // Check if the card is not counted
+                            // Check if there are two cards in the diagonal
+                            if(firstCard.getKingdom() == Kingdom.PLANTKINGDOM &&
+                               !firstCard.getCounted() &&
+                               !area[secondCardPosition[0]][secondCardPosition[1]] &&
+                               !area[thirdCardPosition[0]][thirdCardPosition[1]]){
+                                if(helperCountPattern(secondCardPosition, thirdCardPosition, Kingdom.PLANTKINGDOM, Kingdom.PLANTKINGDOM)){
+                                    cardOne.setCounted(true);
+                                    totalPattern++;
+                                }
+                            }
+                        }
+                    }
+                }
+                else{ // Case plant lower left pattern
+                    for(Card cardOne : cards){
+                        // Check indexes
+                        int[] firstCardPosition = cardOne.getInGamePosition();
+                        if(!((firstCardPosition[0] == 40 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 38 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 37 && firstCardPosition[1] == 41) ||
+                             firstCardPosition[0] > 77 || firstCardPosition[1] < 1 )){
+
+                            GamingCard firstCard = (GamingCard) cardOne;
+
+                            // Get position of the second card
+                            int[] secondCardPosition = helperSetPosition(firstCardPosition[0]+2, firstCardPosition[1]);
+
+                            // Get position of the third card
+                            int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]+3, firstCardPosition[1]-1);
+
+                            // Check kingdom
+                            // Check if the card is not counted
+                            // Check if there are two cards in the diagonal
+                            if(firstCard.getKingdom() == Kingdom.PLANTKINGDOM &&
+                               !firstCard.getCounted() &&
+                               !area[secondCardPosition[0]][secondCardPosition[1]] &&
+                               !area[thirdCardPosition[0]][thirdCardPosition[1]]){
+                                if(helperCountPattern(secondCardPosition, thirdCardPosition, Kingdom.PLANTKINGDOM, Kingdom.INSECTKINGDOM)){
+                                    cardOne.setCounted(true);
+                                    totalPattern++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                break;
+            }
+
+            case INSECTKINGDOM -> {
+                if(pattern == Pattern.PRIMARYDIAGONAL){ // Case insect primary diagonal pattern
+                    for(Card cardOne : cards){
+                        // Check indexes
+                        int[] firstCardPosition = cardOne.getInGamePosition();
+                        if(!((firstCardPosition[0] == 40 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 39 && firstCardPosition[1] == 39) ||
+                             (firstCardPosition[0] == 38 && firstCardPosition[1] == 38) ||
+                             firstCardPosition[0] > 78 || firstCardPosition[1] > 78 )){
+
+                            GamingCard firstCard = (GamingCard) cardOne;
+
+                            // Get position of the second card
+                            int[] secondCardPosition = helperSetPosition(firstCardPosition[0]+1, firstCardPosition[1]+1);
+
+                            // Get position of the third card
+                            int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]+2, firstCardPosition[1]+2);
+
+                            // Check kingdom
+                            // Check if the card is not counted
+                            // Check if there are two cards in the diagonal
+                            if(firstCard.getKingdom() == Kingdom.INSECTKINGDOM &&
+                               !firstCard.getCounted() &&
+                               !area[secondCardPosition[0]][secondCardPosition[1]] &&
+                               !area[thirdCardPosition[0]][thirdCardPosition[1]]){
+                                if(helperCountPattern(secondCardPosition, thirdCardPosition, Kingdom.INSECTKINGDOM, Kingdom.INSECTKINGDOM)){
+                                    cardOne.setCounted(true);
+                                    totalPattern++;
+                                }
+                            }
+                        }
+                    }
+                }
+                else{ // Case insect upper left pattern
+                    for(Card cardOne : cards){
+                        // Check indexes
+                        int[] firstCardPosition = cardOne.getInGamePosition();
+                        if(!((firstCardPosition[0] == 40 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 42 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 43 && firstCardPosition[1] == 41) ||
+                             firstCardPosition[0] < 3 || firstCardPosition[1] < 1 )){
+
+                            GamingCard firstCard = (GamingCard) cardOne;
+
+                            // Get position of the second card
+                            int[] secondCardPosition = helperSetPosition(firstCardPosition[0]-2, firstCardPosition[1]);
+
+                            // Get position of the third card
+                            int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]-3, firstCardPosition[1]-1);
+
+
+                            // Check kingdom
+                            // Check if the card is not counted
+                            // Check if there are two cards in the diagonal
+                            if(firstCard.getKingdom() == Kingdom.INSECTKINGDOM &&
+                               !firstCard.getCounted() &&
+                               !area[secondCardPosition[0]][secondCardPosition[1]] &&
+                               !area[thirdCardPosition[0]][thirdCardPosition[1]]){
+                                if(helperCountPattern(secondCardPosition, thirdCardPosition, Kingdom.INSECTKINGDOM, Kingdom.ANIMALKINGDOM)){
+                                    cardOne.setCounted(true);
+                                    totalPattern++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                break;
+            }
+
+            case FUNGIKINGDOM -> {
+                if(pattern == Pattern.SECONDARYDIAGONAL){ // Case fungi secondary diagonal pattern
+                    for(Card cardOne : cards){
+                        // Check indexes
+                        int[] firstCardPosition = cardOne.getInGamePosition();
+                        if(!((firstCardPosition[0] == 40 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 41 && firstCardPosition[1] == 39) ||
+                             (firstCardPosition[0] == 42 && firstCardPosition[1] == 38) ||
+                             firstCardPosition[0] < 2 || firstCardPosition[1] > 78 )){
+
+                            GamingCard firstCard = (GamingCard) cardOne;
+
+                            // Get position of the second card
+                            int[] secondCardPosition = helperSetPosition(firstCardPosition[0]-1, firstCardPosition[1]+1);
+
+                            // Get position of the third card
+                            int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]-2, firstCardPosition[1]+2);
+
+                            // Check kingdom
+                            // Check if the card is not counted
+                            // Check if there are two cards in the diagonal
+                            if(firstCard.getKingdom() == Kingdom.FUNGIKINGDOM &&
+                               !firstCard.getCounted() &&
+                               !area[secondCardPosition[0]][secondCardPosition[1]] &&
+                               !area[thirdCardPosition[0]][thirdCardPosition[1]]){
+                                if(helperCountPattern(secondCardPosition, thirdCardPosition, Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM)){
+                                    cardOne.setCounted(true);
+                                    totalPattern++;
+                                }
+                            }
+                        }
+                    }
+                }
+                else{ // Case fungi lower right pattern
+                    for(Card cardOne : cards){
+                        // Check indexes
+                        int[] firstCardPosition = cardOne.getInGamePosition();
+                        if(!((firstCardPosition[0] == 40 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 38 && firstCardPosition[1] == 40) ||
+                             (firstCardPosition[0] == 37 && firstCardPosition[1] == 39) ||
+                             firstCardPosition[0] > 77 || firstCardPosition[1] > 79 )){
+
+                            GamingCard firstCard = (GamingCard) cardOne;
+
+                            // Get position of the second card
+                            int[] secondCardPosition = helperSetPosition(firstCardPosition[0]+2, firstCardPosition[1]);
+
+                            // Get position of the third card
+                            int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]+3, firstCardPosition[1]+1);
+
+                            // Check kingdom
+                            // Check if the card is not counted
+                            // Check if there are two cards in the diagonal
+                            if(firstCard.getKingdom() == Kingdom.FUNGIKINGDOM &&
+                               !firstCard.getCounted() &&
+                               !area[secondCardPosition[0]][secondCardPosition[1]] &&
+                               !area[thirdCardPosition[0]][thirdCardPosition[1]]){
+                                if(helperCountPattern(secondCardPosition, thirdCardPosition, Kingdom.FUNGIKINGDOM, Kingdom.PLANTKINGDOM)){
+                                    cardOne.setCounted(true);
+                                    totalPattern++;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        // Reset to false parameter counted
+        for(Card card : cards){
+            card.setCounted(false);
+        }
+
+        return totalPattern;
     }
 }
