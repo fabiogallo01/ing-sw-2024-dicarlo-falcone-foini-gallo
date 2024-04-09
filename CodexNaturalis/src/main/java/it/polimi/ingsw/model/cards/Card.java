@@ -4,20 +4,23 @@ public abstract class Card {
     // Private attributes of class Card
     private boolean side;
     // Private attributes of class Card
-    private Corner[] frontCorners = new Corner[4];
-    private Corner[] backCorners = new Corner[4];
+    private Corner[] frontCorners;
+    private Corner[] backCorners;
     private int[] inGamePosition;
+    private boolean counted;
 
     // Constructor of class Card
-    public Card(boolean side, Corner[] frontCorners, Corner[] backCorners ) {
+    public Card(boolean side, Corner[] frontCorners, Corner[] backCorners) {
         this.side = side;
         this.frontCorners = frontCorners;
         this.backCorners = backCorners;
         this.inGamePosition = new int[2];
         this.inGamePosition[0] = -1;
-        this.inGamePosition[1] = -1; // At the beginning the cards do not have a position.
+        this.inGamePosition[1] = -1; // At the beginning the cards do not have a position
+        this.counted = false; // Parameter used for counting pattern for objective cards
     }
 
+    /*
     public Card(boolean side, Corner[] frontCorners) {
         this(side, frontCorners,new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -25,7 +28,7 @@ public abstract class Card {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         });
-    }
+    }*/
 
     public boolean getSide(){
         return side;
@@ -56,6 +59,14 @@ public abstract class Card {
 
     public void setInGamePosition(int[] inGamePosition){
         this.inGamePosition = inGamePosition;
+    }
+
+    public boolean getCounted(){
+        return counted;
+    }
+
+    public void setCounted(boolean counted){
+        this.counted = counted;
     }
 
     public void setVisibleCorner(int position)
