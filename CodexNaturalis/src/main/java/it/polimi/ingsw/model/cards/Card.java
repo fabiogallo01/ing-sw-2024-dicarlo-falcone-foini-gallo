@@ -9,6 +9,8 @@ public abstract class Card {
     private int[] inGamePosition;
     private boolean counted;
 
+    private Kingdom backKingdom;
+
     // Constructor of class Card
     public Card(boolean side, Corner[] frontCorners, Corner[] backCorners) {
         this.side = side;
@@ -20,7 +22,7 @@ public abstract class Card {
         this.counted = false; // Parameter used for counting pattern for objective cards
     }
 
-    public Card(boolean side, Corner[] frontCorners) {
+    public Card(boolean side, Corner[] frontCorners, Kingdom backKingdom) {
         this.side = side;
         this.frontCorners = frontCorners;
         this.backCorners = new Corner[]{
@@ -33,6 +35,7 @@ public abstract class Card {
         this.inGamePosition[0] = -1;
         this.inGamePosition[1] = -1; // At the beginning the cards do not have a position
         this.counted = false; // Parameter used for counting pattern for objective cards
+        this.backKingdom = backKingdom;
     }
 
     public boolean getSide(){
