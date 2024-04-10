@@ -76,7 +76,7 @@ public abstract class Card {
 
     public void setVisibleCorner(int position)
     {
-        if (getSide())
+        if (side)
         { getFrontCorners()[position].setVisible(false); }
         else
         { getBackCorners()[position].setVisible(false); }
