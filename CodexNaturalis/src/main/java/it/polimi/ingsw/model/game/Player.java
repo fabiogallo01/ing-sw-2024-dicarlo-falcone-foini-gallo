@@ -135,7 +135,7 @@ public class Player {
                             score += cardToPlay.getPoints() * playerArea.countObject(GameObject.MANUSCRIPT);
                             break;
                         case HIDDENCORNER:
-                            score += cardToPlay.getPoints() * playerArea.countHiddenCorner();
+                            score += cardToPlay.getPoints() * playerArea.countHiddenCorner(cardToPlay.getInGamePosition());
                             break;
                     }
                 }else{
