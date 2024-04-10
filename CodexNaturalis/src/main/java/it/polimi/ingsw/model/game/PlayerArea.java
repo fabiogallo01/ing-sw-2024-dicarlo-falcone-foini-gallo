@@ -107,10 +107,30 @@ public class PlayerArea{
         return count;
     }
 
-    public int countHiddenCorner(){
+    public int countHiddenCorner(int[] positionArea){
         // Count the total number of hidden corners
         int count = 0;
+        //scroll through all the cards
         for(Card card : cards){
+            // Get position of the card
+            int position[] = card.inGamePosition();
+            //check if the card is in the position left-up of where I want to play
+            if(position[0] == (positionArea[0]-1) && position[1] == (positionArea[1]-1)){
+                count++;
+            }
+            //check if the card is in the position right-up of where I want to play
+            if(position[0] == (positionArea[0]-1) && position[1] == (positionArea[1]+1)){
+                count++;
+            }
+            //check if the card is in the position left-down of where I want to play
+            if(position[0] == (positionArea[0]+1) && position[1] == (positionArea[1]-1)){
+                count++;
+            }
+            //check if the card is in the position right-down of where I want to play
+            if(position[0] == (positionArea[0]+1) && position[1] == (positionArea[1]+1)){
+                count++;
+            }
+        /*for(Card card : cards){
             // Get side of the card: true -> front, false -> back
             boolean side = card.getSide();
             if(side){
@@ -126,7 +146,7 @@ public class PlayerArea{
                         count++;
                     }
                 }
-            }
+            }*/
         }
         return count;
     }
