@@ -130,23 +130,6 @@ public class PlayerArea{
             if(position[0] == (positionArea[0]+1) && position[1] == (positionArea[1]+1)){
                 count++;
             }
-        /*for(Card card : cards){
-            // Get side of the card: true -> front, false -> back
-            boolean side = card.getSide();
-            if(side){
-                for(Corner corner : card.getFrontCorners()){
-                    if(!corner.getVisible()){
-                        count++;
-                    }
-                }
-            }
-            else {
-                for (Corner corner : card.getBackCorners()) {
-                    if (!corner.getVisible()) {
-                        count++;
-                    }
-                }
-            }*/
         }
         return count;
     }
