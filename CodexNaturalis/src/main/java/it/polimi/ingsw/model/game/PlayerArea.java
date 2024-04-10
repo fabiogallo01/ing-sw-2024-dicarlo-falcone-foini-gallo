@@ -62,20 +62,28 @@ public class PlayerArea{
     public int countKingdoms(Kingdom kingdom){
         // Count the total number of visible parameter kingdom
         int count = 0;
-        for(Card card : cards){
+        for(Card card : cards) {
             // Get side of the card: true -> front, false -> back
             boolean side = card.getSide();
-            if(side){
-                for(Corner corner : card.getFrontCorners()){
-                    if(corner.getVisible() && corner.getKingdom() == kingdom){
+            if (side) {
+                for (Corner corner : card.getFrontCorners()) {
+                    if (corner.getVisible() && corner.getKingdom() == kingdom) {
                         count++;
                     }
                 }
-            }
-            else {
+            } else {
                 for (Corner corner : card.getBackCorners()) {
                     if (corner.getVisible() && corner.getKingdom() == kingdom) {
                         count++;
+                    }
+                }
+                if (((GamingCard) card).getKingdom() == kingdom) {
+                    count++;
+                } else {
+                    for (Kingdom king : ((StarterCard) card).getBackKingdoms()) {
+                        if (king == kingdom) {
+                            count++;
+                        }
                     }
                 }
             }
@@ -113,7 +121,7 @@ public class PlayerArea{
         //scroll through all the cards
         for(Card card : cards){
             // Get position of the card
-            int position[] = card.inGamePosition();
+            int position[] = card.getInGamePosition();
             //check if the card is in the position left-up of where I want to play
             if(position[0] == (positionArea[0]-1) && position[1] == (positionArea[1]-1)){
                 count++;
