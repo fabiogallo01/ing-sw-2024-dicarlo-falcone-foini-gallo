@@ -9,12 +9,9 @@ public abstract class Card {
     private int[] inGamePosition;
     private boolean counted;
 
-    private Kingdom[] backKingdomsCentre;//backKingdoms in Centre not corner backKingdoms
-
-    private Kingdom backKingdomCentre
 
     // Constructor of class Card
-    public Card(boolean side, Corner[] frontCorners, Corner[] backCorners, Kingdom[] backKingdomsCentre) {
+    public Card(boolean side, Corner[] frontCorners, Corner[] backCorners) {
         this.side = side;
         this.frontCorners = frontCorners;
         this.backCorners = backCorners;
@@ -22,11 +19,10 @@ public abstract class Card {
         this.inGamePosition[0] = -1;
         this.inGamePosition[1] = -1; // At the beginning the cards do not have a position
         this.counted = false; // Parameter used for counting pattern for objective cards
-        this.backKingdomsCentre = backKingdomsCentre;
     }
 
     //For GoldCard and Resource Card
-    public Card(boolean side, Corner[] frontCorners, Kingdom backKingdomCentre) {
+    public Card(boolean side, Corner[] frontCorners) {
         this.side = side;
         this.frontCorners = frontCorners;
         this.backCorners = new Corner[]{
@@ -39,7 +35,6 @@ public abstract class Card {
         this.inGamePosition[0] = -1;
         this.inGamePosition[1] = -1; // At the beginning the cards do not have a position
         this.counted = false; // Parameter used for counting pattern for objective cards
-        this.backKingdomCentre = backKingdomCentre;
     }
 
     public boolean getSide(){
@@ -87,13 +82,5 @@ public abstract class Card {
         { getFrontCorners()[position].setVisible(false); }
         else
         { getBackCorners()[position].setVisible(false); }
-    }
-
-    public Kingdom getBackKingdomCentre() {
-        return backKingdomCentre;
-    }
-
-    public Kingdom[] getBackKingdomsCentre() {
-        return backKingdomsCentre;
     }
 }
