@@ -5,6 +5,6 @@ public enum Kingdom {
     PLANTKINGDOM,
     FUNGIKINGDOM,
     INSECTKINGDOM,
-    NONE;
+    NONE
 }
 

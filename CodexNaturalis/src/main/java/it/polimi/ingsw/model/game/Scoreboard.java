@@ -51,5 +51,3 @@ public class Scoreboard {
         scores.put(player, score);
     }
 }
-
-

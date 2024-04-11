@@ -7,4 +7,3 @@ public enum ConditionPoint {
     HIDDENCORNER,
     NONE
 }
-
