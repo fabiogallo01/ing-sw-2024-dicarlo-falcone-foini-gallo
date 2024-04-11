@@ -1432,20 +1432,41 @@ public class GameTable {
                 3 - Both decks are empty => Do not add any card.
             */
 
-            try { // Case 1
-                GamingCard topCardResource = (GamingCard) resourceDeck.drawTopCard();
-                visibleCards.set(position, topCardResource);
-            } catch (EmptyDeckException e) {
-                try { // Case 2
-                    GoldCard topCardGold = (GoldCard) goldDeck.drawTopCard();
-                    visibleCards.set(position, topCardGold);
-                } catch (EmptyDeckException ex) { // Case 3
-                    // Shift to the left
-                    for (int i = position; i < visibleCards.size() - 1; i++) {
-                        visibleCards.set(i, visibleCards.get(i + 1));
+            // Check if the selected card is a gold card or a gaming card
+            if(selectedCard instanceof GoldCard){
+                try { // Case 1 with a gold card
+                    GoldCard topCardResource = (GoldCard) goldDeck.drawTopCard();
+                    visibleCards.set(position, topCardResource);
+                } catch (EmptyDeckException e) {
+                    try { // Case 2
+                        GamingCard topCardGold = (GamingCard) resourceDeck.drawTopCard();
+                        visibleCards.set(position, topCardGold);
+                    } catch (EmptyDeckException ex) { // Case 3
+                        // Shift to the left
+                        for (int i = position; i < visibleCards.size() - 1; i++) {
+                            visibleCards.set(i, visibleCards.get(i + 1));
+                        }
+                        //Remove last element
+                        visibleCards.removeLast();
                     }
-                    //Remove last element
-                    visibleCards.removeLast();
+                }
+            }
+            else{
+                try { // Case 1 with a gaming card
+                    GamingCard topCardResource = (GamingCard) resourceDeck.drawTopCard();
+                    visibleCards.set(position, topCardResource);
+                } catch (EmptyDeckException e) {
+                    try { // Case 2
+                        GoldCard topCardGold = (GoldCard) goldDeck.drawTopCard();
+                        visibleCards.set(position, topCardGold);
+                    } catch (EmptyDeckException ex) { // Case 3
+                        // Shift to the left
+                        for (int i = position; i < visibleCards.size() - 1; i++) {
+                            visibleCards.set(i, visibleCards.get(i + 1));
+                        }
+                        //Remove last element
+                        visibleCards.removeLast();
+                    }
                 }
             }
             return selectedCard;
