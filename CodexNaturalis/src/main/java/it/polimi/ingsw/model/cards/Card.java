@@ -9,7 +9,6 @@ public abstract class Card {
     private int[] inGamePosition;
     private boolean counted;
 
-
     // Constructor of class Card
     public Card(boolean side, Corner[] frontCorners, Corner[] backCorners) {
         this.side = side;
@@ -76,7 +75,7 @@ public abstract class Card {
         this.counted = counted;
     }
 
-    public void setVisibleCorner(int position)
+    public void setVisibleCornerFalse(int position)
     {
         if (side)
         { getFrontCorners()[position].setVisible(false); }
