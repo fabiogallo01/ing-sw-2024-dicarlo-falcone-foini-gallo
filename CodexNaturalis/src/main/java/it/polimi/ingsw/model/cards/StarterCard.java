@@ -1,14 +1,14 @@
 package it.polimi.ingsw.model.cards;
 
 public class StarterCard extends Card{
-    private Kingdom[] backKingdoms;
+    private final Kingdom[] backKingdoms;
 
-    public StarterCard(boolean side, Corner[] fC, Corner[] bC, Kingdom[] bK) {
-        super(side, fC, bC);
-        this.backKingdoms = bK;
+    public StarterCard(boolean side, Corner[] frontCorners, Corner[] backCorners, Kingdom[] backKingdoms) {
+        super(side, frontCorners, backCorners);
+        this.backKingdoms = backKingdoms;
     }
+
     public Kingdom[] getBackKingdoms() {
         return backKingdoms;
     }
 }
-

@@ -1,14 +1,12 @@
 package it.polimi.ingsw.model.cards;
 
 public class GamingCard extends Card{
-    private Kingdom kingdom;
-    private int points;
-
-    public GamingCard(boolean side, Kingdom king, int points, Corner[] fC) {
-        super(side, fC);
+    private final Kingdom kingdom;
+    private final int points;
+    public GamingCard(boolean side, Kingdom kingdom, int points, Corner[] frontCorners) {
+        super(side, frontCorners); // Using the constructor without backCorners
+        this.kingdom = kingdom;
         this.points = points;
-        this.kingdom = king;
-
     }
 
     public Kingdom getKingdom() {
@@ -19,4 +17,3 @@ public class GamingCard extends Card{
         return points;
     }
 }
-

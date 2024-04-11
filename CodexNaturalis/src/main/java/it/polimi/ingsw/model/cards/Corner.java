@@ -2,9 +2,9 @@ package it.polimi.ingsw.model.cards;
 
 public class Corner {
     private boolean visible;
-    private boolean empty;
-    private GameObject object;
-    private Kingdom kingdom;
+    private final boolean empty;
+    private final GameObject object;
+    private final Kingdom kingdom;
 
     public Corner(boolean visible, boolean empty, GameObject object, Kingdom kingdom) {
         this.visible = visible;
@@ -34,4 +34,3 @@ public class Corner {
     }
 
 }
-

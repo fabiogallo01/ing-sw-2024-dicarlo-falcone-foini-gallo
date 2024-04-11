@@ -5,7 +5,7 @@ import java.util.*;
 
 public class ObjectiveDeck {
     // Attributes
-    private ArrayList<ObjectiveCard> deck;
+    private final ArrayList<ObjectiveCard> deck;
 
     // Methods
     public ObjectiveDeck(ArrayList<ObjectiveCard> deck){

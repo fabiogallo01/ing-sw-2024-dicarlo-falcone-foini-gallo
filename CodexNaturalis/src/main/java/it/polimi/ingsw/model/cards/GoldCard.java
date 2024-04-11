@@ -1,14 +1,13 @@
 package it.polimi.ingsw.model.cards;
 
 public class GoldCard extends GamingCard {
-    private Kingdom[] resources = new Kingdom[5];
-    private ConditionPoint conditionPoint;
+    private final Kingdom[] resources;
+    private final ConditionPoint conditionPoint;
 
-
-    public GoldCard(boolean side, Kingdom king, int points, Corner[] fC, Kingdom[] res, ConditionPoint conP) {
-        super(side, king, points, fC); // Assuming Card is having same constructor
-        this.resources = res;
-        this.conditionPoint = conP;
+    public GoldCard(boolean side, Kingdom kingdom, int points, Corner[] frontCorners, Kingdom[] resources, ConditionPoint conditionPoints) {
+        super(side, kingdom, points, frontCorners);
+        this.resources = resources;
+        this.conditionPoint = conditionPoints;
     }
 
     public Kingdom[] getResources() {
@@ -18,6 +17,4 @@ public class GoldCard extends GamingCard {
     public ConditionPoint getConditionPoint() {
         return conditionPoint;
     }
-
 }
-
