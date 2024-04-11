@@ -98,7 +98,7 @@ public class Player {
 
         At the end, the selected card is removed from the player's hand
     */
-    public void playCard(int positionCardHand, int[] positionArea) throws InvalidPlayCardIndexException, InvalidPositionAreaException, InvalidPlayException {
+    public void playCard(int positionCardHand, int[] positionArea, boolean side) throws InvalidPlayCardIndexException, InvalidPositionAreaException, InvalidPlayException {
         if (positionCardHand < 1 || positionCardHand > 3) {
             throw new InvalidPlayCardIndexException("Invalid selection of the card from hand.");
         }
@@ -115,6 +115,9 @@ public class Player {
                 throw new InvalidPlayException("You can't play this card in this position. Mistake: " + mistake);
             }
             else{ //The card is playable
+                //Set the card to the playing side chosen by the user
+                cardToPlay.setSide(side);
+
                 // Add the card in the given position
                 playerArea.addCard(cardToPlay, positionArea);
 
@@ -122,8 +125,8 @@ public class Player {
                 hand.remove(positionCardHand-1);
 
                 // Add points to the player
-                // Check if the played card is a goldCard
-                if(cardToPlay instanceof GoldCard && ((GoldCard) cardToPlay).getConditionPoint() != ConditionPoint.NONE) {
+                // Check if the played card is a goldCard and if it is played on front
+                if(cardToPlay instanceof GoldCard && side && ((GoldCard) cardToPlay).getConditionPoint() != ConditionPoint.NONE) {
                     switch (((GoldCard) cardToPlay).getConditionPoint()){
                         case QUILL:
                             score += cardToPlay.getPoints() * playerArea.countObject(GameObject.QUILL);
@@ -138,7 +141,7 @@ public class Player {
                             score += cardToPlay.getPoints() * playerArea.countHiddenCorner(cardToPlay.getInGamePosition());
                             break;
                     }
-                }else{
+                }else if(side){
                     score += cardToPlay.getPoints();
                 }
             }
@@ -167,6 +170,7 @@ public class Player {
                at the corners of that position.
 
             5. For gold cards, there are no conditions necessary for them to be placed.
+               This condition is valid only when the card is played on front
         */
         if(!playerArea.getArea()[position[0]][position[1]]){ // Condition 1
             return "There is already a card in that position.";
@@ -184,7 +188,7 @@ public class Player {
             // Just check if there is a card that is located on one of the four sides of the chosen position.
             return "The card you want to play can't cover two corners of the same card.";
         }
-        else if(cardToPlay instanceof GoldCard){ // Condition 5
+        else if(cardToPlay instanceof GoldCard && cardToPlay.getSide()){ // Condition 5
             int countAnimalKingdom = 0;
             int countPlantKingdom = 0;
             int countFungiKingdom = 0;
