@@ -45,16 +45,16 @@ public class PlayerArea{
         for(Card cornerCard : cards) {
             int[] positionCornerCard = cornerCard.getInGamePosition();
             if (positionCornerCard[0] == positionArea[0] - 1 && positionCornerCard[1] == positionArea[1] - 1) { // Top left card
-                cornerCard.setVisibleCorner(3); // Bottom right corner
+                cornerCard.setVisibleCornerFalse(3); // Bottom right corner
             }
             else if (positionCornerCard[0] == positionArea[0] - 1 && positionCornerCard[1] == positionArea[1] + 1) { // Top right card
-                cornerCard.setVisibleCorner(2); // Bottom left corner
+                cornerCard.setVisibleCornerFalse(2); // Bottom left corner
             }
             else if (positionCornerCard[0] == positionArea[0] + 1 && positionCornerCard[1] == positionArea[1] - 1) { // Bottom left card
-                cornerCard.setVisibleCorner(1); // Top right corner
+                cornerCard.setVisibleCornerFalse(1); // Top right corner
             }
             else if (positionCornerCard[0] == positionArea[0] + 1 && positionCornerCard[1] == positionArea[1] + 1) { // Bottom right card
-                cornerCard.setVisibleCorner(0); // Top left corner
+                cornerCard.setVisibleCornerFalse(0); // Top left corner
             }
         }
     }
@@ -64,24 +64,29 @@ public class PlayerArea{
         int count = 0;
         for(Card card : cards) {
             // Get side of the card: true -> front, false -> back
-            boolean side = card.getSide();
-            if (side) {
+            if (card.getSide()) {
                 for (Corner corner : card.getFrontCorners()) {
                     if (corner.getVisible() && corner.getKingdom() == kingdom) {
                         count++;
                     }
                 }
             } else {
+                // Count kingdoms in the corners
                 for (Corner corner : card.getBackCorners()) {
                     if (corner.getVisible() && corner.getKingdom() == kingdom) {
                         count++;
                     }
                 }
-                if (((GamingCard) card).getKingdom() == kingdom) {
+                // Count kingdom in the centre of the card (it is played on the back side)
+                if (card instanceof GamingCard gameCard && gameCard.getKingdom() == kingdom) {
                     count++;
-                } else {
-                    for (Kingdom king : ((StarterCard) card).getBackKingdoms()) {
-                        if (king == kingdom) {
+                }
+
+                // Count kingdoms at the centre of the starter card (it is played on the back side)
+                if(card instanceof StarterCard) {
+                    Kingdom[] backKingdoms = ((StarterCard) card).getBackKingdoms();
+                    for(Kingdom backKingdom : backKingdoms){
+                        if(backKingdom == kingdom){
                             count++;
                         }
                     }
@@ -118,27 +123,21 @@ public class PlayerArea{
     public int countHiddenCorner(int[] positionArea){
         // Count the total number of hidden corners
         int count = 0;
-        //scroll through all the cards
-        for(Card card : cards){
-            // Get position of the card
-            int position[] = card.getInGamePosition();
-            //check if the card is in the position left-up of where I want to play
-            if(position[0] == (positionArea[0]-1) && position[1] == (positionArea[1]-1)){
-                count++;
-            }
-            //check if the card is in the position right-up of where I want to play
-            if(position[0] == (positionArea[0]-1) && position[1] == (positionArea[1]+1)){
-                count++;
-            }
-            //check if the card is in the position left-down of where I want to play
-            if(position[0] == (positionArea[0]+1) && position[1] == (positionArea[1]-1)){
-                count++;
-            }
-            //check if the card is in the position right-down of where I want to play
-            if(position[0] == (positionArea[0]+1) && position[1] == (positionArea[1]+1)){
-                count++;
-            }
+        // Check if there are cards in the corners of the new card's position
+        // If area in these positions is false => There is a card in that corner
+        if(!area[positionArea[0]-1][positionArea[1]-1]){
+            count++;
         }
+        if(!area[positionArea[0]-1][positionArea[1]+1]){
+            count++;
+        }
+        if(!area[positionArea[0]+1][positionArea[1]-1]){
+            count++;
+        }
+        if(!area[positionArea[0]+1][positionArea[1]+1]){
+            count++;
+        }
+
         return count;
     }
 
