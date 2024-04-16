@@ -1405,7 +1405,7 @@ public class GameTable {
      */
     public GamingCard drawGoldCardDeck() throws EmptyDeckException {
         try {
-            return (GamingCard) goldDeck.drawTopCard();
+            return (GoldCard) goldDeck.drawTopCard();
         } catch (EmptyDeckException e) {
             throw e;
         }
