@@ -143,27 +143,27 @@ public class PlayerArea{
 
     private boolean helperCountPattern(int[] secondCardPosition, int[] thirdCardPosition, Kingdom secondKingdom, Kingdom thirdKingdom){
         for(Card cardTwo:cards){
-            if(!cardTwo.getCounted() && cardTwo.getInGamePosition() == secondCardPosition){
+            if(!cardTwo.getCounted() && cardTwo.getInGamePosition() == secondCardPosition) {
                 GamingCard secondCard = (GamingCard) cardTwo;
                 // Check kingdom
-                if(secondCard.getKingdom() == secondKingdom){
+                if (secondCard.getKingdom() == secondKingdom) {
                     // Get third card
-                    for(Card cardThree:cards){
-                        if(!cardThree.getCounted() && cardThree.getInGamePosition() == thirdCardPosition){
+                    for (Card cardThree : cards) {
+                        if (!cardThree.getCounted() && cardThree.getInGamePosition() == thirdCardPosition) {
                             GamingCard thirdCard = (GamingCard) cardThree;
                             // Check kingdom
-                            if(thirdCard.getKingdom() == thirdKingdom){
+                            if (thirdCard.getKingdom() == thirdKingdom) {
                                 // Set to true parameter counted
                                 cardTwo.setCounted(true);
                                 cardThree.setCounted(true);
                                 return true;
                             }
+                            return false;
                         }
                     }
-                    return false;
                 }
+                return false;
             }
-            return false;
         }
         return false;
     }
