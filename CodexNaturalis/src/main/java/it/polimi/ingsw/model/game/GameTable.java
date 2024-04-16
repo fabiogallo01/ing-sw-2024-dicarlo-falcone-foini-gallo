@@ -161,7 +161,7 @@ public class GameTable {
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
                 new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
-                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
 
         resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners));
