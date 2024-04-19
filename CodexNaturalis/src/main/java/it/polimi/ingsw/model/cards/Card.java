@@ -2,14 +2,15 @@ package it.polimi.ingsw.model.cards;
 
 public abstract class Card {
     // Private attributes of class Card
-    private boolean side;
+    protected boolean side;
     // Private attributes of class Card
-    private Corner[] frontCorners;
-    private Corner[] backCorners;
-    private int[] inGamePosition;
-    private boolean counted;
+    protected Corner[] frontCorners;
+    protected Corner[] backCorners;
+    protected int[] inGamePosition;
+    protected boolean counted;
 
-    // Constructor of class Card
+    // Constructor for ResourceCard
+    // It takes the back corners as parameter
     public Card(boolean side, Corner[] frontCorners, Corner[] backCorners) {
         this.side = side;
         this.frontCorners = frontCorners;
@@ -20,7 +21,8 @@ public abstract class Card {
         this.counted = false; // Parameter used for counting pattern for objective cards
     }
 
-    //For GoldCard and Resource Card
+    // Constructor for GamingCard and GoldCard
+    // It doesn't take the back corners as parameter, they are defined in the constructor
     public Card(boolean side, Corner[] frontCorners) {
         this.side = side;
         this.frontCorners = frontCorners;
@@ -49,14 +51,6 @@ public abstract class Card {
 
     public Corner[] getFrontCorners() {
         return frontCorners;
-    }
-
-    public void setBackCorners(Corner[] backCorners) {
-        this.backCorners = backCorners;
-    }
-
-    public void setFrontCorners(Corner[] frontCorners) {
-        this.frontCorners = frontCorners;
     }
 
     public int[] getInGamePosition(){
