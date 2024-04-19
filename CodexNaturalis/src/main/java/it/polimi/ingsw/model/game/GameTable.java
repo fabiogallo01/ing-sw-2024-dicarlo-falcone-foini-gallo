@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model.game;
-
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
-
 import java.util.*;
 
 /**
@@ -12,7 +10,6 @@ import java.util.*;
  * @author Fabio Gallo
  */
 public class GameTable {
-
     private GamingDeck resourceDeck;
     private GamingDeck goldDeck;
     private GamingDeck starterDeck;
@@ -1184,7 +1181,6 @@ public class GameTable {
         return objectiveDeck;
     }
 
-
     /**
      * Objective deck setter
      *
@@ -1358,16 +1354,6 @@ public class GameTable {
     }
 
     /**
-     * It manages the turn of the player
-     *
-     * @param player player whose turn it is
-     * @author Fabio Gallo
-     */
-    public void playTurn(Player player) {
-
-    }
-
-    /**
      * Checks if a player got to at least 20 points and eventually starts the end of the game
      *
      * @return true or false
@@ -1378,7 +1364,7 @@ public class GameTable {
             if (player.getScore() >= 20)
                 return true;
         }
-        return resourceDeck.deckSize()==0 && goldDeck.deckSize()==0;
+        return resourceDeck.deckSize()==0 && goldDeck.deckSize()==0 && visibleCards.isEmpty();
     }
 
     /**
@@ -1420,10 +1406,10 @@ public class GameTable {
      * @author Lorenzo Foini
      */
     public GamingCard drawCardFromTable(int position) throws InvalidDrawFromTableException {
-        if (position < 0 || position > visibleCards.size() - 1) {
+        if (position < 1 || position > visibleCards.size()) {
             throw new InvalidDrawFromTableException("Invalid draw from table. Select one of the cards or draw from a deck.");
         } else {
-            GamingCard selectedCard = visibleCards.get(position);
+            GamingCard selectedCard = visibleCards.get(position-1);
             /*
                 Replace the selected card with a new one
                 Three cases:
