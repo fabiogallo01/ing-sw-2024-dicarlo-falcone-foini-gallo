@@ -41,7 +41,7 @@ public class PlayerArea{
         card.setInGamePosition(positionArea);
 
         // Modify the status of the corners which are covered from this card
-        // It is guaranteed that the added card doesn't cover a corner which can't be covered
+        // It is guaranteed that the added card doesn't cover a corner which can't be covered or a corner which is already covered
         for(Card cornerCard : cards) {
             int[] positionCornerCard = cornerCard.getInGamePosition();
             if (positionCornerCard[0] == positionArea[0] - 1 && positionCornerCard[1] == positionArea[1] - 1) { // Top left card
@@ -70,6 +70,16 @@ public class PlayerArea{
                         count++;
                     }
                 }
+
+                // Count kingdoms at the centre of the starter card (it is played on the front side)
+                if(card instanceof StarterCard) {
+                    Kingdom[] frontKingdoms = ((StarterCard) card).getFrontKingdoms();
+                    for(Kingdom frontKingdom : frontKingdoms){
+                        if(frontKingdom == kingdom){
+                            count++;
+                        }
+                    }
+                }
             } else {
                 // Count kingdoms in the corners
                 for (Corner corner : card.getBackCorners()) {
@@ -80,16 +90,6 @@ public class PlayerArea{
                 // Count kingdom in the centre of the card (it is played on the back side)
                 if (card instanceof GamingCard gameCard && gameCard.getKingdom() == kingdom) {
                     count++;
-                }
-
-                // Count kingdoms at the centre of the starter card (it is played on the back side)
-                if(card instanceof StarterCard) {
-                    Kingdom[] backKingdoms = ((StarterCard) card).getBackKingdoms();
-                    for(Kingdom backKingdom : backKingdoms){
-                        if(backKingdom == kingdom){
-                            count++;
-                        }
-                    }
                 }
             }
         }
