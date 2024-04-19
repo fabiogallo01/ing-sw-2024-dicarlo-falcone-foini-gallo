@@ -7,7 +7,6 @@ public class Player {
     // Attributes
     private final String username;
     private int score;
-    private boolean isYourTurn;
     private PlayerArea playerArea;
     private final Color color;
     private final ObjectiveCard secretObjective;
@@ -15,10 +14,9 @@ public class Player {
     private ArrayList<GamingCard> hand;
 
     // Methods
-    public Player(String username, int score, boolean isYourTurn, PlayerArea playerArea, Color color, ObjectiveCard secretObjective, StarterCard starterCard, ArrayList<GamingCard> hand){
+    public Player(String username, int score, PlayerArea playerArea, Color color, ObjectiveCard secretObjective, StarterCard starterCard, ArrayList<GamingCard> hand){
         this.username = username;
         this.score = score;
-        this.isYourTurn = isYourTurn;
         this.playerArea = playerArea;
         this.color = color;
         this.secretObjective = secretObjective;
@@ -40,13 +38,6 @@ public class Player {
         } else {
             this.score = score;
         }
-    }
-    public boolean getIsYourTurn(){
-        return isYourTurn;
-    }
-
-    public void setIsYourTurn(boolean isYourTurn){
-        this.isYourTurn = isYourTurn;
     }
 
     public PlayerArea getPlayerArea(){
@@ -286,7 +277,7 @@ public class Player {
 
         int totalPoint = 0;
 
-        // Points scored with common objectives
+        // Points scored with objectives
         for(ObjectiveCard objective : objectives){
             if(objective.getFrontKingdom() == Kingdom.NONE){ // Points given by number of objects
                 int totalObject = 0;
