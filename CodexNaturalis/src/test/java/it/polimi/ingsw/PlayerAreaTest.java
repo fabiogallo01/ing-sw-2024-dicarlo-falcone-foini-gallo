@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.cards.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 
 
@@ -73,7 +75,7 @@ public class PlayerAreaTest {
 
         // Add goldcard with kingdom INSECTKINGDOM
         Kingdom[] resources = new Kingdom[]{Kingdom.NONE};
-        Card cardgold = new GoldCard(false, Kingdom.INSECTKINGDOM, 0, Corners, resources, ConditionPoint.NONE )
+        Card cardgold = new GoldCard(false, Kingdom.INSECTKINGDOM, 0, Corners, resources, ConditionPoint.NONE );
         playerArea.addCard(cardgold, new int[]{41, 41});
 
         // Should return 1 because INSECTKINGDOM is covered
