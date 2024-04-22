@@ -88,7 +88,7 @@ public class PlayerArea{
                     }
                 }
                 // Count kingdom in the centre of the card (it is played on the back side)
-                if (card instanceof GamingCard gameCard && gameCard.getKingdom() == kingdom) {
+                if (card instanceof GamingCard && ((GamingCard) card).getKingdom() == kingdom) {
                     count++;
                 }
             }
@@ -180,7 +180,7 @@ public class PlayerArea{
 
         // Switch case base on kingdom's value
         switch (kingdom){
-            case ANIMALKINGDOM -> {
+            case ANIMALKINGDOM : {
                 if(pattern == Pattern.SECONDARYDIAGONAL){ // Case animal secondary diagonal pattern
                     for(Card cardOne : cards){
                         // Check indexes
@@ -248,7 +248,7 @@ public class PlayerArea{
                 break;
             }
 
-            case PLANTKINGDOM -> {
+            case PLANTKINGDOM : {
                 if(pattern == Pattern.PRIMARYDIAGONAL){ // Case plant primary diagonal pattern
                     for(Card cardOne : cards){
                         // Check indexes
@@ -317,7 +317,7 @@ public class PlayerArea{
                 break;
             }
 
-            case INSECTKINGDOM -> {
+            case INSECTKINGDOM : {
                 if(pattern == Pattern.PRIMARYDIAGONAL){ // Case insect primary diagonal pattern
                     for(Card cardOne : cards){
                         // Check indexes
@@ -387,7 +387,7 @@ public class PlayerArea{
                 break;
             }
 
-            case FUNGIKINGDOM -> {
+            case FUNGIKINGDOM : {
                 if(pattern == Pattern.SECONDARYDIAGONAL){ // Case fungi secondary diagonal pattern
                     for(Card cardOne : cards){
                         // Check indexes
