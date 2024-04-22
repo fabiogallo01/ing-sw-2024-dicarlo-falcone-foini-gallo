@@ -12,6 +12,14 @@ public class ObjectiveDeck {
         this.deck = deck;
     }
 
+    /**
+     * @return size of the deck
+     * @author giacomofalcone
+     */
+    public int deckSize() {
+        return deck.size();
+    }
+
     public ArrayList<ObjectiveCard> getDeck(){
         return deck;
     }
