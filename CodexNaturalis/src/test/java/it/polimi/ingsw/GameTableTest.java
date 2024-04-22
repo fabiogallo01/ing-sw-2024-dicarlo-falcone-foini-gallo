@@ -43,9 +43,9 @@ public class GameTableTest {
      * @author giacomofalcone
      */
     @Test
-    void testInitialization() {
-        assertNotNull(gameTable, "GameTable object is not null");
-        assertEquals(numPlayers, gameTable.getNumPlayers(), "Correct number of players");
+    public void testInitialization() {
+        assertNotNull(gameTable); //"GameTable object is not null"
+        assertEquals(numPlayers, gameTable.getNumPlayers()); //"Correct number of players"
     }
 
     //@Test
