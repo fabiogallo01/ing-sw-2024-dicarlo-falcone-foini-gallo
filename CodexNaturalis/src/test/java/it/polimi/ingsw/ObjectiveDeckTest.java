@@ -7,14 +7,23 @@ import java.util.ArrayList;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-// Test of ObjectiveDeck class
-// Test objective deck
+/**
+ * Class for testing ObjectiveDeck class
+ *
+ * @author Foini Lorenzo
+ */
 public class ObjectiveDeckTest {
+    // Create an instance of deck
     ObjectiveDeck deck;
 
+    /**
+     * Method for set up test
+     *
+     * @author Foini Lorenzo
+     */
     @Before
     public void setUp() {
-        // Create all cards
+        // Create all objective cards and insert them in the list
         ArrayList<ObjectiveCard> objectiveCards = new ArrayList<>();
         GameObject[] objects = new GameObject[]{GameObject.NONE};
 
@@ -43,19 +52,38 @@ public class ObjectiveDeckTest {
         objects = new GameObject[]{GameObject.QUILL, GameObject.QUILL};
         objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.NONE));
 
+        // Create new objective deck given the list of cards
         deck = new ObjectiveDeck(objectiveCards);
     }
 
+    /**
+     * Method for tear down test
+     *
+     * @author Foini Lorenzo
+     */
     @After
     public void tearDown()
     {}
 
+    /**
+     * Method for testing method deckSize()
+     * Must be 16 at the start of the game
+     *
+     * @author Foini Lorenzo
+     */
     @Test
     public void testDeckSize(){
         // Now there are 16 cards
         assertEquals("Not correct number of cards", 16, deck.deckSize());
     }
 
+    /**
+     * Method for testing method shuffleDeck()
+     * Deck before shuffle and deck after shuffle must be different, the size is the same for both
+     * The same happen for their list of cards
+     *
+     * @author Foini Lorenzo
+     */
     @Test
     public void testShuffleDeck(){
         // Check if the decks have same size but different order
@@ -71,6 +99,15 @@ public class ObjectiveDeckTest {
         assertNotEquals("Decks' lists are equals after shuffle",copyDeck.getDeck(), deck.getDeck());
     }
 
+    /**
+     * Method for testing method drawTopCard()
+     * First check if draw all the cards is possible and correct
+     * The card at the end of the list of cards must be the same as the drawn one
+     * The size must be decreased by 1 after every call
+     * In this test the exception mustn't be raised
+     *
+     * @author Foini Lorenzo
+     */
     @Test
     public void testDrawTopCard(){
         try{
@@ -86,6 +123,13 @@ public class ObjectiveDeckTest {
         }
     }
 
+    /**
+     * Method for testing exception of method drawTopCard()
+     * The method tries to draw from an empty deck
+     * The exception must be raised adn catch
+     *
+     * @author Foini Lorenzo
+     */
     @Test
     public void testDrawTopCardException() {
         // Create a new deck, it is empty

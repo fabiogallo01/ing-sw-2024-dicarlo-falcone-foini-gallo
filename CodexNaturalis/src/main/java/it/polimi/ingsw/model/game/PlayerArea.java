@@ -2,36 +2,80 @@ package it.polimi.ingsw.model.game;
 import it.polimi.ingsw.model.cards.*;
 import java.util.*;
 
+/**
+ * Class representing the player's in game area
+ * It contains a boolean matrix and a list of the played card
+ * If a cell contains true => Cell is empty
+ * If a cell contains false => There is a card in that celle
+ *
+ * @author Foini Lorenzo
+ */
 public class PlayerArea{
-    // Attributes
-    private boolean[][] area; // true => cell is empty. false => there is a card in the cell
-    private ArrayList<Card> cards;
+    private boolean[][] area; // Matrix
+    private ArrayList<Card> cards; // List of played cards
 
-    // Methods
+    /**
+     * Player's area constructor, it assigns all the parameters
+     *
+     * @param area for player's area (matrix)
+     * @param cards list of played cards
+     * @author Foini Lorenzo
+     */
     public PlayerArea(boolean[][] area, ArrayList<Card> cards) {
         this.area = area;
         this.cards = cards;
     }
 
+    /**
+     * player's area getter
+     *
+     * @return player's area
+     * @author Lorenzo Foini
+     */
     public boolean[][] getArea() {
         return area;
     }
 
+    /**
+     * Player's area setter
+     *
+     * @param area representing player's area
+     * @author Lorenzo Foini
+     */
     public void setArea(boolean[][] area) {
         this.area = area;
     }
 
+    /**
+     * Played cards getter
+     *
+     * @return played cards
+     * @author Lorenzo Foini
+     */
     public ArrayList<Card> getCards() {
         return cards;
     }
 
+    /**
+     * Played cards getter
+     *
+     * @param cards list of played cards
+     * @author Lorenzo Foini
+     */
     public void setCards(ArrayList<Card> cards) {
         this.cards = cards;
     }
 
+    /**
+     * Method for adding a card to list of played cards.
+     * It also set the select cell where to play teh card to false
+     * It is guaranteed that the position is valid
+     *
+     * @param card presenting the selected card to be played
+     * @param positionArea representing where the player has played the card
+     * @author Lorenzo Foini
+     */
     public void addCard(Card card, int[] positionArea){
-        // "Add" card to the area
-        // It is guaranteed that the position is valid.
         area[positionArea[0]][positionArea[1]] = false; // false = cell has a card inside.
 
         // Add card in the list
@@ -40,40 +84,46 @@ public class PlayerArea{
         // Assign the relative position in the game to the card
         card.setInGamePosition(positionArea);
 
-        // Modify the status of the corners which are covered from this card
+        // Modify the status of the corners which are covered from this card (if present)
         // It is guaranteed that the added card doesn't cover a corner which can't be covered or a corner which is already covered
         for(Card cornerCard : cards) {
-            int[] positionCornerCard = cornerCard.getInGamePosition();
+            int[] positionCornerCard = cornerCard.getInGamePosition(); // Get position
             if (positionCornerCard[0] == positionArea[0] - 1 && positionCornerCard[1] == positionArea[1] - 1) { // Top left card
-                cornerCard.setVisibleCornerFalse(3); // Bottom right corner
+                cornerCard.setVisibleCornerFalse(3); // Bottom right corner to false
             }
             else if (positionCornerCard[0] == positionArea[0] - 1 && positionCornerCard[1] == positionArea[1] + 1) { // Top right card
-                cornerCard.setVisibleCornerFalse(2); // Bottom left corner
+                cornerCard.setVisibleCornerFalse(2); // Bottom left corner to false
             }
             else if (positionCornerCard[0] == positionArea[0] + 1 && positionCornerCard[1] == positionArea[1] - 1) { // Bottom left card
-                cornerCard.setVisibleCornerFalse(1); // Top right corner
+                cornerCard.setVisibleCornerFalse(1); // Top right corner to false
             }
             else if (positionCornerCard[0] == positionArea[0] + 1 && positionCornerCard[1] == positionArea[1] + 1) { // Bottom right card
-                cornerCard.setVisibleCornerFalse(0); // Top left corner
+                cornerCard.setVisibleCornerFalse(0); // Top left corner to false
             }
         }
     }
 
+    /**
+     * Method for counting the total visible number of a given kingdom in the player's area
+     *
+     * @param kingdom type of kingdom to be counted
+     * @return number of given kingdom in the area
+     * @author Andrea Di Carlo, Lorenzo Foini
+     */
     public int countKingdoms(Kingdom kingdom){
-        // Count the total number of visible parameter kingdom
         int count = 0;
         for(Card card : cards) {
             // Get side of the card: true -> front, false -> back
             if (card.getSide()) {
                 for (Corner corner : card.getFrontCorners()) {
                     if (corner.getVisible() && corner.getKingdom() == kingdom) {
-                        count++;
+                        count++; // Find a visible kingdom
                     }
                 }
 
                 // Count kingdoms at the centre of the starter card (it is played on the front side)
                 if(card instanceof StarterCard) {
-                    Kingdom[] frontKingdoms = ((StarterCard) card).getFrontKingdoms();
+                    Kingdom[] frontKingdoms = ((StarterCard) card).getFrontKingdoms(); // Get centre kingdoms
                     for(Kingdom frontKingdom : frontKingdoms){
                         if(frontKingdom == kingdom){
                             count++;
@@ -96,20 +146,28 @@ public class PlayerArea{
         return count;
     }
 
+    /**
+     * Method for counting the total visible number of a given object in the player's area
+     *
+     * @param object type of object to be counted
+     * @return number of given object in the area
+     * @author Lorenzo Foini
+     */
     public int countObject(GameObject object){
-        // Count the total number of visible parameter object
         int count = 0;
         for(Card card : cards){
             // Get side of the card: true -> front, false -> back
             boolean side = card.getSide();
             if(side){
+                // Check front corners
                 for(Corner corner : card.getFrontCorners()){
                     if(corner.getVisible() && corner.getObject() == object){
-                        count++;
+                        count++; // find a visible object
                     }
                 }
             }
             else {
+                // Check back corners
                 for (Corner corner : card.getBackCorners()) {
                     if (corner.getVisible() && corner.getObject() == object) {
                         count++;
@@ -120,8 +178,14 @@ public class PlayerArea{
         return count;
     }
 
+    /**
+     * Method for counting the total number of hidden corner by the play of the selected card
+     *
+     * @param positionArea representing where to play the card
+     * @return number of the hidden corner by this card
+     * @author Giacomo Falcone, Lorenzo Foini
+     */
     public int countHiddenCorner(int[] positionArea){
-        // Count the total number of hidden corners
         int count = 0;
         // Check if there are cards in the corners of the new card's position
         // If area in these positions is false => There is a card in that corner
@@ -141,19 +205,31 @@ public class PlayerArea{
         return count;
     }
 
+    /**
+     * Helper method for count the number of a given pattern
+     *
+     * @param secondCardPosition representing the second card's in game position
+     * @param thirdCardPosition representing the third card's in game position
+     * @param secondKingdom representing second card's kingdom
+     * @param thirdKingdom representing third card's kingdom
+     * @return true if the found pattern is valid, false otherwise
+     * @author Lorenzo Foini
+     */
     private boolean helperCountPattern(int[] secondCardPosition, int[] thirdCardPosition, Kingdom secondKingdom, Kingdom thirdKingdom){
         for(Card cardTwo:cards){
             if(!cardTwo.getCounted() && cardTwo.getInGamePosition() == secondCardPosition) {
+                // Find the second card
                 GamingCard secondCard = (GamingCard) cardTwo;
-                // Check kingdom
+                // Check second card's kingdom
                 if (secondCard.getKingdom() == secondKingdom) {
                     // Get third card
                     for (Card cardThree : cards) {
                         if (!cardThree.getCounted() && cardThree.getInGamePosition() == thirdCardPosition) {
+                            // Find third card
                             GamingCard thirdCard = (GamingCard) cardThree;
-                            // Check kingdom
+                            // Check third card's kingdom
                             if (thirdCard.getKingdom() == thirdKingdom) {
-                                // Set to true parameter counted
+                                // Set to true parameter counted and return true
                                 cardTwo.setCounted(true);
                                 cardThree.setCounted(true);
                                 return true;
@@ -168,6 +244,14 @@ public class PlayerArea{
         return false;
     }
 
+    /**
+     * Helper method for setting in game position of a card (given its indexes)
+     *
+     * @param row representing card's row
+     * @param column representing card's column
+     * @return the array of position
+     * @author Lorenzo Foini
+     */
     private int[] helperSetPosition(int row, int column){
         int[] position = new int[2];
         position[0] = row;
@@ -175,6 +259,15 @@ public class PlayerArea{
         return position;
     }
 
+    /**
+     * Method for count the total number of a given pattern in the area
+     * It uses two helper methods
+     *
+     * @param kingdom representing the kingdom of the pattern
+     * @param pattern representing the type of pattern (enumeration)
+     * @return total number of the given pattern in the area
+     * @author Andrea Di Carlo, Lorenzo Foini
+     */
     public int countPattern(Kingdom kingdom, Pattern pattern){
         int totalPattern = 0;
 
@@ -190,12 +283,13 @@ public class PlayerArea{
                              (firstCardPosition[0] == 42 && firstCardPosition[1] == 38) ||
                              firstCardPosition[0] < 2 || firstCardPosition[1] > 78 )){
 
+                            // Find first card and casting to gaming card
                             GamingCard firstCard = (GamingCard) cardOne;
 
-                            // Get position of the second card
+                            // Get position of the second card using helper method
                             int[] secondCardPosition = helperSetPosition(firstCardPosition[0]-1, firstCardPosition[1]+1);
 
-                            // Get position of the third card
+                            // Get position of the third card using helper method
                             int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]-2, firstCardPosition[1]+2);
 
                             // Check kingdom
@@ -222,12 +316,13 @@ public class PlayerArea{
                              (firstCardPosition[0] == 43 && firstCardPosition[1] == 39) ||
                              firstCardPosition[0] < 3 || firstCardPosition[1] > 79 )){
 
+                            // Find first card and casting to gaming card
                             GamingCard firstCard = (GamingCard) cardOne;
 
-                            // Get position of the second card
+                            // Get position of the second card using helper method
                             int[] secondCardPosition = helperSetPosition(firstCardPosition[0]-2, firstCardPosition[1]);
 
-                            // Get position of the third card
+                            // Get position of the third card using helper method
                             int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]-3, firstCardPosition[1]+1);
 
                             // Check kingdom
@@ -258,12 +353,13 @@ public class PlayerArea{
                              (firstCardPosition[0] == 38 && firstCardPosition[1] == 38) ||
                              firstCardPosition[0] > 78 || firstCardPosition[1] > 78 )){
 
+                            // Find first card and casting to gaming card
                             GamingCard firstCard = (GamingCard) cardOne;
 
-                            // Get position of the second card
+                            // Get position of the second card using helper method
                             int[] secondCardPosition = helperSetPosition(firstCardPosition[0]+1, firstCardPosition[1]+1);
 
-                            // Get position of the third card
+                            // Get position of the third card using helper method
                             int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]+2, firstCardPosition[1]+2);
 
                             // Check kingdom
@@ -290,12 +386,13 @@ public class PlayerArea{
                              (firstCardPosition[0] == 37 && firstCardPosition[1] == 41) ||
                              firstCardPosition[0] > 77 || firstCardPosition[1] < 1 )){
 
+                            // Find first card and casting to gaming card
                             GamingCard firstCard = (GamingCard) cardOne;
 
-                            // Get position of the second card
+                            // Get position of the second card using helper method
                             int[] secondCardPosition = helperSetPosition(firstCardPosition[0]+2, firstCardPosition[1]);
 
-                            // Get position of the third card
+                            // Get position of the third card using helper method
                             int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]+3, firstCardPosition[1]-1);
 
                             // Check kingdom
@@ -327,12 +424,13 @@ public class PlayerArea{
                              (firstCardPosition[0] == 38 && firstCardPosition[1] == 38) ||
                              firstCardPosition[0] > 78 || firstCardPosition[1] > 78 )){
 
+                            // Find first card and casting to gaming card
                             GamingCard firstCard = (GamingCard) cardOne;
 
-                            // Get position of the second card
+                            // Get position of the second card using helper method
                             int[] secondCardPosition = helperSetPosition(firstCardPosition[0]+1, firstCardPosition[1]+1);
 
-                            // Get position of the third card
+                            // Get position of the third card using helper method
                             int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]+2, firstCardPosition[1]+2);
 
                             // Check kingdom
@@ -359,12 +457,13 @@ public class PlayerArea{
                              (firstCardPosition[0] == 43 && firstCardPosition[1] == 41) ||
                              firstCardPosition[0] < 3 || firstCardPosition[1] < 1 )){
 
+                            // Find first card and casting to gaming card
                             GamingCard firstCard = (GamingCard) cardOne;
 
-                            // Get position of the second card
+                            // Get position of the second card using helper method
                             int[] secondCardPosition = helperSetPosition(firstCardPosition[0]-2, firstCardPosition[1]);
 
-                            // Get position of the third card
+                            // Get position of the third card using helper method
                             int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]-3, firstCardPosition[1]-1);
 
 
@@ -397,12 +496,13 @@ public class PlayerArea{
                              (firstCardPosition[0] == 42 && firstCardPosition[1] == 38) ||
                              firstCardPosition[0] < 2 || firstCardPosition[1] > 78 )){
 
+                            // Find first card and casting to gaming card
                             GamingCard firstCard = (GamingCard) cardOne;
 
-                            // Get position of the second card
+                            // Get position of the second card using helper method
                             int[] secondCardPosition = helperSetPosition(firstCardPosition[0]-1, firstCardPosition[1]+1);
 
-                            // Get position of the third card
+                            // Get position of the third card using helper method
                             int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]-2, firstCardPosition[1]+2);
 
                             // Check kingdom
@@ -429,12 +529,13 @@ public class PlayerArea{
                              (firstCardPosition[0] == 37 && firstCardPosition[1] == 39) ||
                              firstCardPosition[0] > 77 || firstCardPosition[1] > 79 )){
 
+                            // Find first card and casting to gaming card
                             GamingCard firstCard = (GamingCard) cardOne;
 
-                            // Get position of the second card
+                            // Get position of the second card using helper method
                             int[] secondCardPosition = helperSetPosition(firstCardPosition[0]+2, firstCardPosition[1]);
 
-                            // Get position of the third card
+                            // Get position of the third card using helper method
                             int[] thirdCardPosition = helperSetPosition(firstCardPosition[0]+3, firstCardPosition[1]+1);
 
                             // Check kingdom
