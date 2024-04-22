@@ -1,6 +1,8 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.game.GameTable;
+import it.polimi.ingsw.model.exception.EmptyDeckException;
+import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,7 +43,6 @@ public class GameTableTest {
      * @author giacomofalcone
      */
     @Test
-    @DisplayName("Test correct initialization of GameTable")
     void testInitialization() {
         assertNotNull(gameTable, "GameTable object is not null");
         assertEquals(numPlayers, gameTable.getNumPlayers(), "Correct number of players");
