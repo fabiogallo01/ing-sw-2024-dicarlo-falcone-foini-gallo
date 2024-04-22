@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.game.GameTable;
-import it.polimi.ingsw.model.game.ObjectiveDeck;
 import it.polimi.ingsw.model.exception.EmptyDeckException;
 import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
 
@@ -9,7 +8,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-//import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotEquals;
 
@@ -65,24 +63,39 @@ public class GameTableTest {
         assertEquals("The size of the resource deck is not 40", 40, gameTable.getResourceDeck().deckSize());
         assertEquals("The size of the gold deck is not 40", 40, gameTable.getGoldDeck().deckSize());
         assertEquals("The size of the starter deck is not 6", 6, gameTable.getStarterDeck().deckSize());
-        //ObjectiveDeck deck = gameTable.getObjectiveDeck();
         assertNotEquals("Objective deck is empty", 0, gameTable.getObjectiveDeck().deckSize());
         assertEquals("The size of the objective deck is not 16", 16, gameTable.getObjectiveDeck().deckSize());
     }
 
 
-    //@Test
-    //a method to test that I have created 40 resource cards
+
+    /**
+     * Test drawing from resource deck
+     * gameTable.drawResourceCardDeck()
+     * Should not throw EmptyDeckException for a full deck
+     */
 
 
-    //@Test
-    //a method to test that I have created 40 gold cards
+    /**
+     * Test drawing from an empty deck throws EmptyDeckException
+     * gameTable.drawResourceCardDeck()
+     * Should throw EmptyDeckException when drawing from an empty resource deck
+     */
 
-    //@Test
-    //a method to test that I have created 6 starter cards
+    /**
+     * Test setting and getting visible cards
+     * gameTable.setVisibleCard(visibleCards)
+     * gameTable.getVisibleCard()
+     * Visible cards should be set and get correctly
+     */
 
-    //@Test
-    //a method to test that I have created 16 objective cards
+    /**
+     * Ensure game can end under correct conditions
+     * gameTable.isEnded()
+     * Game should not end immediately after initialization
+     * gameTable.getPlayers().forEach(player -> player.setScore(20))
+     * Game should end when at least one player has 20 or more points
+     */
 
 
 }
