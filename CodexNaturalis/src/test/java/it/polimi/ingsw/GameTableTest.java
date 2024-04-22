@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.game.GameTable;
+import it.polimi.ingsw.model.game.ObjectiveDeck;
 import it.polimi.ingsw.model.exception.EmptyDeckException;
 import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
 
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 //import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
 
 public class GameTableTest {
 
@@ -44,9 +46,30 @@ public class GameTableTest {
      */
     @Test
     public void testInitialization() {
-        assertNotNull(gameTable); //"GameTable object is not null"
-        assertEquals(numPlayers, gameTable.getNumPlayers()); //"Correct number of players"
+        assertNotNull("GameTable object is null", gameTable); //"GameTable object is not null"
+        assertEquals("Not correct number of players", numPlayers, gameTable.getNumPlayers()); //"Correct number of players"
     }
+
+
+    /**
+     * Tests that decks are not empty on initialization
+     * Tests that deck's sizes are correct
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testDeckSize() {
+        assertNotEquals("Resource deck is empty", 0, gameTable.getResourceDeck().deckSize());
+        assertNotEquals("Gold deck is empty", 0, gameTable.getGoldDeck().deckSize());
+        assertNotEquals("Starter deck is empty", 0, gameTable.getStarterDeck().deckSize());
+        assertEquals("The size of the resource deck is not 40", 40, gameTable.getResourceDeck().deckSize());
+        assertEquals("The size of the gold deck is not 40", 40, gameTable.getGoldDeck().deckSize());
+        assertEquals("The size of the starter deck is not 6", 6, gameTable.getStarterDeck().deckSize());
+        //ObjectiveDeck deck = gameTable.getObjectiveDeck();
+        assertNotEquals("Objective deck is empty", 0, gameTable.getObjectiveDeck().deckSize());
+        assertEquals("The size of the objective deck is not 16", 16, gameTable.getObjectiveDeck().deckSize());
+    }
+
 
     //@Test
     //a method to test that I have created 40 resource cards
