@@ -211,11 +211,11 @@ public class PlayerArea{
      * @param playedCards list of played cards
      * @author Lorenzo Foini
      */
-    private void helperOrderList(ArrayList<Card> playedCards){
+   /* private void helperOrderList(ArrayList<Card> playedCards){
         playedCards.sort(Comparator.comparingInt(card -> ((Card) card).getInGamePosition()[0])
                                    .thenComparingInt(card -> ((Card) card).getInGamePosition()[1])
         );
-    }
+    }*/
 
     /**
      * Helper method for count the number of a given pattern
@@ -229,14 +229,14 @@ public class PlayerArea{
      */
     private boolean helperCountPattern(int[] secondCardPosition, int[] thirdCardPosition, Kingdom secondKingdom, Kingdom thirdKingdom){
         for(Card cardTwo:cards){
-            if(!cardTwo.getCounted() && cardTwo.getInGamePosition() == secondCardPosition) {
+            if(!cardTwo.getCounted() && cardTwo.getInGamePosition()[0] == secondCardPosition[0] && cardTwo.getInGamePosition()[1] == secondCardPosition[1]) {
                 // Find the second card
                 GamingCard secondCard = (GamingCard) cardTwo;
                 // Check second card's kingdom
                 if (secondCard.getKingdom() == secondKingdom) {
                     // Get third card
                     for (Card cardThree : cards) {
-                        if (!cardThree.getCounted() && cardThree.getInGamePosition() == thirdCardPosition) {
+                        if (!cardThree.getCounted() && cardThree.getInGamePosition()[0] == thirdCardPosition[0] && cardThree.getInGamePosition()[1] == thirdCardPosition[1]) {
                             // Find third card
                             GamingCard thirdCard = (GamingCard) cardThree;
                             // Check third card's kingdom
@@ -284,7 +284,7 @@ public class PlayerArea{
         int totalPattern = 0;
 
         // Call to helper method for order list of played cards
-        helperOrderList(cards);
+        //helperOrderList(cards);
 
         // Switch case base on kingdom's value
         switch (kingdom){
