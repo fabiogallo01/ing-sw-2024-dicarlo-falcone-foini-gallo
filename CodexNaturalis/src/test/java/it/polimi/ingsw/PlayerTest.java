@@ -18,8 +18,10 @@ import java.util.ArrayList;
 
 //TO DO: test di playCard, calculateObjectivePoint
 public class PlayerTest {
-    private Player player;
+    private Player player, player2;
     private ObjectiveCard[] commonObjectives;
+
+
     @Before
     public void setUp() {
         boolean[][] area = new boolean[81][81];
@@ -29,10 +31,13 @@ public class PlayerTest {
             }
         }
 
+
         ObjectiveCard secretObjective = new ObjectiveCard(2, true, new GameObject[]{GameObject.NONE}, Pattern.SECONDARYDIAGONAL, Kingdom.FUNGIKINGDOM);
         ObjectiveCard commonObjective1 = new ObjectiveCard(2,false, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.FUNGIKINGDOM);
         ObjectiveCard commonObjective2 = new ObjectiveCard(3, false, new GameObject[]{GameObject.NONE}, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM);
         commonObjectives = new ObjectiveCard[]{commonObjective1, commonObjective2};
+
+
         Corner[] frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -50,7 +55,7 @@ public class PlayerTest {
         Kingdom[] kingdoms = new Kingdom[]{Kingdom.PLANTKINGDOM, Kingdom.ANIMALKINGDOM, Kingdom.FUNGIKINGDOM};
 
         StarterCard starterCard = new StarterCard(false, frontCorners, backCorners, kingdoms);
-
+        //StarterCard starterCard2 = new StarterCard(false, frontCorners, backCorners, kingdoms);
         ArrayList<GamingCard> hand = new ArrayList<>();
 
         frontCorners = new Corner[]{
@@ -77,6 +82,7 @@ public class PlayerTest {
         resources = new Kingdom[]{Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.PLANTKINGDOM};
 
         GoldCard goldCard2 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 2, frontCorners, resources, ConditionPoint.HIDDENCORNER);
+        //GoldCard playedGoldCard = new GoldCard(true, Kingdom.FUNGIKINGDOM, 2, frontCorners, resources, ConditionPoint.HIDDENCORNER);
 
         hand.add(goldCard2);
 
@@ -88,6 +94,7 @@ public class PlayerTest {
         };
 
         GamingCard resourceCard = new GamingCard(true, Kingdom.FUNGIKINGDOM, 0, frontCorners);
+        //GamingCard playedResourceCard3 = new GamingCard(true, Kingdom.FUNGIKINGDOM, 0, frontCorners);
 
         hand.add(resourceCard);
 
@@ -111,25 +118,56 @@ public class PlayerTest {
         GamingCard playedResourceCard2 = new GamingCard(true, Kingdom.PLANTKINGDOM, 0, frontCorners);
 
 
-        area[40][40] = false;
-        starterCard.setInGamePosition(new int[]{40, 40});
-
-
-        area[39][39] = false;
-        playedResourceCard1.setInGamePosition(new int[]{39, 39});
-
-        area[39][41] = false;
-        playedResourceCard2.setInGamePosition(new int[]{39, 41});
-
         ArrayList<Card> cards = new ArrayList<>();
-
-        cards.add(starterCard);
-        cards.add(playedResourceCard1);
-        cards.add(playedResourceCard2);
-
         PlayerArea playerArea = new PlayerArea(area, cards);
 
+        playerArea.addCard( starterCard, new int[]{40,40});
+        playerArea.addCard( playedResourceCard1, new int[]{39,39});
+        playerArea.addCard( playedResourceCard2, new int[]{39,41});
+
         player = new Player("Fabio", 0, playerArea, Color.GREEN, secretObjective, starterCard, hand);
+
+
+        //setup for the counter of the points
+        /*
+        boolean[][] area2 = new boolean[81][81];
+        for (int i = 0; i < 81; i++) {
+            for (int j = 0; j < 81; j++) {
+                area[i][j] = true;
+            }
+        }
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
+        };
+
+        GamingCard playedResourceCard4 = new GamingCard(true, Kingdom.PLANTKINGDOM, 0, frontCorners);
+
+        frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
+
+        GamingCard playedResourceCard5 = new GamingCard(true, Kingdom.INSECTKINGDOM, 0, frontCorners);
+
+        ArrayList<Card> cards2 = new ArrayList<>();
+        PlayerArea playerArea2 = new PlayerArea(area2, cards2);
+
+        playerArea2.addCard( starterCard, new int[]{40,40});
+        playerArea2.addCard( playedResourceCard1, new int[]{39,39});
+        playerArea2.addCard( playedResourceCard2, new int[]{39,41});
+        //playerArea2.addCard( playedResourceCard3, new int[]{38, 40});
+        //playerArea2.addCard( playedGoldCard, new int[]{37, 41});
+        playerArea2.addCard( playedResourceCard4, new int[]{41,41});
+        playerArea2.addCard( playedResourceCard5, new int[]{42,40});
+        //player2 = new Player("Lorenzo", 0, playerArea2, Color.BLUE, secretObjective, starterCard2, hand);
+
+        */
     }
 
 
@@ -247,6 +285,10 @@ public class PlayerTest {
     @Test
     public void calculateObjectivePointsTest_noPoints() {
         assertEquals(0,player.calculateObjectivePoints(commonObjectives));
-
     }
+/*
+    @Test
+    public void calculateObjectivePointsTest_points(){
+        assertEquals(7, player2.calculateObjectivePoints(commonObjectives));
+    }*/
 }
