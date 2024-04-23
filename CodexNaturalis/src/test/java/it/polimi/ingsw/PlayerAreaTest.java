@@ -46,7 +46,7 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(true, startcorners, Corners, new Kingdom[]{Kingdom.NONE});
+        Card startercard = new StarterCard(false, Corners, startcorners, new Kingdom[]{Kingdom.NONE});
         playerArea.addCard(startercard, new int[]{40, 40});
 
         //Should return 1
@@ -107,7 +107,7 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(true, startcorners, Corners, new Kingdom[]{Kingdom.NONE});
+        Card startercard = new StarterCard(false, Corners, startcorners, new Kingdom[]{Kingdom.NONE});
         playerArea.addCard(startercard, new int[]{40, 40});
 
         assertEquals(0, playerArea.countObject(GameObject.MANUSCRIPT));
@@ -157,7 +157,7 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(true, startcorners, Corners, new Kingdom[]{Kingdom.NONE});
+        Card startercard = new StarterCard(false, Corners, startcorners, new Kingdom[]{Kingdom.NONE});
         playerArea.addCard(startercard, new int[]{40, 40});
 
         // Add goldcard with kingdom INSECTKINGDOM
@@ -202,7 +202,7 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(true, startcorners, Corners, new Kingdom[]{Kingdom.NONE});
+        Card startercard = new StarterCard(false, Corners, startcorners, new Kingdom[]{Kingdom.NONE});
         playerArea.addCard(startercard, new int[]{40, 40});
 
         //Test diagon 3 Plantkingdom
@@ -215,6 +215,8 @@ public class PlayerAreaTest {
         Card card3 = new GamingCard(false, Kingdom.PLANTKINGDOM, 0, Corners);
         playerArea.addCard(card3, new int[]{37, 37});
 
+        assertEquals(1, playerArea.countPattern(Kingdom.PLANTKINGDOM, Pattern.PRIMARYDIAGONAL));
+
 
         //Test diagon 3 Animalkingdom
         Card card4 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners);
@@ -226,6 +228,9 @@ public class PlayerAreaTest {
         Card card6 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners);
         playerArea.addCard(card6, new int[]{43, 37});
 
+        assertEquals(1, playerArea.countPattern(Kingdom.ANIMALKINGDOM, Pattern.SECONDARYDIAGONAL));
+
+
         //Test diagon 3 Insectkingdom
         Card card7 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners);
         playerArea.addCard(card7, new int[]{41, 41});
@@ -235,6 +240,9 @@ public class PlayerAreaTest {
 
         Card card9 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners);
         playerArea.addCard(card9, new int[]{43, 43});
+
+        assertEquals(1, playerArea.countPattern(Kingdom.INSECTKINGDOM, Pattern.PRIMARYDIAGONAL));
+
 
         //Test diagon 3 FungiKingdom
         Card card10 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners);
@@ -246,15 +254,53 @@ public class PlayerAreaTest {
         Card card12 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners);
         playerArea.addCard(card12, new int[]{46, 34});
 
+        assertEquals(1, playerArea.countPattern(Kingdom.FUNGIKINGDOM, Pattern.SECONDARYDIAGONAL));
+
+
         //Test 2Fungi and 1Plant
         Card card13 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners);
         playerArea.addCard(card13, new int[]{44, 44});
 
         Card card14 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners);
-        playerArea.addCard(card14, new int[]{44, 45});
+        playerArea.addCard(card14, new int[]{46, 44});
 
         Card card15 = new GamingCard(false, Kingdom.PLANTKINGDOM, 0, Corners);
-        playerArea.addCard(card15, new int[]{45, 46});
+        playerArea.addCard(card15, new int[]{47, 45});
+
+        assertEquals(1, playerArea.countPattern(Kingdom.FUNGIKINGDOM, Pattern.LOWERRIGHT));
+
+
+        //Test 2Plant 1 Insect
+        Card card16 = new GamingCard(false, Kingdom.PLANTKINGDOM, 0, Corners);
+        playerArea.addCard(card16, new int[]{39, 37});
+
+        Card card17 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners);
+        playerArea.addCard(card17, new int[]{40, 36});
+
+        assertEquals(1, playerArea.countPattern(Kingdom.PLANTKINGDOM, Pattern.LOWERLEFT));
+
+
+        //Test 2Animal 1 Fungi
+        Card card18 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners);
+        playerArea.addCard(card18, new int[]{41, 37});
+
+        Card card19 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners);
+        playerArea.addCard(card19, new int[]{40, 38});
+
+        assertEquals(1, playerArea.countPattern(Kingdom.ANIMALKINGDOM, Pattern.UPPERRIGHT));
+
+
+        //Test 2Insect 1 Animal
+        Card card20 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners);
+        playerArea.addCard(card20, new int[]{45, 37});
+
+        Card card21 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners);
+        playerArea.addCard(card21, new int[]{46, 38});
+
+        Card card22 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners);
+        playerArea.addCard(card22, new int[]{48, 38});
+
+        assertEquals(1, playerArea.countPattern(Kingdom.INSECTKINGDOM, Pattern.UPPERLEFT));
 
     }
 }
