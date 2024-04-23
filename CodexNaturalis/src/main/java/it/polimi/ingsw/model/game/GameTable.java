@@ -34,6 +34,7 @@ public class GameTable {
         this.goldDeck = createGoldDeck();
         this.starterDeck = createStarterDeck();
         this.objectiveDeck = createObjectiveDeck();
+        this.players = new ArrayList<>();
         resourceDeck.shuffleDeck();
         goldDeck.shuffleDeck();
         starterDeck.shuffleDeck();
