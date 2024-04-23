@@ -9,11 +9,11 @@ import static org.junit.Assert.*;
 
 /**
  * Class for testing GamingDeck class
- * It tests only for the gold deck, but it works even for resource deck and starter deck
+ * It tests only for gold deck
  *
  * @author Foini Lorenzo
  */
-public class GamingDeckTest {
+public class GoldDeckTest {
     // Create an instance of deck
     GamingDeck deck;
 
