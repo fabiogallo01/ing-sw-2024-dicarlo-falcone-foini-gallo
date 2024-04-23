@@ -23,7 +23,6 @@ public class PlayerAreaTest {
             }
         }
 
-        //devi iniziallizare la lista di carte giocate
         PlayerArea playerArea = new PlayerArea(Area, new ArrayList<Card>());
 
         // No card, should return 0
@@ -47,8 +46,8 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(false, startcorners, Corners, new Kingdom[]{Kingdom.NONE});
-        playerArea.addCard(startercard, new int[]{40, 40});
+        Card startercard = new StarterCard(true, startcorners, Corners, new Kingdom[]{Kingdom.NONE});
+        playerArea.addCard(startercard, new int[]{40,40});
 
         //Should return 1
         assertEquals(1, playerArea.countKingdoms(Kingdom.ANIMALKINGDOM));
@@ -59,7 +58,7 @@ public class PlayerAreaTest {
 
 
         // Add card with kingdom ANIMALKINGDOM
-        Card card1 = new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, Corners);
+        Card card1 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners);
         playerArea.addCard(card1, new int[]{39, 39});
 
         // Should return 2
@@ -81,5 +80,55 @@ public class PlayerAreaTest {
         // Should return 1 because INSECTKINGDOM is covered
         assertEquals(1, playerArea.countKingdoms(Kingdom.INSECTKINGDOM));
     }
+    @Test
+    public void testCountObject() {
+        //Create matrix area
+        boolean[][] Area = new boolean[81][81];
+        for (int row = 0; row < Area.length; row++) {
+            for (int col = 0; col < Area[row].length; col++) {
+                Area[row][col] = true;
+            }
+        }
+
+        PlayerArea playerArea = new PlayerArea(Area, new ArrayList<Card>());
+
+        // Create startercard
+        Corner[] startcorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
+        };
+
+        Corner[] Corners = new Corner[]{
+                new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
+                new Corner(true, false, GameObject.INKWELL, Kingdom.NONE),
+                new Corner(true, false, GameObject.QUILL, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE)
+        };
+
+        Card startercard = new StarterCard(true, startcorners, Corners, new Kingdom[]{Kingdom.NONE});
+        playerArea.addCard(startercard, new int[]{40,40});
+
+        assertEquals(0, playerArea.countObject(GameObject.MANUSCRIPT));
+        assertEquals(0, playerArea.countObject(GameObject.INKWELL));
+        assertEquals(0, playerArea.countObject(GameObject.QUILL));
+        assertEquals(4, playerArea.countObject(GameObject.NONE));
+
+        Card card1 = new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, Corners);
+        playerArea.addCard(card1, new int[]{39, 39});
+
+        assertEquals(1, playerArea.countObject(GameObject.MANUSCRIPT));
+        assertEquals(1, playerArea.countObject(GameObject.INKWELL));
+        assertEquals(1, playerArea.countObject(GameObject.QUILL));
+        assertEquals(4, playerArea.countObject(GameObject.NONE));
+
+        Card card2 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners);
+        playerArea.addCard(card2, new int[]{38, 38});
+
+        assertEquals(0, playerArea.countObject(GameObject.MANUSCRIPT));
+
+    }
+
 }
 
