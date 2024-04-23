@@ -206,6 +206,18 @@ public class PlayerArea{
     }
 
     /**
+     * Helper method for ordering list of played cards
+     *
+     * @param playedCards list of played cards
+     * @author Lorenzo Foini
+     */
+    private void helperOrderList(ArrayList<Card> playedCards){
+        // TODO
+        playedCards.sort(Comparator.comparingInt(card -> card.getInGamePosition()[0])
+                                   .thenComparingInt(card -> card.getInGamePosition()[1]));
+    }
+
+    /**
      * Helper method for count the number of a given pattern
      *
      * @param secondCardPosition representing the second card's in game position
@@ -270,6 +282,9 @@ public class PlayerArea{
      */
     public int countPattern(Kingdom kingdom, Pattern pattern){
         int totalPattern = 0;
+
+        // Call to helper method for order list of played cards
+        helperOrderList(cards);
 
         // Switch case base on kingdom's value
         switch (kingdom){
