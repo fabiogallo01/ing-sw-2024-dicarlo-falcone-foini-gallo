@@ -211,11 +211,11 @@ public class PlayerArea{
      * @param playedCards list of played cards
      * @author Lorenzo Foini
      */
-   /* private void helperOrderList(ArrayList<Card> playedCards){
+    private void helperOrderList(ArrayList<Card> playedCards){
         playedCards.sort(Comparator.comparingInt(card -> ((Card) card).getInGamePosition()[0])
                                    .thenComparingInt(card -> ((Card) card).getInGamePosition()[1])
         );
-    }*/
+    }
 
     /**
      * Helper method for count the number of a given pattern
