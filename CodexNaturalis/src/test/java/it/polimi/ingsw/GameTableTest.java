@@ -1,6 +1,9 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.game.GameTable;
+//import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.exception.InvalidPlayException;
+import it.polimi.ingsw.model.exception.NegativeScoreException;
+import it.polimi.ingsw.model.game.*;
 import it.polimi.ingsw.model.exception.EmptyDeckException;
 import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
 
@@ -10,6 +13,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotEquals;
+
+import java.util.ArrayList;
 
 public class GameTableTest {
 
@@ -128,4 +133,116 @@ public class GameTableTest {
         assertTrue(gameTable.isEnded(), "Game should end when at least one player has 20 or more points");
     }*/
 
+    /**
+     * Tests that after drawing all card from the resource deck i get an exception
+     * if I draw another time
+     *
+     * @throws EmptyDeckException
+     * @throws EmptyObjectiveDeckException
+     * @author giacomofalcone
+     */
+    @Test(expected = EmptyDeckException.class)
+    public void testEmptyResourceDeckException() throws EmptyDeckException, EmptyObjectiveDeckException {
+        gameTable = new GameTable(numPlayers);
+        // Svuotiamo il mazzo risorsa per testare l'eccezione
+        while (gameTable.getResourceDeck().deckSize() > 0) {
+            //gameTable.getResourceDeck().drawTopCard();
+            gameTable.drawResourceCardDeck();
+        }
+        gameTable.drawResourceCardDeck();
+        /*try {
+            gameTable.drawResourceCardDeck();
+            fail("All went good.");
+        } catch (EmptyDeckException exception) {
+            assertEquals("This deck is empty, you can't draw from this deck.", exception.getMessage());
+            System.out.println(exception.getMessage());
+        }*/
+    }
+
+
+    /**
+     * Tests that after drawing all card from the resource deck i get an exception
+     * if I draw another time
+     *
+     * @throws EmptyDeckException
+     * @throws EmptyObjectiveDeckException
+     * @author giacomofalcone
+     */
+    @Test(expected = EmptyDeckException.class)
+    public void testEmptyGoldDeckException() throws EmptyDeckException, EmptyObjectiveDeckException {
+        gameTable = new GameTable(numPlayers);
+        // Svuotiamo il mazzo risorsa per testare l'eccezione
+        while (gameTable.getGoldDeck().deckSize() > 0) {
+            //gameTable.getResourceDeck().drawTopCard();
+            gameTable.drawGoldCardDeck();
+        }
+        gameTable.drawGoldCardDeck();
+    }
+
+
+        /*GameTable gameTable = new GameTable(4) {
+            protected GamingDeck createResourceDeck() {
+                return new GamingDeck(new ArrayList<>()); // return an empty deck
+            }
+            protected GamingDeck createGoldDeck() {
+                return new GamingDeck(new ArrayList<>()); // return an empty deck
+            }
+        };
+    }*/
+    /*@Test(expected = EmptyObjectiveDeckException.class)
+    public void testEmptyObjectiveDeckException() throws EmptyDeckException, EmptyObjectiveDeckException {
+        GameTable gameTable = new GameTable(4) {
+            protected ObjectiveDeck createObjectiveDeck() {
+                return new ObjectiveDeck(new ArrayList<>()); // return an empty deck
+            }
+        };
+    }*/
+
+
+
+    @Test
+    public void testGameEndsWhenPlayerReaches20Points() {
+        // Impostiamo il punteggio di un giocatore a 20
+        try {
+            gameTable.getPlayers().get(0).setScore(20);
+        } catch (NegativeScoreException e) {
+            throw new RuntimeException(e);
+        }
+        assertTrue("Game should end when a player reaches 20 points", gameTable.isEnded());
+    }
+
+    /*@Test
+    public void testGameDoesNotEndWhenNoPlayerReaches20Points() {
+        // Assicuriamoci che nessun giocatore abbia 20 punti
+        gameTable.getPlayers().forEach(player -> player.setScore(19));
+        assertFalse("Game should not end if no player reaches 20 points", gameTable.isEnded());
+    }
+
+    @Test
+    public void testGameEndsWhenAllDecksAreEmptyAndNoVisibleCards() {
+        // Svuotiamo tutti i mazzi e rimuoviamo tutte le carte visibili
+        emptyDeck(gameTable.getResourceDeck());
+        emptyDeck(gameTable.getGoldDeck());
+        emptyDeck(gameTable.getStarterDeck());
+        gameTable.getVisibleCard().clear();
+
+        assertTrue("Game should end when all decks are empty and no visible cards", gameTable.isEnded());
+    }
+
+    @Test
+    public void testGameDoesNotEndWhenDecksNotEmptyOrVisibleCardsPresent() {
+        // Assicuriamoci che almeno un mazzo o le carte visibili non siano vuote
+        gameTable.addVisibleCard(new GamingCard(true, Kingdom.FUNGIKINGDOM, 1, new Corner[]{new Corner(true, true, GameObject.NONE, Kingdom.NONE)}));
+        assertFalse("Game should not end when there are still cards in at least one deck or visible cards", gameTable.isEnded());
+    }
+
+    private void emptyDeck(GamingDeck deck) {
+        while (deck.deckSize() > 0) {
+            try {
+                deck.drawTopCard();
+            } catch (EmptyDeckException ignored) {
+            }
+        }
+    }
+*/
 }
