@@ -212,9 +212,9 @@ public class PlayerArea{
      * @author Lorenzo Foini
      */
     private void helperOrderList(ArrayList<Card> playedCards){
-        // TODO
-        playedCards.sort(Comparator.comparingInt(card -> card.getInGamePosition()[0])
-                                   .thenComparingInt(card -> card.getInGamePosition()[1]));
+        playedCards.sort(Comparator.comparingInt(card -> ((Card) card).getInGamePosition()[0])
+                                   .thenComparingInt(card -> ((Card) card).getInGamePosition()[1])
+        );
     }
 
     /**
