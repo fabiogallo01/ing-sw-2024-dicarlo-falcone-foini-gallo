@@ -254,11 +254,11 @@ public class Player {
      */
     private String isPlayable(GamingCard cardToPlay, int[] position) {
         /* List of possible invalid plays:
-            1. There is already a card in that position.
+            1. There is already a card in that position
 
-            2. There are no cards in the corners of that position.
+            2. The card covers two corners of the same card.
 
-            3. The card covers two corners of the same card.
+            3. There are no cards in the corners of that position.
 
             4. One of the corners of the card covers one or more non-playable corners of the cards
                at the corners of that position.
@@ -269,18 +269,18 @@ public class Player {
         if(!playerArea.getArea()[position[0]][position[1]]){ // Condition 1
             return "There is already a card in that position.";
         }
-        else if(playerArea.getArea()[position[0]-1][position[1]-1] &&
-                playerArea.getArea()[position[0]-1][position[1]+1] &&
-                playerArea.getArea()[position[0]+1][position[1]-1] &&
-                playerArea.getArea()[position[0]+1][position[1]+1]){ // Condition 2
-            return "There are no cards in the corners of that position.";
-        }
         else if(!playerArea.getArea()[position[0]-1][position[1]] ||
                 !playerArea.getArea()[position[0]][position[1]-1] ||
                 !playerArea.getArea()[position[0]][position[1]+1] ||
-                !playerArea.getArea()[position[0]+1][position[1]]){ // Condition 3
+                !playerArea.getArea()[position[0]+1][position[1]]){ // Condition 2
             // Just check if there is a card that is located on one of the four sides of the chosen position.
             return "The card you want to play can't cover two corners of the same card.";
+        }
+        else if(playerArea.getArea()[position[0]-1][position[1]-1] &&
+                playerArea.getArea()[position[0]-1][position[1]+1] &&
+                playerArea.getArea()[position[0]+1][position[1]-1] &&
+                playerArea.getArea()[position[0]+1][position[1]+1]){ // Condition 3
+            return "There are no cards in the corners of that position.";
         }
         else if(cardToPlay instanceof GoldCard && cardToPlay.getSide()){ // Condition 5
             // Count resources
