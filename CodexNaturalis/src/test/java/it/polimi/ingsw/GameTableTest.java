@@ -83,12 +83,33 @@ public class GameTableTest {
      */
 
     /**
+     * Tests that there are 4 visible cards on the board
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testNumberOfVisibleCards() {
+        assertEquals("Visible cards are not 4", 4,gameTable.getVisibleCard().size());
+    }
+
+
+    /**
      * Test setting and getting visible cards
      * gameTable.setVisibleCard(visibleCards)
      * gameTable.getVisibleCard()
      * Visible cards should be set and get correctly
      * devono essere 4 (una lista di 2 + 2)
      */
+
+    /*@DisplayName("Test setting and getting visible cards")
+    void testVisibleCardsManipulation() {
+        GamingCard card = new GamingCard(true, Kingdom.FUNGIKINGDOM, 1, new Corner[]{new Corner(true, true, GameObject.NONE, Kingdom.NONE)});
+        ArrayList<GamingCard> visibleCards = gameTable.getVisibleCard().size();
+        visibleCards.add(card);
+        gameTable.setVisibleCard(visibleCards);
+        assertEquals(visibleCards, gameTable.getVisibleCard(), "Visible cards should be set and get correctly");
+    }*/
+
 
     /**
      * Ensure game can end under correct conditions
@@ -98,5 +119,13 @@ public class GameTableTest {
      * Game should end when at least one player has 20 or more points
      */
 
+    /*@Test
+    @DisplayName("Ensure game can end under correct conditions")
+    void testGameEndConditions() {
+        assertFalse(gameTable.isEnded(), "Game should not end immediately after initialization");
+        // Manipulate the game state to test ending condition
+        gameTable.getPlayers().forEach(player -> player.setScore(20));
+        assertTrue(gameTable.isEnded(), "Game should end when at least one player has 20 or more points");
+    }*/
 
 }
