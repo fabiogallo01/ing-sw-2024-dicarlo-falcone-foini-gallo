@@ -60,11 +60,11 @@ public class GameTableTest {
         assertNotEquals("Resource deck is empty", 0, gameTable.getResourceDeck().deckSize());
         assertNotEquals("Gold deck is empty", 0, gameTable.getGoldDeck().deckSize());
         assertNotEquals("Starter deck is empty", 0, gameTable.getStarterDeck().deckSize());
-        assertEquals("The size of the resource deck is not 40", 40, gameTable.getResourceDeck().deckSize());
-        assertEquals("The size of the gold deck is not 40", 40, gameTable.getGoldDeck().deckSize());
+        assertEquals("The size of the resource deck is not 38", 38, gameTable.getResourceDeck().deckSize());
+        assertEquals("The size of the gold deck is not 38", 38, gameTable.getGoldDeck().deckSize());
         assertEquals("The size of the starter deck is not 6", 6, gameTable.getStarterDeck().deckSize());
         assertNotEquals("Objective deck is empty", 0, gameTable.getObjectiveDeck().deckSize());
-        assertEquals("The size of the objective deck is not 16", 16, gameTable.getObjectiveDeck().deckSize());
+        assertEquals("The size of the objective deck is not 14", 14, gameTable.getObjectiveDeck().deckSize());
     }
 
 
@@ -87,6 +87,7 @@ public class GameTableTest {
      * gameTable.setVisibleCard(visibleCards)
      * gameTable.getVisibleCard()
      * Visible cards should be set and get correctly
+     * devono essere 4 (una lista di 2 + 2)
      */
 
     /**
