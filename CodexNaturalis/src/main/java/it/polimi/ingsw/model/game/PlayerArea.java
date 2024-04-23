@@ -284,7 +284,7 @@ public class PlayerArea{
         int totalPattern = 0;
 
         // Call to helper method for order list of played cards
-        //helperOrderList(cards);
+        helperOrderList(cards);
 
         // Switch case base on kingdom's value
         switch (kingdom){
