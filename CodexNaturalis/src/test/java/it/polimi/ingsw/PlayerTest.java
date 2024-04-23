@@ -13,15 +13,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 
 //TO DO: test di playCard, calculateObjectivePoint
 public class PlayerTest {
     private Player player;
-    private PlayerArea playerArea;
-
+    private ObjectiveCard[] commonObjectives;
     @Before
     public void setUp() {
         boolean[][] area = new boolean[81][81];
@@ -32,7 +30,9 @@ public class PlayerTest {
         }
 
         ObjectiveCard secretObjective = new ObjectiveCard(2, true, new GameObject[]{GameObject.NONE}, Pattern.SECONDARYDIAGONAL, Kingdom.FUNGIKINGDOM);
-
+        ObjectiveCard commonObjective1 = new ObjectiveCard(2,false, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.FUNGIKINGDOM);
+        ObjectiveCard commonObjective2 = new ObjectiveCard(3, false, new GameObject[]{GameObject.NONE}, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM);
+        commonObjectives = new ObjectiveCard[]{commonObjective1, commonObjective2};
         Corner[] frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -127,7 +127,7 @@ public class PlayerTest {
         cards.add(playedResourceCard1);
         cards.add(playedResourceCard2);
 
-        playerArea = new PlayerArea(area, cards);
+        PlayerArea playerArea = new PlayerArea(area, cards);
 
         player = new Player("Fabio", 0, playerArea, Color.GREEN, secretObjective, starterCard, hand);
     }
@@ -145,10 +145,6 @@ public class PlayerTest {
             fail("All went good.");
         } catch (InvalidPlayException e) {
             assertEquals("You can't play this card in this position. Mistake: There is already a card in that position.", e.getMessage());
-            //assertEquals("You can't play this card in this position. Mistake: There are no cards in the corners of that position.", e.getMessage());
-            //assertEquals("You can't play this card in this position. Mistake: The card you want to play can't cover two corners of the same card.", e.getMessage()); //DA SISTEMARE IN PLAYER
-            //assertEquals("You can't play this card in this position. Mistake: There aren't enough resources to place the gold card.", e.getMessage());
-            //assertEquals("You can't play this card in this position. Mistake: Card covers a corner which can't be covered", e.getMessage());
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -162,9 +158,6 @@ public class PlayerTest {
             fail("All went good.");
         } catch (InvalidPlayException e) {
             assertEquals("You can't play this card in this position. Mistake: There are no cards in the corners of that position.", e.getMessage());
-            //assertEquals("You can't play this card in this position. Mistake: The card you want to play can't cover two corners of the same card.", e.getMessage()); //DA SISTEMARE IN PLAYER
-            //assertEquals("You can't play this card in this position. Mistake: There aren't enough resources to place the gold card.", e.getMessage());
-            //assertEquals("You can't play this card in this position. Mistake: Card covers a corner which can't be covered", e.getMessage());
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -178,8 +171,6 @@ public class PlayerTest {
             fail("All went good.");
         } catch (InvalidPlayException e) {
             assertEquals("You can't play this card in this position. Mistake: The card you want to play can't cover two corners of the same card.", e.getMessage()); //DA SISTEMARE IN PLAYER
-            //assertEquals("You can't play this card in this position. Mistake: There aren't enough resources to place the gold card.", e.getMessage());
-            //assertEquals("You can't play this card in this position. Mistake: Card covers a corner which can't be covered", e.getMessage());
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -249,6 +240,13 @@ public class PlayerTest {
             fail(e.getMessage());
         }
 
+
+    }
+
+
+    @Test
+    public void calculateObjectivePointsTest_noPoints() {
+        assertEquals(0,player.calculateObjectivePoints(commonObjectives));
 
     }
 }
