@@ -1,11 +1,10 @@
 package it.polimi.ingsw;
 
-//import it.polimi.ingsw.model.cards.*;
-import it.polimi.ingsw.model.exception.InvalidPlayException;
-import it.polimi.ingsw.model.exception.NegativeScoreException;
+import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.*;
-import it.polimi.ingsw.model.exception.EmptyDeckException;
-import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
+
+import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,12 +13,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotEquals;
 
-import java.util.ArrayList;
 
 public class GameTableTest {
 
     GameTable gameTable = null;
     private int numPlayers = 4;
+
 
     /**
      * Initialized GameTable with a numPlayers number of players
@@ -37,9 +36,11 @@ public class GameTableTest {
         }
     }
 
+
     @After
     public void tearDown()
     {}
+
 
     /**
      * Tests if the gameTable initialization is not null
@@ -73,20 +74,6 @@ public class GameTableTest {
     }
 
 
-
-    /**
-     * Test drawing from resource deck
-     * gameTable.drawResourceCardDeck()
-     * Should not throw EmptyDeckException for a full deck
-     */
-
-
-    /**
-     * Test drawing from an empty deck throws EmptyDeckException
-     * gameTable.drawResourceCardDeck()
-     * Should throw EmptyDeckException when drawing from an empty resource deck
-     */
-
     /**
      * Tests that there are 4 visible cards on the board
      *
@@ -97,41 +84,6 @@ public class GameTableTest {
         assertEquals("Visible cards are not 4", 4,gameTable.getVisibleCard().size());
     }
 
-
-    /**
-     * Test setting and getting visible cards
-     * gameTable.setVisibleCard(visibleCards)
-     * gameTable.getVisibleCard()
-     * Visible cards should be set and get correctly
-     * devono essere 4 (una lista di 2 + 2)
-     */
-
-    /*@DisplayName("Test setting and getting visible cards")
-    void testVisibleCardsManipulation() {
-        GamingCard card = new GamingCard(true, Kingdom.FUNGIKINGDOM, 1, new Corner[]{new Corner(true, true, GameObject.NONE, Kingdom.NONE)});
-        ArrayList<GamingCard> visibleCards = gameTable.getVisibleCard().size();
-        visibleCards.add(card);
-        gameTable.setVisibleCard(visibleCards);
-        assertEquals(visibleCards, gameTable.getVisibleCard(), "Visible cards should be set and get correctly");
-    }*/
-
-
-    /**
-     * Ensure game can end under correct conditions
-     * gameTable.isEnded()
-     * Game should not end immediately after initialization
-     * gameTable.getPlayers().forEach(player -> player.setScore(20))
-     * Game should end when at least one player has 20 or more points
-     */
-
-    /*@Test
-    @DisplayName("Ensure game can end under correct conditions")
-    void testGameEndConditions() {
-        assertFalse(gameTable.isEnded(), "Game should not end immediately after initialization");
-        // Manipulate the game state to test ending condition
-        gameTable.getPlayers().forEach(player -> player.setScore(20));
-        assertTrue(gameTable.isEnded(), "Game should end when at least one player has 20 or more points");
-    }*/
 
     /**
      * Tests that after drawing all card from the resource deck i get an exception
@@ -150,13 +102,6 @@ public class GameTableTest {
             gameTable.drawResourceCardDeck();
         }
         gameTable.drawResourceCardDeck();
-        /*try {
-            gameTable.drawResourceCardDeck();
-            fail("All went good.");
-        } catch (EmptyDeckException exception) {
-            assertEquals("This deck is empty, you can't draw from this deck.", exception.getMessage());
-            System.out.println(exception.getMessage());
-        }*/
     }
 
 
@@ -180,69 +125,55 @@ public class GameTableTest {
     }
 
 
-        /*GameTable gameTable = new GameTable(4) {
-            protected GamingDeck createResourceDeck() {
-                return new GamingDeck(new ArrayList<>()); // return an empty deck
-            }
-            protected GamingDeck createGoldDeck() {
-                return new GamingDeck(new ArrayList<>()); // return an empty deck
-            }
-        };
-    }*/
-    /*@Test(expected = EmptyObjectiveDeckException.class)
-    public void testEmptyObjectiveDeckException() throws EmptyDeckException, EmptyObjectiveDeckException {
-        GameTable gameTable = new GameTable(4) {
-            protected ObjectiveDeck createObjectiveDeck() {
-                return new ObjectiveDeck(new ArrayList<>()); // return an empty deck
-            }
-        };
-    }*/
-
-
-
+    /**
+     * Tests that game ends if a player reaches 20 points
+     * and that doesn't end before with all the players with less than 20 points
+     *
+     * @author giacomofalcone
+     */
     @Test
     public void testGameEndsWhenPlayerReaches20Points() {
-        // Impostiamo il punteggio di un giocatore a 20
-        try {
-            gameTable.getPlayers().get(0).setScore(20);
-        } catch (NegativeScoreException e) {
-            throw new RuntimeException(e);
-        }
-        assertTrue("Game should end when a player reaches 20 points", gameTable.isEnded());
-    }
+        //creating all necessaries parameters for a player
 
-    /*@Test
-    public void testGameDoesNotEndWhenNoPlayerReaches20Points() {
-        // Assicuriamoci che nessun giocatore abbia 20 punti
-        gameTable.getPlayers().forEach(player -> player.setScore(19));
-        assertFalse("Game should not end if no player reaches 20 points", gameTable.isEnded());
-    }
-
-    @Test
-    public void testGameEndsWhenAllDecksAreEmptyAndNoVisibleCards() {
-        // Svuotiamo tutti i mazzi e rimuoviamo tutte le carte visibili
-        emptyDeck(gameTable.getResourceDeck());
-        emptyDeck(gameTable.getGoldDeck());
-        emptyDeck(gameTable.getStarterDeck());
-        gameTable.getVisibleCard().clear();
-
-        assertTrue("Game should end when all decks are empty and no visible cards", gameTable.isEnded());
-    }
-
-    @Test
-    public void testGameDoesNotEndWhenDecksNotEmptyOrVisibleCardsPresent() {
-        // Assicuriamoci che almeno un mazzo o le carte visibili non siano vuote
-        gameTable.addVisibleCard(new GamingCard(true, Kingdom.FUNGIKINGDOM, 1, new Corner[]{new Corner(true, true, GameObject.NONE, Kingdom.NONE)}));
-        assertFalse("Game should not end when there are still cards in at least one deck or visible cards", gameTable.isEnded());
-    }
-
-    private void emptyDeck(GamingDeck deck) {
-        while (deck.deckSize() > 0) {
-            try {
-                deck.drawTopCard();
-            } catch (EmptyDeckException ignored) {
+        //creating player area
+        boolean[][] Area = new boolean[81][81];
+        for (int row = 0; row < Area.length; row++) {
+            for (int col = 0; col < Area[row].length; col++) {
+                Area[row][col] = true;
             }
         }
+        PlayerArea playerArea = new PlayerArea(Area, new ArrayList<Card>());
+
+        //creating all the cards needed for the player to start the game
+        ObjectiveCard secretObjective = new ObjectiveCard(1, true, null, Pattern.NONE, Kingdom.NONE);
+        StarterCard starterCard = new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE});
+        ArrayList<GamingCard> hand = new ArrayList<>();  //empty hand
+
+        Color playerColor = Color.GREEN;
+
+        //assigning all the created values to player1 and adding it to the game table
+        Player player1 = new Player("player", 19, playerArea, playerColor, secretObjective, starterCard, hand);
+        gameTable.addPlayer(player1);
+
+        // adding other players with less than 20 points
+        Player player = null;
+        for (int i = 0; i < 3; i++) {
+            player = new Player("Player" + i, 5 + i, playerArea, Color.RED, null, null, hand);
+            gameTable.addPlayer(player);
+        }
+
+        //Checking if the game ends before a player has reached 20 points
+        assertFalse("No one reached 20 points, but the game ended", gameTable.isEnded());
+
+        //setting the score of player1 to 20
+        try {
+            player1.setScore(20);
+        } catch (NegativeScoreException exception) {
+            System.out.println(exception.getMessage());
+        }
+
+        //Checking if the game is over given that a player has reached 20 points
+        assertTrue("A player reached 20 points, but the game didn't end", gameTable.isEnded());
     }
-*/
+
 }
