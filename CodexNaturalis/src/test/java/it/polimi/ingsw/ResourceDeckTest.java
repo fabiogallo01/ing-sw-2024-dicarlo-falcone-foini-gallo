@@ -370,7 +370,7 @@ public class ResourceDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testDeckSize() {
+    public void testDeckSize_ShouldBe40() {
         // Now there are 40 cards
         assertEquals("Not correct number of cards", 40, deck.deckSize());
     }
@@ -383,7 +383,7 @@ public class ResourceDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testShuffleDeck() {
+    public void testShuffleDeck_NormalDeckAndShuffledDeckShouldBeDifferent_SameForListsOfCards() {
         // Check if the decks have same size but different order
         ArrayList<Card> copyCards = new ArrayList<>(deck.getDeck());
         GamingDeck copyDeck = new GamingDeck(copyCards);
@@ -407,7 +407,7 @@ public class ResourceDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testDrawTopCard() {
+    public void testDrawTopCard_CorrectDrawAllCards_ShouldNotRaiseException() {
         try {
             int initialDeckSize = deck.deckSize();
             for (int i = 0; i < initialDeckSize; i++) {
@@ -429,7 +429,7 @@ public class ResourceDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testDrawTopCardException() {
+    public void testDrawTopCardException_DrawFromEmptyDeck_ShouldRaiseException() {
         // Create a new deck, it is empty
         GamingDeck emptyDeck = new GamingDeck(new ArrayList<>());
 
