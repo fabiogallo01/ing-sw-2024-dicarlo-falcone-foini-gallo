@@ -86,7 +86,7 @@ public class GameTableTest {
 
 
     /**
-     * Tests that after drawing all card from the resource deck i get an exception
+     * Tests that after drawing all card from the resource deck I get an exception
      * if I draw another time
      *
      * @throws EmptyDeckException
@@ -96,9 +96,8 @@ public class GameTableTest {
     @Test(expected = EmptyDeckException.class)
     public void testEmptyResourceDeckException() throws EmptyDeckException, EmptyObjectiveDeckException {
         gameTable = new GameTable(numPlayers);
-        // Svuotiamo il mazzo risorsa per testare l'eccezione
+        // Getting resource deck empty
         while (gameTable.getResourceDeck().deckSize() > 0) {
-            //gameTable.getResourceDeck().drawTopCard();
             gameTable.drawResourceCardDeck();
         }
         gameTable.drawResourceCardDeck();
@@ -106,7 +105,7 @@ public class GameTableTest {
 
 
     /**
-     * Tests that after drawing all card from the resource deck i get an exception
+     * Tests that after drawing all card from the resource deck I get an exception
      * if I draw another time
      *
      * @throws EmptyDeckException
@@ -116,12 +115,86 @@ public class GameTableTest {
     @Test(expected = EmptyDeckException.class)
     public void testEmptyGoldDeckException() throws EmptyDeckException, EmptyObjectiveDeckException {
         gameTable = new GameTable(numPlayers);
-        // Svuotiamo il mazzo risorsa per testare l'eccezione
+        // Getting gold deck empty
         while (gameTable.getGoldDeck().deckSize() > 0) {
-            //gameTable.getResourceDeck().drawTopCard();
             gameTable.drawGoldCardDeck();
         }
         gameTable.drawGoldCardDeck();
+    }
+
+
+    /**
+     * Tests that I actually get a card by drawing it from the visible deck
+     *
+     * @throws InvalidDrawFromTableException
+     * @author giacomofalcone
+     */
+    @Test
+    public void testValidDraw() throws InvalidDrawFromTableException {
+        GamingCard card = gameTable.drawCardFromTable(1);
+        assertNotNull("Card should be drawn", card);
+    }
+
+
+    /**
+     * Tests that I get an exception by drawing from a wrong position
+     *
+     * @throws InvalidDrawFromTableException
+     * @author giacomofalcone
+     */
+    @Test(expected = InvalidDrawFromTableException.class)
+    public void testDrawWithInvalidPositionTooLow() throws InvalidDrawFromTableException {
+        gameTable.drawCardFromTable(0);  // Position is too low, should throw exception
+    }
+
+
+    /**
+     * Tests that I get an exception by drawing from a wrong position
+     *
+     * @throws InvalidDrawFromTableException
+     * @author giacomofalcone
+     */
+    @Test(expected = InvalidDrawFromTableException.class)
+    public void testDrawWithInvalidPositionTooHigh() throws InvalidDrawFromTableException {
+        gameTable.drawCardFromTable(gameTable.getVisibleCard().size() + 1);  // Position is too high, should throw exception
+    }
+
+
+    /**
+     * Test to ensure a new card is placed when the original deck is not empty
+     *
+     * @throws InvalidDrawFromTableException
+     * @throws EmptyDeckException
+     * @author giacomofalcone
+     */
+    @Test
+    public void testCardReplacementWhenDecksAreNotEmpty() throws InvalidDrawFromTableException, EmptyDeckException {
+        int initialSize = gameTable.getVisibleCard().size();
+        gameTable.drawCardFromTable(1);
+        assertEquals("Size should remain constant after drawing and replacing", initialSize, gameTable.getVisibleCard().size());
+    }
+
+
+    /**
+     * Tests that I get an exception if I draw after drawing all cards from both decks,
+     * so without possibility to replace visible cards after drawing them
+     *
+     * @throws InvalidDrawFromTableException
+     * @throws EmptyDeckException
+     * @author giacomofalcone
+     */
+    @Test
+    public void testNoReplacementWhenBothDecksAreEmpty() throws InvalidDrawFromTableException, EmptyDeckException {
+        // Empty both decks
+        while (gameTable.getGoldDeck().deckSize() > 0) {
+            gameTable.drawGoldCardDeck();
+        }
+        while (gameTable.getResourceDeck().deckSize() > 0) {
+            gameTable.drawResourceCardDeck();
+        }
+        int initialSize = gameTable.getVisibleCard().size();
+        gameTable.drawCardFromTable(1);
+        assertEquals("Size should decrease when no replacement is possible", initialSize - 1, gameTable.getVisibleCard().size());
     }
 
 
