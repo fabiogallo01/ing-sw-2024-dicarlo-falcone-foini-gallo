@@ -29,6 +29,7 @@ public class GameTable {
      * @author Fabio Gallo
      */
     public GameTable(int numPlayers) throws EmptyDeckException, EmptyObjectiveDeckException {
+        this.scoreboard = new Scoreboard();
         this.numPlayers = numPlayers;
         this.resourceDeck = createResourceDeck();
         this.goldDeck = createGoldDeck();
@@ -44,23 +45,16 @@ public class GameTable {
         addVisibleCard((GamingCard) resourceDeck.drawTopCard());
         addVisibleCard((GoldCard) goldDeck.drawTopCard());
         addVisibleCard((GoldCard) goldDeck.drawTopCard());
+
+        // at this point all the players should play their initial card, then they all should draw the 3 cards
+
         commonObjectives = new ObjectiveCard[]{
                 objectiveDeck.drawTopCard(),
                 objectiveDeck.drawTopCard()
         };
-        scoreboard = new Scoreboard();
-        /*for (int i = 0; i < numPlayers; i++) {
-            Scanner scanner = new Scanner(System.in);
-            ObjectiveCard[] secretObjectives = new ObjectiveCard[]{
-                    objectiveDeck.drawTopCard(),
-                    objectiveDeck.drawTopCard()
-            };
-            String name=scanner.nextLine();
-            Player player = new Player(name, 0, false, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.GREEN, null, (StarterCard) starterDeck.drawTopCard(), new ArrayList<>());
-            player.addCardHand((GamingCard) resourceDeck.drawTopCard());
-            player.addCardHand((GamingCard) resourceDeck.drawTopCard());
-            player.addCardHand((GamingCard) goldDeck.drawTopCard());
-        }*/
+        //now the players should draw the secret objective cards, and they should pick one to keep
+
+        //the game starts
     }
 
     /**
