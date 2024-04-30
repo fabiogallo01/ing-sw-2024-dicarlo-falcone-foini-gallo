@@ -15,7 +15,7 @@ public class GameTable {
     private GamingDeck starterDeck;
     private ObjectiveDeck objectiveDeck;
     private ArrayList<GamingCard> visibleCards;
-    private static ObjectiveCard[] commonObjectives;
+    private ObjectiveCard[] commonObjectives;
     private final int numPlayers;
     private ArrayList<Player> players;
     private Scoreboard scoreboard;
@@ -1274,7 +1274,7 @@ public class GameTable {
      * @return the common objectives
      * @author Fabio Gallo
      */
-    public static ObjectiveCard[] getCommonObjectives() {
+    public ObjectiveCard[] getCommonObjectives() {
         return commonObjectives;
     }
 
@@ -1284,8 +1284,8 @@ public class GameTable {
      * @param commonObjectives updated common objectives
      * @author Fabio Gallo
      */
-    public static void setCommonObjectives(ObjectiveCard[] commonObjectives) {
-        GameTable.commonObjectives = commonObjectives;
+    public void setCommonObjectives(ObjectiveCard[] commonObjectives) {
+        this.commonObjectives = commonObjectives;
     }
 
     /**

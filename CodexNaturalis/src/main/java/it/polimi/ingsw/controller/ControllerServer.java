@@ -2,9 +2,7 @@ package it.polimi.ingsw.controller;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
@@ -295,7 +293,31 @@ public class ControllerServer {
 
 
         //calculate objective points and sum them to their actual points
+        ArrayList<Player> players = gameTable.getPlayers();
+        Player player;
+
+        for(int i=0; i<numPlayers; i++) {
+            player = players.get(i);
+            int points = player.getScore();
+            points += player.calculateObjectivePoints(gameTable.getCommonObjectives());
+            try {
+                player.setScore(points);
+            } catch (NegativeScoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         //make leaderboard
+        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
+        ArrayList<Integer> scores = new ArrayList<>(scoreboard.values());
+        Collections.sort(scores);
+        for(int i=numPlayers-1; i>=0; i--) {
+            for(int j=0; j<numPlayers; j++) {
+                if(Objects.equals(scores.get(i), scoreboard.get(players.get(j)))) {
+                    scoreboard.remove(players.get(j));
+                }
+            }
+        }
+
     }
 }
