@@ -1,9 +1,13 @@
 package it.polimi.ingsw.controller;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Class which handle multiple threads representing clients connections to server
@@ -56,6 +60,9 @@ public class ViewClientHandler extends Thread {
                         }while(numPlayers < 2 || numPlayers > 4);
                         // Set controller's param numPlayer
                         ControllerServer.setNumPlayers(numPlayers);
+
+                        // Initialize new GameTable
+                        ControllerServer.initialiseGameTable(numPlayers);
                     }
                     // Add user to set of already present username
                     ControllerServer.addUser(username);
@@ -65,12 +72,21 @@ public class ViewClientHandler extends Thread {
             }while(!exit);
 
             // Ask the player which color he wants
-            // Not ask to first player => Assign black as default
-            // For other players show list of possible color and check its choice
-            // TODO
+            ArrayList<String> availableColors = ControllerServer.getColors();
+            String playerColor = askColor(availableColors);
+            ControllerServer.addPlayersColors(playerColor);
+            // Remove color from list of available colors and call server's set colors
+            availableColors.remove(playerColor);
+            ControllerServer.setColors(availableColors);
 
             // Ask the player which objective card he wants to use between the two given
-            // TODO
+            try {
+                ObjectiveCard secretObjective = askSecretObjective();
+                // Add secret cards in controller list
+                ControllerServer.addPlayersSecretCards(secretObjective);
+            } catch (EmptyObjectiveDeckException e) {
+                throw new RuntimeException(e);
+            }
 
         } catch (IOException e) {
             System.err.println("An I/O error occurred: " + e.getMessage());
@@ -82,5 +98,56 @@ public class ViewClientHandler extends Thread {
                 System.err.println("An I/O error occurred: " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * Method for ask the client his color
+     *
+     * @author Lorenzo Foini
+     */
+    public String askColor(ArrayList<String> colors) throws IOException {
+        // Show list of possible color and check its choice
+        out.println("Now choose your color from this list:");
+        for (String availableColor : colors) {
+            out.println(availableColor);
+        }
+        String playerColor = in.readLine();
+
+        // Check availability of the color
+        while(!colors.contains(playerColor)) {
+            out.println("Color not available, please select another one from the previous list.\nChoose color:");
+            playerColor = in.readLine();
+        }
+        return playerColor;
+    }
+
+    /**
+     * Method for ask the client to choose from two objective cards
+     *
+     * @author Lorenzo Foini
+     */
+    public ObjectiveCard askSecretObjective() throws EmptyObjectiveDeckException, IOException {
+        ArrayList<ObjectiveCard> secretObjectiveCards = new ArrayList<>();
+
+        // Generate two objective cards
+        secretObjectiveCards.add(ControllerServer.getGameTable().getObjectiveDeck().drawTopCard());
+        secretObjectiveCards.add(ControllerServer.getGameTable().getObjectiveDeck().drawTopCard());
+
+        out.println("Now you have to choose a secret objective.\nYou can choose from this two cards:");
+        // Show cards' params
+        for (ObjectiveCard card : secretObjectiveCards){
+            out.println("Card: " + card.toString());
+        }
+
+        // Get player choice
+        out.println("Now insert your choose: 1 for card one, 2 for card two");
+        int selection = Integer.parseInt(in.readLine());
+        while(selection < 1 || selection > 2){
+            out.println("Invalid selection, insert only 1 or 2.\nNow retry:");
+            selection = Integer.parseInt(in.readLine());
+        }
+
+        // Return selected secret objective card
+        return secretObjectiveCards.get(selection-1);
     }
 }
