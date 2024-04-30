@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.StarterCard;
+import it.polimi.ingsw.model.exception.EmptyDeckException;
 import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
 
 import java.io.BufferedReader;
@@ -80,8 +82,13 @@ public class ViewClientHandler extends Thread {
             ControllerServer.setColors(availableColors);
 
             //ask the player what side of the starter card he wants to play
-
-
+            try {
+                StarterCard starterCard = (StarterCard) ControllerServer.getGameTable().getStarterDeck().drawTopCard();
+                String side = askSideStarterCard(starterCard);
+            } catch (EmptyDeckException e) {
+                throw new RuntimeException(e);
+            }
+            //TODO dare al controller la side che il giocatore ha deciso di giocare
 
             // Ask the player which objective card he wants to use between the two given
             try {
@@ -109,6 +116,34 @@ public class ViewClientHandler extends Thread {
             }
         }
     }
+
+
+    /**
+     * Method to ask the client which side of the starter
+     * card he wants to play
+     *
+     * @author giacomofalcone
+     */
+    public String askSideStarterCard(StarterCard starterCard) throws IOException {
+        //TODO
+        out.println("Your starter card: " + starterCard.toString());
+        //out.println("Your starter card: " + );
+        /*
+        public StarterCard(boolean side, Corner[] frontCorners, Corner[] backCorners, Kingdom[] frontKingdoms) {
+            super(side, frontCorners, backCorners); // Using the constructor with backCorners
+            this.frontKingdoms = frontKingdoms;
+        }*/
+        out.println("Now choose which side of your starter card you want to play:\nFront / Back ?");
+        String side = in.readLine().toLowerCase();
+
+        // Check correct insert of the side
+        while(side != "front" && side != "back") {
+            out.println(out.println("Invalid side:\nFront / Back ?"););
+            side = in.readLine().toLowerCase();
+        }
+        return side;
+    }
+
 
     /**
      * Method for ask the client his color
