@@ -79,6 +79,10 @@ public class ViewClientHandler extends Thread {
             availableColors.remove(playerColor);
             ControllerServer.setColors(availableColors);
 
+            //ask the player what side of the starter card he wants to play
+
+
+
             // Ask the player which objective card he wants to use between the two given
             try {
                 ObjectiveCard secretObjective = askSecretObjective();

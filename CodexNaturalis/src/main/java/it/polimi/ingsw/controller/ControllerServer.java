@@ -27,6 +27,8 @@ public class ControllerServer {
     private static ArrayList<String> colors = new ArrayList<>();
     public static ArrayList<String> playersColors = new ArrayList<>();
     public static ArrayList<ObjectiveCard> playersSecretCards = new ArrayList<>();
+    public static ArrayList<StarterCard> starterCards= new ArrayList<>();
+
 
     /**
      * Main method
@@ -61,7 +63,7 @@ public class ControllerServer {
 
                 // Add player's username to the list of players in gameTable
                 // Need to initialise all player's attribute
-                Player newPlayer = createNewPlayer(clients.size());
+                Player newPlayer = createNewPlayer(clients.size()-1);
                 gameTable.addPlayer(newPlayer);
             }
 
@@ -209,6 +211,16 @@ public class ControllerServer {
         playersSecretCards.add(card);
     }
 
+    public static synchronized StarterCard drawStarterCard() {
+        try {
+            return (StarterCard) gameTable.getStarterDeck().drawTopCard();
+        } catch (EmptyDeckException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     /**
      * Method for generate three random cards and add iit in player's hand
      *
@@ -217,20 +229,10 @@ public class ControllerServer {
      */
     public static ArrayList<GamingCard> fillHand() throws EmptyDeckException {
         ArrayList<GamingCard> newHand = new ArrayList<>();
-        // Generate random value for three times
-        // If < 0.5 => Add gaming card
-        // else     => Add gold card
-        Random random = new Random();
-        for (int i = 0; i < 3; i++) {
-            double randomNumber = random.nextDouble();
-            if(randomNumber < 0.5){ // Add gaming card
-                GamingCard newCard = (GamingCard) gameTable.getResourceDeck().drawTopCard();
-                newHand.add(newCard);
-            }else{ // Add gold card
-                GoldCard newCard = (GoldCard) gameTable.getResourceDeck().drawTopCard();
-                newHand.add(newCard);
-            }
-        }
+
+        newHand.add((GamingCard) gameTable.getResourceDeck().drawTopCard());
+        newHand.add((GamingCard) gameTable.getResourceDeck().drawTopCard());
+        newHand.add((GamingCard) gameTable.getGoldDeck().drawTopCard());
 
         return newHand;
     }
@@ -269,5 +271,6 @@ public class ControllerServer {
     public static void playGame(){
         // Use param clients for handle turn and play
         // TODO
+
     }
 }
