@@ -279,14 +279,23 @@ public class ControllerServer {
         // Use param clients for handle turn and play
         // TODO
 
-        int i=0;
+
         while(!gameTable.isEnded()){
+            for(int i=0; i<numPlayers; i++) {
+                //clients.get(i).setTurn;
+                //turn finished
+            }
+        }
+
+        //last turn
+        for(int i=0; i<numPlayers; i++) {
             //clients.get(i).setTurn;
             //turn finished
-            i++;
-            if(i==4) i=0;
         }
 
 
+        //calculate objective points and sum them to their actual points
+
+        //make leaderboard
     }
 }
