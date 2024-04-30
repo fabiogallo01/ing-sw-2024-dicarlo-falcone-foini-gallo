@@ -91,6 +91,12 @@ public class ViewClientHandler extends Thread {
             } catch (EmptyObjectiveDeckException e) {
                 throw new RuntimeException(e);
             }
+            while(!ControllerServer.isFinished()){
+                //TO DO
+                // while(isYourTurn){
+                //
+                // }
+            }
 
         } catch (IOException e) {
             System.err.println("An I/O error occurred: " + e.getMessage());

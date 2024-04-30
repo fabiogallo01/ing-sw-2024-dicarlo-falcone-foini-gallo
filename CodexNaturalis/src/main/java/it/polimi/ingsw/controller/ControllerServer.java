@@ -28,7 +28,7 @@ public class ControllerServer {
     public static ArrayList<String> playersColors = new ArrayList<>();
     public static ArrayList<ObjectiveCard> playersSecretCards = new ArrayList<>();
     public static ArrayList<StarterCard> starterCards= new ArrayList<>();
-
+    private static boolean finished = false;
 
     /**
      * Main method
@@ -70,6 +70,7 @@ public class ControllerServer {
             System.out.println("Starting the game...");
             // Call method for handle players' turn and flow of the game
             playGame();
+            finished = true;
         } catch (IOException | EmptyDeckException e) {
             System.err.println("An I/O error occurred: " + e.getMessage());
         }
@@ -96,6 +97,11 @@ public class ControllerServer {
      */
     public static synchronized void addUser(String username) {
         playersUsernames.add(username);
+    }
+
+
+    public static boolean isFinished() {
+        return finished;
     }
 
     /**
@@ -272,6 +278,15 @@ public class ControllerServer {
     public static void playGame(){
         // Use param clients for handle turn and play
         // TODO
+
+        int i=0;
+        while(!gameTable.isEnded()){
+            //clients.get(i).setTurn;
+            //turn finished
+            i++;
+            if(i==4) i=0;
+        }
+
 
     }
 }
