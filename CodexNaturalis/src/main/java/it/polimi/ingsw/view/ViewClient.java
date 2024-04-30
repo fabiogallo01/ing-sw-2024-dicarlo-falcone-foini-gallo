@@ -21,7 +21,7 @@ public class ViewClient {
      */
     public static void main(String[] args) {
         // Assign server's IP and port
-        String serverAddress = "127.0.0.1";
+        String serverAddress = "192.168.0.1";
         int serverPort = 10000;
 
         // Try connection
