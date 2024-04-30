@@ -219,7 +219,7 @@ public class ControllerServer {
     /**
      * Add starter card to the player's starter card
      * It is necessary to use synchronized because of threads
-     * from ViewClientHandler with the side already setted
+     * from ViewClientHandler with the side already set
      *
      * @param card new player's starter card
      * @author giacomofalcone
@@ -322,12 +322,13 @@ public class ControllerServer {
 
         //make leaderboard
         HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
+        HashMap<Player,Integer> leaderboard = null;
         ArrayList<Integer> scores = new ArrayList<>(scoreboard.values());
         Collections.sort(scores);
         for(int i=numPlayers-1; i>=0; i--) {
             for(int j=0; j<numPlayers; j++) {
                 if(Objects.equals(scores.get(i), scoreboard.get(players.get(j)))) {
-                    scoreboard.remove(players.get(j));
+                    leaderboard.put(players.get(j), scores.get(i));
                 }
             }
         }
