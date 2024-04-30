@@ -21,7 +21,7 @@ public class ViewClient {
      */
     public static void main(String[] args) {
         // Assign server's IP and port
-        String serverAddress = "192.168.0.1";
+        String serverAddress = "127.0.0.1";
         int serverPort = 10000;
 
         // Try connection
@@ -47,6 +47,20 @@ public class ViewClient {
                     */
                     String numPlayersInput = userInput.readLine();
                     out.println(numPlayersInput);
+                } else if (serverResponse.startsWith("Insert your username:")) {
+                    /*
+                      Asks the user to enter username via userInput.readLine()
+                      and sends the response to the server via out.println(usernameInput)
+                    */
+                    String usernameInput = userInput.readLine();
+                    out.println(usernameInput);
+                } else if (serverResponse.startsWith("Now choose which side of your starter card you want to play:")) {
+                    /*
+                      Asks the user to enter the side of starter card via userInput.readLine()
+                      and sends the response to the server via out.println(usernameInput)
+                    */
+                    String sideStarterCardsInput = userInput.readLine();
+                    out.println(sideStarterCardsInput);
                 } else if (serverResponse.startsWith("Insert your username:")) {
                     /*
                       Asks the user to enter username via userInput.readLine()

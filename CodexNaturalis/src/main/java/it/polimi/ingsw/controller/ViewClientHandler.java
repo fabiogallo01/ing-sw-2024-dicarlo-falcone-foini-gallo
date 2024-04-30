@@ -12,8 +12,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Objects;
-
 /**
  * Class which handle multiple threads representing clients connections to server
  * It extends Thread and override method run
@@ -99,7 +97,7 @@ public class ViewClientHandler extends Thread {
             } catch (EmptyDeckException e) {
                 throw new RuntimeException(e);
             }
-            //TODO dare al controller la side che il giocatore ha deciso di giocare
+            //TODO: Give to the server the player's selected side of starter card
 
             // Ask the player which objective card he wants to use between the two given
             try {
@@ -109,12 +107,12 @@ public class ViewClientHandler extends Thread {
             } catch (EmptyObjectiveDeckException e) {
                 throw new RuntimeException(e);
             }
-            while(!ControllerServer.isFinished()){
+            /*while(!ControllerServer.isFinished()){
                 //TO DO
                 // while(isYourTurn){
                 //
                 // }
-            }
+            }*/
 
         } catch (IOException e) {
             System.err.println("An I/O error occurred: " + e.getMessage());
@@ -148,7 +146,7 @@ public class ViewClientHandler extends Thread {
                 "\nBack corners (in order 0,1,2,3):" +
                 backCorners[0] + ", " + backCorners[1].toString() +
                 backCorners[2] + ", " + backCorners[3].toString() +
-                "\nFront kinkdoms:" + frontKingdoms[0]
+                "\nFront kingdoms:" + frontKingdoms[0]
 
                 //TODO
                 );
@@ -157,7 +155,7 @@ public class ViewClientHandler extends Thread {
         String side = in.readLine().toLowerCase();
 
         // Check correct insert of the side
-        while(side != "front" && side != "back") {
+        while(!side.equals("front") && !side.equals("back")) {
             out.println("Invalid side:\nFront / Back ?");
             side = in.readLine().toLowerCase();
         }
