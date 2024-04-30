@@ -65,8 +65,9 @@ public class ControllerServer {
                 // Need to initialise all player's attribute
                 Player newPlayer = createNewPlayer(clients.size()-1);
                 gameTable.addPlayer(newPlayer);
+                System.out.println(newPlayer.getUsername() + " has joined the game. " + playersUsernames.size() + "/" + numPlayers + " players.");
             }
-
+            System.out.println("Starting the game...");
             // Call method for handle players' turn and flow of the game
             playGame();
         } catch (IOException | EmptyDeckException e) {
