@@ -216,13 +216,25 @@ public class ControllerServer {
         playersSecretCards.add(card);
     }
 
-    public static synchronized StarterCard drawStarterCard() {
+    /**
+     * Add starter card to the player's starter card
+     * It is necessary to use synchronized because of threads
+     * from ViewClientHandler with the side already setted
+     *
+     * @param card new player's starter card
+     * @author giacomofalcone
+     */
+    public static synchronized void addPlayersStarterCard(StarterCard card) {
+        starterCards.add(card);
+    }
+
+    /*public static synchronized StarterCard drawStarterCard() {
         try {
             return (StarterCard) gameTable.getStarterDeck().drawTopCard();
         } catch (EmptyDeckException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
 
 
@@ -253,7 +265,7 @@ public class ControllerServer {
         int score = 0;
         Color color = Color.valueOf(playersColors.get(index).toUpperCase());
         ObjectiveCard secretObjective = playersSecretCards.get(index);
-        StarterCard starterCard = (StarterCard) gameTable.getStarterDeck().drawTopCard();
+        //StarterCard starterCard = (StarterCard) gameTable.getStarterDeck().drawTopCard();
         ArrayList<GamingCard> hand = new ArrayList<>(fillHand());
 
         boolean[][] area = new boolean[81][81];
@@ -262,10 +274,11 @@ public class ControllerServer {
         }
         area[40][40] = false;
         ArrayList<Card> playedCards = new ArrayList<>();
-        playedCards.add(starterCard);
+        //Adding the played starter card from ViewClientHandler with the side already setted
+        playedCards.add(starterCards.get(index));
         PlayerArea playerArea = new PlayerArea(area, playedCards);
 
-        return new Player(username, score, playerArea, color, secretObjective, starterCard, hand);
+        return new Player(username, score, playerArea, color, secretObjective, starterCards.get(index), hand);
     }
 
     /**
