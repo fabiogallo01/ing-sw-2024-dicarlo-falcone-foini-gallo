@@ -1,4 +1,6 @@
 package it.polimi.ingsw.controller;
+import it.polimi.ingsw.model.cards.Corner;
+import it.polimi.ingsw.model.cards.Kingdom;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.StarterCard;
 import it.polimi.ingsw.model.exception.EmptyDeckException;
@@ -10,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Class which handle multiple threads representing clients connections to server
@@ -84,7 +87,15 @@ public class ViewClientHandler extends Thread {
             //ask the player what side of the starter card he wants to play
             try {
                 StarterCard starterCard = (StarterCard) ControllerServer.getGameTable().getStarterDeck().drawTopCard();
-                String side = askSideStarterCard(starterCard);
+                String sideString = askSideStarterCard(starterCard);
+
+                if(sideString.equals("front")){
+                    starterCard.setSide(true);
+                }
+                if(sideString.equals("back")){
+                    starterCard.setSide(false);
+                }
+                ControllerServer.addPlayersStarterCard(starterCard);
             } catch (EmptyDeckException e) {
                 throw new RuntimeException(e);
             }
@@ -125,20 +136,29 @@ public class ViewClientHandler extends Thread {
      * @author giacomofalcone
      */
     public String askSideStarterCard(StarterCard starterCard) throws IOException {
-        //TODO
-        out.println("Your starter card: " + starterCard.toString());
-        //out.println("Your starter card: " + );
-        /*
-        public StarterCard(boolean side, Corner[] frontCorners, Corner[] backCorners, Kingdom[] frontKingdoms) {
-            super(side, frontCorners, backCorners); // Using the constructor with backCorners
-            this.frontKingdoms = frontKingdoms;
-        }*/
+
+        //out.println("Your starter card: " + starterCard.toString());
+        Corner[] frontCorners = starterCard.getFrontCorners();
+        Corner[] backCorners = starterCard.getBackCorners();
+        Kingdom[] frontKingdoms = starterCard.getFrontKingdoms();
+
+        out.println("Your starter card:\nFront corners (in order 0,1,2,3):" +
+                frontCorners[0] + ", " + frontCorners[1].toString() +
+                frontCorners[2] + ", " + frontCorners[3].toString() +
+                "\nBack corners (in order 0,1,2,3):" +
+                backCorners[0] + ", " + backCorners[1].toString() +
+                backCorners[2] + ", " + backCorners[3].toString() +
+                "\nFront kinkdoms:" + frontKingdoms[0]
+
+                //TODO
+                );
+
         out.println("Now choose which side of your starter card you want to play:\nFront / Back ?");
         String side = in.readLine().toLowerCase();
 
         // Check correct insert of the side
         while(side != "front" && side != "back") {
-            out.println(out.println("Invalid side:\nFront / Back ?"););
+            out.println("Invalid side:\nFront / Back ?");
             side = in.readLine().toLowerCase();
         }
         return side;
