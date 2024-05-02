@@ -3,6 +3,8 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.*;
+import it.polimi.ingsw.networking.ClientHandlerSocket;
+import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import java.util.Arrays;
  */
 public class Controller {
     private static GameTable gameTable;
+    private static View view;
 
     /**
      * Controller constructor, it creates a new instance of GameTable
@@ -25,6 +28,7 @@ public class Controller {
     public Controller(int numPlayers) {
         try {
             gameTable = new GameTable(numPlayers);
+            view = new View();
         } catch (EmptyDeckException | EmptyObjectiveDeckException e) {
             throw new RuntimeException(e);
         }
@@ -34,10 +38,20 @@ public class Controller {
      * Game table getter
      *
      * @return game table
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public static GameTable getGameTable(){
         return gameTable;
+    }
+
+    /**
+     * View getter
+     *
+     * @return View
+     * @author Foini Lorenzo
+     */
+    public static View getView(){
+        return view;
     }
 
     /**
@@ -48,7 +62,7 @@ public class Controller {
      * @param starterCard player's starter card
      * @param hand player's hand
      * @param secretObjectiveCard player's secret objective card
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public static void createNewPlayer(String username, String color, StarterCard starterCard, ArrayList<GamingCard> hand, ObjectiveCard secretObjectiveCard){
         // Create and initialise new player area
@@ -64,8 +78,9 @@ public class Controller {
         // Assign color as an enum value
         Color colorEnum = Color.valueOf(color.toUpperCase());
 
-        // Create new player and add it into gameTable
+        // Create new player and add it into gameTable and scoreboard
         Player player = new Player(username, 0, playerArea, colorEnum, secretObjectiveCard, starterCard, hand);
         gameTable.addPlayer(player);
+        gameTable.getScoreboard().setScore(player, 0);
     }
 }
