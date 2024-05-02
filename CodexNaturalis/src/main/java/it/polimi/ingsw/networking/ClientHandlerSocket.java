@@ -13,18 +13,19 @@ import java.util.ArrayList;
  * Class which handle multiple threads representing clients connections to server
  * It extends Thread and override method run
  *
- * @author Lorenzo Foini
+ * @author Foini Lorenzo
  */
 public class ClientHandlerSocket extends Thread{
     private final Socket clientSocket;
     private BufferedReader in; // Input message from client to server
     private PrintWriter out; // Output message from server to client
+    private boolean isYourTurn = false; // Boolean value representing if the current turn is client's turn
 
     /**
      * ViewClientHandler constructor, it assigns/creates all class's parameters
      *
      * @param client representing client's socket
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public ClientHandlerSocket(Socket client) {
         clientSocket = client;
@@ -36,14 +37,14 @@ public class ClientHandlerSocket extends Thread{
      * Catch IOException if an I/O error occurred
      * Catch empty deck exceptions
      *
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void run() {
         try {
-            Server.incrementCountConnectedClients(); // Increment server's counter of connected clients
-
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); // Input => Client messages
             out = new PrintWriter(clientSocket.getOutputStream(), true); // Output => Server messages
+
+            Server.incrementCountConnectedClients(); // Increment server's counter of connected clients
 
             // If first client => Ask for number of players
             // Such number must be 2, 3 or 4
@@ -89,8 +90,15 @@ public class ClientHandlerSocket extends Thread{
             // Display message which says that the player has been added to the game and wait for start
             out.println("You have been added to the game.\nPlease wait for other players");
 
+            /*
+            while(!Server.getGameEnded()){
+                if(Server.getCountConnectedClients() == Server.getNumPlayers()) {
+                    out.println("The game has now started.\nYou are player number " + Server.getCountConnectedClients() + " to play");
+                }
+            }*/
+
         } catch (IOException e) {
-            System.err.println("An I/O error occurred: " + e.getMessage());
+            System.err.println("Game ended because an I/O error occurred " + e.getMessage());
         } catch(EmptyDeckException | EmptyObjectiveDeckException e){
             throw new RuntimeException(e);
         }
@@ -99,9 +107,9 @@ public class ClientHandlerSocket extends Thread{
     /**
      * Method to ask number of players
      *
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public void askNumberPlayers() throws IOException {
+    public synchronized void askNumberPlayers() throws IOException {
         int num;
         do{
             out.println("Specify the number of players (2, 3 or 4):"); // Display message
@@ -115,9 +123,9 @@ public class ClientHandlerSocket extends Thread{
     /**
      * Method to ask client's username
      *
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public String askUsername() throws IOException {
+    public synchronized String askUsername() throws IOException {
         out.println("Insert your username:"); // Display message
         String username = in.readLine(); // Get client input
 
@@ -139,9 +147,9 @@ public class ClientHandlerSocket extends Thread{
     /**
      * Method to ask number client's color
      *
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public String AskColor() throws IOException {
+    public synchronized String AskColor() throws IOException {
         // Display available colors
         ArrayList<String> availableColors = Server.getAvailableColors();
         out.println("Now you have to choose a color from this list:");
@@ -167,9 +175,9 @@ public class ClientHandlerSocket extends Thread{
      * Method to display a given starter card
      *
      * @param starterCard given starter card to be displayed
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public void displayStarterCard(StarterCard starterCard){
+    public synchronized void displayStarterCard(StarterCard starterCard){
         // TODO: Display starter card's params
         out.println("This is your starter card: " + starterCard.toString()); // To modify
     }
@@ -177,9 +185,9 @@ public class ClientHandlerSocket extends Thread{
     /**
      * Method to ask the side of starter card
      *
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public boolean askStarterCardSide() throws IOException {
+    public synchronized boolean askStarterCardSide() throws IOException {
         out.println("On which side you want to play the starter card (insert front or back):");
         String stringSide = in.readLine().toLowerCase(); // Get client's input
         while(!stringSide.equals("front") && !stringSide.equals("back")){
@@ -194,7 +202,7 @@ public class ClientHandlerSocket extends Thread{
      * Method to display a given resource card
      *
      * @param resourceCard given resource card to be displayed
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void displayResourceCard(GamingCard resourceCard){
         // TODO: Display resource card's params
@@ -205,7 +213,7 @@ public class ClientHandlerSocket extends Thread{
      * Method to display a given gold card
      *
      * @param goldCard given gold card to be displayed
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void displayGoldCard(GoldCard goldCard){
         // TODO: Display gold card's params
@@ -216,7 +224,7 @@ public class ClientHandlerSocket extends Thread{
      * Method to display a given objective card
      *
      * @param objectiveCard given objective card to be displayed
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void displayObjectiveCard(ObjectiveCard objectiveCard){
         // TODO: Display objective card's params
@@ -226,9 +234,9 @@ public class ClientHandlerSocket extends Thread{
     /**
      * Method to ask which secret card to use in the game for this client
      *
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public ObjectiveCard askSecretObjectiveCard() throws EmptyObjectiveDeckException, IOException{
+    public synchronized ObjectiveCard askSecretObjectiveCard() throws EmptyObjectiveDeckException, IOException{
         // Draw two objective cards from objective deck
         ObjectiveCard card1 = Controller.getGameTable().getObjectiveDeck().drawTopCard();
         ObjectiveCard card2 = Controller.getGameTable().getObjectiveDeck().drawTopCard();
