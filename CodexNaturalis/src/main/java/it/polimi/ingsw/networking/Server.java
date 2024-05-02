@@ -14,9 +14,12 @@ import it.polimi.ingsw.controller.*;
  */
 public class Server {
     private static int numPlayers = 4; // Default value => Changed by first client to connect
-    private static int countConnectedClients = 0;
+    private static int countConnectedClients = 0; // Number of connected client to the game
+    private static boolean gameEnded = false;
     private static final ArrayList<String> clientUsernames = new ArrayList<>();
     private static final ArrayList<String> availableColors = new ArrayList<>();
+    private static ArrayList<ClientHandlerSocket> clients = new ArrayList<>();
+
 
     /**
      * Main method
@@ -46,9 +49,13 @@ public class Server {
 
                 ClientHandlerSocket clientThread = new ClientHandlerSocket(clientSocket); // Create a new client handler
                 clientThread.start(); // Start thread
+                clients.add(clientThread); // Add thread to controller's list of clients
             }
+
+            // THE GAME HAS NOW STARTED
+
         } catch (IOException e) {
-            System.err.println("An I/O error occurred: " + e.getMessage());
+            System.err.println("Game ended because an I/O error occurred: " + e.getMessage());
         }
     }
 
@@ -56,9 +63,9 @@ public class Server {
      * num player getter
      *
      * @return number of players in this game
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public static int getNumPlayers() {
+    public synchronized static int getNumPlayers() {
         return numPlayers;
     }
 
@@ -66,9 +73,9 @@ public class Server {
      * num player setter
      *
      * @param num number of players in this game
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public static void setNumPlayers(int num) {
+    public synchronized static void setNumPlayers(int num) {
         numPlayers = num;
     }
 
@@ -76,25 +83,45 @@ public class Server {
      * count of connected clients getter
      *
      * @return number of clients connected to the server
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public static int getCountConnectedClients() {
+    public synchronized static int getCountConnectedClients() {
         return countConnectedClients;
     }
 
     /**
      * Method for incrementing by 1 the number of connected players
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
-    public static void incrementCountConnectedClients() {
+    public synchronized static void incrementCountConnectedClients() {
         countConnectedClients++;
+    }
+
+    /**
+     * game ended getter
+     *
+     * @return true if the game is ended, false otherwise
+     * @author Foini Lorenzo
+     */
+    public synchronized static boolean getGameEnded() {
+        return gameEnded;
+    }
+
+    /**
+     * game ended setter
+     *
+     * @param isEnded true if the game is ended, false otherwise
+     * @author Foini Lorenzo
+     */
+    public synchronized static void setGameEnded(boolean isEnded) {
+        gameEnded = isEnded;
     }
 
     /**
      * available colors getter
      *
      * @return list of available colors
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public static ArrayList<String> getAvailableColors() {
         return availableColors;
@@ -104,7 +131,7 @@ public class Server {
      * Method for removing a given color from the list of available colors
      *
      * @param color which color to be removed from list
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public static void removeAvailableColor(String color) {
         availableColors.remove(color);
@@ -114,7 +141,7 @@ public class Server {
      * clients' username getter
      *
      * @return list of clients' username
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public static ArrayList<String> getClientUsername() {
         return clientUsernames;
@@ -124,7 +151,7 @@ public class Server {
      * Method for adding a given username to the list of available colors
      *
      * @param clientUsername which username to be added to list
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public static void addClientUsername(String clientUsername) {
         clientUsernames.add(clientUsername);
