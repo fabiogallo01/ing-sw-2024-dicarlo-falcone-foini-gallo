@@ -8,7 +8,7 @@ import java.net.Socket;
  * It uses socket for establish connection and show/get server's/client's messagea
  * Use TUI
  *
- * @author Lorenzo Foini
+ * @author Foini Lorenzo
  */
 public class Client {
 
@@ -16,7 +16,7 @@ public class Client {
      * Main method
      * It is necessary for establish connection to the server (if possible) and setup parameters
      *
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public static void main(String[] args) {
         // Initialise server IP and port
@@ -76,8 +76,8 @@ public class Client {
                     out.println(selectedObjectiveCard);
                 }
             }
-        } catch (IOException e) {
-            System.err.println("An I/O error occurred: " + e.getMessage());
+        } catch (IOException e){
+            System.err.println("Game ended because an I/O error occurred: " + e.getMessage());
         }
     }
 }
