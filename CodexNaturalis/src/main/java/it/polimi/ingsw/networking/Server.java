@@ -49,11 +49,19 @@ public class Server {
 
                 ClientHandlerSocket clientThread = new ClientHandlerSocket(clientSocket); // Create a new client handler
                 clientThread.start(); // Start thread
+                /*while( PRIMO GIOCATORE NON HA INSERITO NUMERO DI GIOCATORI){
+
+                } //ESCO DAL WHILE QUANDO IL PRIMO GIOCATORE HA INSERITO IL NUMERO DI GIOCATORI
+                 */
                 clients.add(clientThread); // Add thread to controller's list of clients
             }
 
-            // THE GAME HAS NOW STARTED
+            /*while(ULTIMO GIOCATORE DEVE AVER INSERITO TUTTI I SUOI DATI){
 
+            }*/
+
+            // THE GAME HAS NOW STARTED
+            System.out.println("NON FUNZIONA");
         } catch (IOException e) {
             System.err.println("Game ended because an I/O error occurred: " + e.getMessage());
         }
