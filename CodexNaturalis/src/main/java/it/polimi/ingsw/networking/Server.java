@@ -22,6 +22,7 @@ public class Server {
     private static ArrayList<ClientHandlerSocket> clients = new ArrayList<>();
     private static volatile boolean firstClientConnected = false;
     private static volatile boolean connected = false;
+    private static Controller controller = new Controller(numPlayers);// Initialise Controller => 4 as default
 
 
     /**
@@ -32,9 +33,6 @@ public class Server {
      * @author Foini Lorenzo
      */
     public static void main(String[] args) {
-        // Initialise Controller => 4 as default
-        Controller controller = new Controller(numPlayers);
-
         // Add available colors as string
         availableColors.add("blue");
         availableColors.add("green");
@@ -63,27 +61,34 @@ public class Server {
                 while (!firstClientConnected) {
                     Thread.onSpinWait();
                 }
-                /* DOVREBBE FUNZIONARE, VEDI SOPRA
 
-                while( PRIMO GIOCATORE NON HA INSERITO NUMERO DI GIOCATORI){}
-                ESCO DAL WHILE QUANDO IL PRIMO GIOCATORE HA INSERITO IL NUMERO DI GIOCATORI
-
-                 */
                 clients.add(clientThread); // Add thread to controller's list of clients
             }
             //waits for all the players to be ready
-            while(ready < numPlayers) {
+            while (ready < numPlayers) {
                 Thread.onSpinWait();
             }
-            /*while(ULTIMO GIOCATORE DEVE AVER INSERITO TUTTI I SUOI DATI){
-
-            }*/
 
             // THE GAME HAS NOW STARTED
-            System.out.println("NON FUNZIONA");
-        } catch (IOException e) {
+            // Send to all the clients a message which says that the game has started and their numbers
+            int clientNum = 1;
+            for (ClientHandlerSocket clientThread : clients) {
+                clientThread.sendMessageStartGame(clientNum);
+                clientNum++;
+            }
+
+            // Start turn
+            // For inactive players: display wait message
+            // For the active player: ask turn information
+            playGame();
+
+        } catch (IOException | InterruptedException e) {
             System.err.println("Game ended because an I/O error occurred: " + e.getMessage());
         }
+    }
+
+    public static Controller getController(){
+        return controller;
     }
 
     /**
@@ -109,7 +114,6 @@ public class Server {
     public static void setReady() {
         Server.ready++;
     }
-
 
     /**
      * count of connected clients getter
@@ -195,5 +199,27 @@ public class Server {
 
     public static void setFistClientConnected(boolean fistClientConnected) {
         Server.firstClientConnected = fistClientConnected;
+    }
+
+    public static void playGame() throws InterruptedException, IOException {
+        // Start turn
+        // For inactive players: display wait message
+        // For the active player: ask turn information
+
+        while (!controller.getGameTable().isEnded()){
+            for (ClientHandlerSocket clientThread : clients) {
+                // Ask active player his play
+                clientThread.askPlay();
+
+                // Display wait message for other players
+                /*int activeIndex = clients.indexOf(clientThread);
+                for(int j=0; j<clients.size(); j++){
+                    if(j!=activeIndex){
+                        clients.get(j).sendWaitTurnMessage();
+                        clients.get(j).wait();
+                    }
+                }*/
+            }
+        }
     }
 }
