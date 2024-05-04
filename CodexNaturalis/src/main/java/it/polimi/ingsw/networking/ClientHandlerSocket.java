@@ -1,7 +1,6 @@
 package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.cards.*;
-import it.polimi.ingsw.controller.*;
 import it.polimi.ingsw.model.exception.EmptyDeckException;
 import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
 
@@ -20,6 +19,7 @@ public class ClientHandlerSocket extends Thread{
     private BufferedReader in; // Input message from client to server
     private PrintWriter out; // Output message from server to client
     private boolean isYourTurn = false; // Boolean value representing if the current turn is client's turn
+    private String username;
 
     /**
      * ViewClientHandler constructor, it assigns/creates all class's parameters
@@ -53,7 +53,7 @@ public class ClientHandlerSocket extends Thread{
             }
 
             // Ask client's username and insert such username in list of players' username
-            String username = askUsername();
+            username = askUsername();
 
             // Ask client's color and remove such color from list of available colors
             String color = AskColor();
@@ -61,7 +61,7 @@ public class ClientHandlerSocket extends Thread{
             // Show to the client his starter card
             StarterCard starterCard;
             try {
-                starterCard = (StarterCard) Controller.getGameTable().getStarterDeck().drawTopCard();
+                starterCard = (StarterCard) Server.getController().getGameTable().getStarterDeck().drawTopCard();
             } catch (EmptyDeckException e) {
                 throw new RuntimeException(e);
             }
@@ -73,9 +73,9 @@ public class ClientHandlerSocket extends Thread{
 
             // Create player hand and display it
             ArrayList<GamingCard> hand = new ArrayList<>();
-            hand.add((GamingCard)Controller.getGameTable().getResourceDeck().drawTopCard());
-            hand.add((GamingCard)Controller.getGameTable().getResourceDeck().drawTopCard());
-            hand.add((GoldCard)Controller.getGameTable().getGoldDeck().drawTopCard());
+            hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
+            hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
+            hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
             displayResourceCard(hand.get(0));
             displayResourceCard(hand.get(1));
             displayGoldCard((GoldCard)hand.get(2));
@@ -85,21 +85,16 @@ public class ClientHandlerSocket extends Thread{
 
             // Call to controller's method for create a new player
             // It also inserts the new player in the game table
-            Controller.createNewPlayer(username, color, starterCard, hand, secretObjectiveCard);
+            Server.getController().createNewPlayer(username, color, starterCard, hand, secretObjectiveCard);
 
             // Display message which says that the player has been added to the game and wait for start
-            out.println("You have been added to the game.\nPlease wait for other players");
+            out.println("You have been added to the game.\nPlease wait for other players.");
 
+            // Set server ready
             Server.setReady();
-            /*
-            while(!Server.getGameEnded()){
-                if(Server.getCountConnectedClients() == Server.getNumPlayers()) {
-                    out.println("The game has now started.\nYou are player number " + Server.getCountConnectedClients() + " to play");
-                }
-            }*/
 
         } catch (IOException e) {
-            System.err.println("Game ended because an I/O error occurred " + e.getMessage());
+            System.err.println("Game ended because an I/O error occurred: " + e.getMessage());
         } catch(EmptyDeckException | EmptyObjectiveDeckException e){
             throw new RuntimeException(e);
         }
@@ -111,12 +106,13 @@ public class ClientHandlerSocket extends Thread{
      * @author Foini Lorenzo
      */
     public synchronized void askNumberPlayers() throws IOException {
-        int num;
+        String stringNum;
         do{
-            out.println("Specify the number of players (2, 3 or 4):"); // Display message
-            num = Integer.parseInt(in.readLine()); // Get client input
-        }while(num < 2 || num > 4); // Must be 2, 3 or 4
+            out.println("Specify the number of players (insert 2, 3 or 4):"); // Display message
+            stringNum = in.readLine(); // Get client input
+        }while(!stringNum.equals("2") && !stringNum.equals("3") && !stringNum.equals("4")); // Must be 2, 3 or 4
 
+        int num = Integer.parseInt(stringNum);
         // Assign such number to server's param
         Server.setNumPlayers(num);
         Server.setFistClientConnected(true);
@@ -193,7 +189,7 @@ public class ClientHandlerSocket extends Thread{
         out.println("On which side you want to play the starter card (insert front or back):");
         String stringSide = in.readLine().toLowerCase(); // Get client's input
         while(!stringSide.equals("front") && !stringSide.equals("back")){
-            out.println("Insert front or back"); // INVALID
+            out.println("Insert front or back:"); // INVALID
             stringSide = in.readLine().toLowerCase();
         }
 
@@ -240,27 +236,76 @@ public class ClientHandlerSocket extends Thread{
      */
     public synchronized ObjectiveCard askSecretObjectiveCard() throws EmptyObjectiveDeckException, IOException{
         // Draw two objective cards from objective deck
-        ObjectiveCard card1 = Controller.getGameTable().getObjectiveDeck().drawTopCard();
-        ObjectiveCard card2 = Controller.getGameTable().getObjectiveDeck().drawTopCard();
+        ObjectiveCard card1 = Server.getController().getGameTable().getObjectiveDeck().drawTopCard();
+        ObjectiveCard card2 = Server.getController().getGameTable().getObjectiveDeck().drawTopCard();
 
         // Display the two cards
         displayObjectiveCard(card1);
         displayObjectiveCard(card2);
 
         // Ask choice to client (1 => First card, 2 => Second card)
-        out.println("Select your secret objective card (insert 1 or 2)");
-        int choice = Integer.parseInt(in.readLine());
-        while(choice != 1 && choice != 2){
-            out.println("Select your secret objective card (insert 1 or 2)"); // INVALID
-            choice = Integer.parseInt(in.readLine());
-        }
+        String stringChoice;
+        do {
+            out.println("Select your secret objective card (insert 1 or 2):");
+            stringChoice = in.readLine();
+        }while(!stringChoice.equals("1") && !stringChoice.equals("2"));
 
-        if(choice == 1) return card1;
+        if(stringChoice.equals("1")) return card1;
         return card2;
     }
 
-    public void setTurn(){
-        isYourTurn= true;
+    public String getUsername(){
+        return username;
     }
 
+    public boolean getTurn(){
+        return isYourTurn;
+    }
+
+    public void setTurn(boolean turn){
+        isYourTurn = turn;
+    }
+
+    public void sendMessageStartGame(int i){
+        out.println("\nThanks for waiting, now all the players are connected.\nYou are player number " + i + ".\nSTART GAME");
+    }
+
+    public void sendWaitTurnMessage(){
+        out.println("It is not your turn. Please wait for other player's move.");
+    }
+
+    public void askPlay() throws IOException {
+        out.println("It's your turn.");
+
+        // Display player's area and his hand
+        out.println("This is your game area:");
+        // Call to View's function for display area
+        out.println("This is your hand:");
+        //Call to View's function for display hand
+
+        // Ask player which card he wants to play
+        out.println("Which card you want to play (insert 1, 2 or 3):");
+        String stringPositionCardHand = in.readLine();
+        while(!stringPositionCardHand.equals("1") && !stringPositionCardHand.equals("2") && !stringPositionCardHand.equals("3")){
+            out.println("Please insert 1, 2 or 3:");
+            stringPositionCardHand = in.readLine();
+        }
+        int cardPositionHand = Integer.parseInt(stringPositionCardHand);
+
+        // Ask player which side to play
+        out.println("On which side you want to play this card(insert front or back):");
+        String stringSide = in.readLine().toLowerCase(); // Get client's input
+        while(!stringSide.equals("front") && !stringSide.equals("back")){
+            out.println("Insert front or back:"); // INVALID
+            stringSide = in.readLine().toLowerCase();
+        }
+        boolean sideCardToPlay = stringSide.equals("front");
+
+        // Ask where he wants to play that card in his game area
+        out.println("Given your game area, now choose the position in the area where you want to play such card.");
+        out.println("Insert integer row value:");
+        int row = Integer.parseInt(in.readLine());
+        out.println("Insert integer column value:");
+        int column = Integer.parseInt(in.readLine());
+    }
 }
