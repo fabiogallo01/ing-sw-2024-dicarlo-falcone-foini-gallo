@@ -3,7 +3,6 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.*;
-import it.polimi.ingsw.networking.ClientHandlerSocket;
 import it.polimi.ingsw.view.View;
 
 import java.util.*;
@@ -71,7 +70,13 @@ public class Controller {
         }
         area[40][40] = false; // Add starter card
         ArrayList<Card> playedCards = new ArrayList<>();
+        // Set starter card position
+        int[] starterCardPosition = new int[2];
+        starterCardPosition[0] = 40;
+        starterCardPosition[1] = 40;
+        starterCard.setInGamePosition(starterCardPosition);
         playedCards.add(starterCard); //Adding the played starter card from ViewClientHandler with the side already set
+
         PlayerArea playerArea = new PlayerArea(area, playedCards);
 
         // Assign color as an enum value
@@ -143,5 +148,27 @@ public class Controller {
         //}.
 
     }
-}
 
+    /**
+     * Method for calculate final points for all players
+     *
+     * @author Gallo Fabio
+     */
+    public void calculateFinalPoints(){
+        //calculate objective points and sum them to their actual points
+        ArrayList<Player> players = gameTable.getPlayers();
+        Player player;
+        for(int i=0; i<gameTable.getNumPlayers(); i++) {
+            // Get player
+            player = players.get(i);
+            // Get score
+            int points = player.getScore();
+            points += player.calculateObjectivePoints(gameTable.getCommonObjectives());
+            try {
+                player.setScore(points);
+            } catch (NegativeScoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
