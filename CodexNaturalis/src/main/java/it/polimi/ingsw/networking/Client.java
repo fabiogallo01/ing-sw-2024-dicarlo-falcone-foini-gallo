@@ -53,7 +53,9 @@ public class Client {
                     serverMessage.startsWith("Please insert 1, 2 or 3:") ||
                     serverMessage.startsWith("On which side you want to play this card(insert front or back):") ||
                     serverMessage.startsWith("Insert integer row value:") ||
-                    serverMessage.startsWith("Insert integer column value:")
+                    serverMessage.startsWith("Insert integer column value:") ||
+                    serverMessage.startsWith("Insert 1, 2 or 3:") ||
+                    serverMessage.startsWith("Insert the card's number:")
                 ) {
                     /*
                       Get user's input via userInput.readLine() and pass it to the server via out.println()
