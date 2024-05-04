@@ -16,7 +16,7 @@ public class GameTable {
     private ObjectiveDeck objectiveDeck;
     private ArrayList<GamingCard> visibleCards;
     private ObjectiveCard[] commonObjectives;
-    private final int numPlayers;
+    private int numPlayers;
     private ArrayList<Player> players;
     private Scoreboard scoreboard;
 
@@ -1299,6 +1299,16 @@ public class GameTable {
     }
 
     /**
+     * NumPlayers setter
+     *
+     * @param num number of players
+     * @author Fabio Gallo
+     */
+    public void setNumPlayers(int num) {
+        this.numPlayers = num;
+    }
+
+    /**
      * Players getter
      *
      * @return the list (arraylist) of players
@@ -1434,14 +1444,14 @@ public class GameTable {
             if(selectedCard instanceof GoldCard){
                 try { // Case 1 with a gold card
                     GoldCard topCardResource = (GoldCard) goldDeck.drawTopCard();
-                    visibleCards.set(position, topCardResource);
+                    visibleCards.set(position-1, topCardResource);
                 } catch (EmptyDeckException e) {
                     try { // Case 2
                         GamingCard topCardGold = (GamingCard) resourceDeck.drawTopCard();
-                        visibleCards.set(position, topCardGold);
+                        visibleCards.set(position-1, topCardGold);
                     } catch (EmptyDeckException ex) { // Case 3
                         // Shift to the left
-                        for (int i = position; i < visibleCards.size() - 1; i++) {
+                        for (int i = position-1; i < visibleCards.size() - 1; i++) {
                             visibleCards.set(i, visibleCards.get(i + 1));
                         }
                         //Remove last element
