@@ -256,4 +256,9 @@ public class ClientHandlerSocket extends Thread{
         if(choice == 1) return card1;
         return card2;
     }
+
+    public void setTurn(){
+        isYourTurn= true;
+    }
+
 }

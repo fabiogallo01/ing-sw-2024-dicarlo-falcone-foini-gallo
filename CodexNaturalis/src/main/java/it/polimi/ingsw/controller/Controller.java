@@ -83,4 +83,20 @@ public class Controller {
         gameTable.addPlayer(player);
         gameTable.getScoreboard().setScore(player, 0);
     }
+
+
+    public void playTurn(){
+        while(!gameTable.isEnded()){
+            for(int i=0; i<gameTable.getNumPlayers(); i++) {
+                //clients.get(i).setTurn;
+                //turn finished
+            }
+        }
+
+        for(int i=0; i<gameTable.getNumPlayers(); i++) {
+            //clients.get(i).setTurn;
+            //turn finished
+        }
+    }
 }
+
