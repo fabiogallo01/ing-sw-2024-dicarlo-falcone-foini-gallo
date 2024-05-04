@@ -1,8 +1,7 @@
 package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.cards.*;
-import it.polimi.ingsw.model.exception.EmptyDeckException;
-import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
+import it.polimi.ingsw.model.exception.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -266,17 +265,27 @@ public class ClientHandlerSocket extends Thread{
         isYourTurn = turn;
     }
 
-    public void sendMessageStartGame(int i){
-        out.println("\nThanks for waiting, now all the players are connected.\nYou are player number " + i + ".\nSTART GAME");
+    public void sendMessageStartGame() {
+        out.println("\nThanks for waiting, now all the players are connected. The game will starts in a few seconds");
     }
 
     public void sendWaitTurnMessage(){
-        out.println("It is not your turn. Please wait for other player's move.");
+        out.println("\nPlease wait for your turn.");
+    }
+
+    public void sendSelectPlayMessage(){
+        out.println("It's your turn.\nNow you have to play a card from your hand.");
+    }
+
+    public void sendSelectDrawMessage(){
+        out.println("Now you have to select from where you want to draw your next card.");
+    }
+
+    public void sendCorrectDrawMessage(){
+        out.println("You have correctly draw a new card and added it in your hands.");
     }
 
     public void askPlay() throws IOException {
-        out.println("It's your turn.");
-
         // Display player's area and his hand
         out.println("This is your game area:");
         // Call to View's function for display area
@@ -307,5 +316,112 @@ public class ClientHandlerSocket extends Thread{
         int row = Integer.parseInt(in.readLine());
         out.println("Insert integer column value:");
         int column = Integer.parseInt(in.readLine());
+
+        int[] positionArea = new int[2];
+        positionArea[0] = row;
+        positionArea[1] = column;
+
+        // TODO
+        // Use controller's method for play this card
+        /*
+        try{
+            Server.getController().playCardUsername(username, cardPositionHand, positionArea, sideCardToPlay);
+            out.println("The card has been played correctly.");
+            out.println("This is your score after this play: " + Server.getController().getGameTable().getPlayerByUsername(username).getScore() + " pts.");
+        }catch(InvalidPlayCardIndexException | InvalidPositionAreaException | InvalidPlayException e){
+            out.println(e.getMessage());
+            out.println("Invalid play.\nNow you will be asked to insert again all the information.");
+
+            // Recall this function for ask again all the information
+            askPlay();
+        }
+        */
+    }
+
+    public void askDraw() throws IOException {
+        // Display the two decks and visible cards in the table
+        out.println("This is the card in top of resource deck:");
+        /*Server.getController().getView().displayResourceDeckTopCard();
+        out.println("This is the card in top of gold deck:");
+        Server.getController().getView().displayGoldDeckTopCard();
+        out.println("These are the cards visible in the table:");
+        Server.getController().getView().displayVisibleTableCard();*/
+
+        // Ask user's choice
+        out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
+        out.println("Insert 1, 2 or 3:");
+        String stringChoice = in.readLine();
+        while(!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")){
+            out.println("Please insert 1, 2 or 3:");
+            stringChoice = in.readLine();
+        }
+        int choice = Integer.parseInt(stringChoice);
+
+        // Switch case based on choice
+        switch(choice){
+            case 1:{
+                // Draw card from resource deck
+                try{
+                    // Draw card
+                    GamingCard cardToDraw = Server.getController().getGameTable().drawResourceCardDeck();
+                    // Add card in player's hand
+                    Server.getController().getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
+
+                } catch(EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                    out.println(e.getMessage());
+                    out.println("Select a different type of draw.");
+
+                    // Recall this function
+                    askDraw();
+                }
+                break;
+            }
+            case 2:{
+                // Draw card from gold deck
+                try{
+                    // Draw card
+                    GoldCard cardToDraw = Server.getController().getGameTable().drawGoldCardDeck();
+                    // Add card in player's hand
+                    Server.getController().getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
+                } catch(EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                    out.println(e.getMessage());
+                    out.println("Select a different type of draw.");
+
+                    // Recall this function
+                    askDraw();
+                }
+                break;
+            }
+            case 3:{
+                int size = Server.getController().getGameTable().getVisibleCard().size();
+                if(size == 0){
+                    out.println("There are no cards in table.\nSelect a different type of draw.");
+                    // Recall this function
+                    askDraw();
+                }else if(size == 1){
+                    out.println("There is only 1 card in the table, so draw this card.");
+                    try{
+                        GamingCard cardToDraw = Server.getController().getGameTable().drawCardFromTable(1);
+                        Server.getController().getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
+                    } catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                        out.println(e.getMessage());
+                        // Recall this function
+                        askDraw();
+                    }
+                }else {
+                    out.println("Insert the card's number:");
+                    int selectedPosition = Integer.parseInt(in.readLine());
+                    try{
+                        GamingCard cardToDraw = Server.getController().getGameTable().drawCardFromTable(selectedPosition);
+                        Server.getController().getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
+                    }catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                        out.println(e.getMessage());
+                        // Recall this function
+                        askDraw();
+                    }
+                }
+                break;
+            }
+        }
     }
 }
