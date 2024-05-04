@@ -16,14 +16,12 @@ public class Server {
     private static int numPlayers = 4; // Default value => Changed by first client to connect
     private static int ready = 0;
     private static int countConnectedClients = 0; // Number of connected client to the game
-    private static boolean gameEnded = false;
     private static final ArrayList<String> clientUsernames = new ArrayList<>();
     private static final ArrayList<String> availableColors = new ArrayList<>();
     private static ArrayList<ClientHandlerSocket> clients = new ArrayList<>();
     private static volatile boolean firstClientConnected = false;
     private static volatile boolean connected = false;
     private static Controller controller = new Controller(numPlayers);// Initialise Controller => 4 as default
-
 
     /**
      * Main method
@@ -51,13 +49,13 @@ public class Server {
                 ClientHandlerSocket clientThread = new ClientHandlerSocket(clientSocket); // Create a new client handler
                 clientThread.start(); // Start thread
 
-                //waits for the player to actually be connected, so the conditions inside the while works properly
+                // Waits for the player to actually be connected, so the conditions inside the while works properly
                 while (!connected) {
                     Thread.onSpinWait();
                 }
                 connected = false;
 
-                //waits for the first player to insert the number of players of the game, so it does not mess with the condition in the while
+                // Waits for the first player to insert the number of players of the game, so it does not mess with the condition in the while
                 while (!firstClientConnected) {
                     Thread.onSpinWait();
                 }
@@ -74,7 +72,7 @@ public class Server {
             // Send to all the clients a message which says that the game has started and their numbers
             int clientNum = 1;
             for (ClientHandlerSocket clientThread : clients) {
-                clientThread.sendMessageStartGame();
+                clientThread.sendStartGameMessage();
                 clientThread.sendWaitTurnMessage();
                 clientNum++;
             }
@@ -111,6 +109,7 @@ public class Server {
      */
     public synchronized static void setNumPlayers(int num) {
         numPlayers = num;
+        controller.getGameTable().setNumPlayers(num);
     }
 
     public static void setReady() {
@@ -127,6 +126,12 @@ public class Server {
         return countConnectedClients;
     }
 
+    /**
+     * Connected clients setter
+     *
+     * @param connected boolean to assign
+     * @author Gallo Fabio
+     */
     public static void setConnected(boolean connected) {
         Server.connected = connected;
     }
@@ -137,26 +142,6 @@ public class Server {
      */
     public synchronized static void incrementCountConnectedClients() {
         countConnectedClients++;
-    }
-
-    /**
-     * game ended getter
-     *
-     * @return true if the game is ended, false otherwise
-     * @author Foini Lorenzo
-     */
-    public synchronized static boolean getGameEnded() {
-        return gameEnded;
-    }
-
-    /**
-     * game ended setter
-     *
-     * @param isEnded true if the game is ended, false otherwise
-     * @author Foini Lorenzo
-     */
-    public synchronized static void setGameEnded(boolean isEnded) {
-        gameEnded = isEnded;
     }
 
     /**
@@ -199,32 +184,84 @@ public class Server {
         clientUsernames.add(clientUsername);
     }
 
-    public static void setFistClientConnected(boolean fistClientConnected) {
-        Server.firstClientConnected = fistClientConnected;
+    /**
+     * First client connected setter
+     *
+     * @param firstClientConnected boolean to be set
+     * @author Foini Lorenzo
+     */
+    public static void setFistClientConnected(boolean firstClientConnected) {
+        Server.firstClientConnected = firstClientConnected;
     }
 
+    /**
+     * Method for play game: Iterate through players for handling turns
+     * Turn: ask phase and draw phase
+     *
+     * @throws java.io.InterruptedIOException and IOException
+     * @author Foini Lorenzo
+     */
     public static void playGame() throws InterruptedException, IOException {
         // Start turn
-        // For inactive players: display wait message
-        // For the active player: ask turn information
+        // For current player: ask turn information
 
-        while (!controller.getGameTable().isEnded()){
+        // Iterate until a player reaches 20 points
+        while (!controller.getGameTable().isEnded()) {
+            // Iterate through clients
             for (ClientHandlerSocket clientThread : clients) {
                 // Send a message to server
                 System.out.println("It's " + clientThread.getUsername() + "'s turn.");
 
                 // Play card "phase"
-                // Ask active player his play
+                // Ask active player his play and send messages
                 clientThread.sendSelectPlayMessage();
                 clientThread.askPlay();
+                clientThread.sendCorrectPlayMessage();
 
                 // draw card "phase" and send messages
                 clientThread.sendSelectDrawMessage();
                 clientThread.askDraw();
                 clientThread.sendCorrectDrawMessage();
-            }
 
-            // TODO: Check points, last turn, calculate total points, display standing and champion
+                // Send turn messages
+                clientThread.sendFinishTurnMessage();
+                clientThread.sendWaitTurnMessage();
+            }
         }
+        // Exit from while loop => At least a player has reach 20 points
+        // Now play last turn: we can avoid to ask the client to draw a card after the play
+
+        // Show a message to all clients which says that the final turn has started and a wait message
+        for (ClientHandlerSocket clientHandlerSocket : clients){
+            clientHandlerSocket.sendLastTurnMessage();
+            clientHandlerSocket.sendWaitTurnMessage();
+        }
+
+        // Take last turn for all players
+        for (ClientHandlerSocket clientThread : clients) {
+            // Send a message to server
+            System.out.println("It's " + clientThread.getUsername() + "'s turn.");
+
+            // Play card "phase"
+            // Ask active player his play and send messages
+            clientThread.sendSelectPlayMessage();
+            clientThread.askPlay();
+            clientThread.sendCorrectPlayMessage();
+
+            // Send turn messages
+            clientThread.sendFinishTurnMessage();
+            clientThread.sendWaitTurnMessage();
+        }
+
+        // Call controller's method for calculate final points
+        controller.calculateFinalPoints();
+
+        //CHECK IF THE SERVER WORKS PROPERLY: EXECUTION SEEMS TO WORK FINE
+        /*ArrayList<Player> player = controller.getGameTable().getPlayers();
+        for(Player p : player){
+            System.out.println(p.getUsername() + " has scored " + p.getScore() + " points.");
+        }*/
+
+        // TODO: Call to controller's method for ordering standing and get champion
     }
 }
