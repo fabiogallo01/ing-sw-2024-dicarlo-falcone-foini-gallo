@@ -114,7 +114,8 @@ public abstract class Card {
      * @author Lorenzo Foini
      */
     public void setInGamePosition(int[] inGamePosition){
-        this.inGamePosition = inGamePosition;
+        this.inGamePosition[0] = inGamePosition[0];
+        this.inGamePosition[1] = inGamePosition[1];
     }
 
     /**
