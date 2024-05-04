@@ -1309,6 +1309,23 @@ public class GameTable {
     }
 
     /**
+     * Player getter by username
+     *
+     * @param username player username
+     * @return player with such username
+     * @throws NoPlayerWithSuchUsernameException if there isn't a player witch such username
+     * @author Foini Lorenzo
+     */
+    public Player getPlayerByUsername(String username) throws NoPlayerWithSuchUsernameException {
+        for(Player player : players) {
+            if(player.getUsername().equals(username)) {
+                return player;
+            }
+        }
+        throw new NoPlayerWithSuchUsernameException("There isn't a player in the game with such username.");
+    }
+
+    /**
      * Players setter
      *
      * @param players updated players list
