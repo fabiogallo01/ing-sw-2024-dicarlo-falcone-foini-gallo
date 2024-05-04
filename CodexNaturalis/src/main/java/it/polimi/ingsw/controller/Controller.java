@@ -15,8 +15,8 @@ import java.util.*;
  * @author Foini Lorenzo
  */
 public class Controller {
-    private static GameTable gameTable;
-    private static View view;
+    private final GameTable gameTable;
+    private final View view;
 
     /**
      * Controller constructor, it creates a new instance of GameTable
@@ -39,7 +39,7 @@ public class Controller {
      * @return game table
      * @author Foini Lorenzo
      */
-    public static GameTable getGameTable(){
+    public GameTable getGameTable(){
         return gameTable;
     }
 
@@ -49,7 +49,7 @@ public class Controller {
      * @return View
      * @author Foini Lorenzo
      */
-    public static View getView(){
+    public View getView(){
         return view;
     }
 
@@ -63,7 +63,7 @@ public class Controller {
      * @param secretObjectiveCard player's secret objective card
      * @author Foini Lorenzo
      */
-    public static void createNewPlayer(String username, String color, StarterCard starterCard, ArrayList<GamingCard> hand, ObjectiveCard secretObjectiveCard){
+    public void createNewPlayer(String username, String color, StarterCard starterCard, ArrayList<GamingCard> hand, ObjectiveCard secretObjectiveCard){
         // Create and initialise new player area
         boolean[][] area = new boolean[81][81];
         for (boolean[] booleans : area) {
@@ -89,8 +89,8 @@ public class Controller {
         Player player;
         while(!gameTable.isEnded()){
             for(int i=0; i<gameTable.getNumPlayers(); i++) {
-                //clients.get(i).setTurn;
-                //turn finished
+                //clients.get(i).setTurn(true);
+                //turn finished => Set false
             }
         }
 
