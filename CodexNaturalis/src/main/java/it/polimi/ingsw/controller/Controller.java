@@ -6,8 +6,7 @@ import it.polimi.ingsw.model.game.*;
 import it.polimi.ingsw.networking.ClientHandlerSocket;
 import it.polimi.ingsw.view.View;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Controller's class
@@ -85,7 +84,9 @@ public class Controller {
     }
 
 
-    public void playTurn(){
+    public void playGame(){
+        ArrayList<Player> players = gameTable.getPlayers();
+        Player player;
         while(!gameTable.isEnded()){
             for(int i=0; i<gameTable.getNumPlayers(); i++) {
                 //clients.get(i).setTurn;
@@ -94,9 +95,53 @@ public class Controller {
         }
 
         for(int i=0; i<gameTable.getNumPlayers(); i++) {
+            player = players.get(i);
+            //ASKS FOR WHICH CARD TO PLAY FROM THE HAND, WHICH SIDE AND WHERE TO PLACE IT
+            //player.playCard(   MISSING PARAMETERS   );
+            //ASKS FROM WHICH DECK TO DRAW
+
+            /*if( MISSING CONDITION ){
+              player.addCardHand( gameTable.drawResourceCardDeck());
+            } else if( MISSING CONDITION ){
+                player.addCardHand(gameTable.drawGoldCardDeck());
+            } else {
+                player.addCardHand(gameTable.drawCardFromTable(    MISSING PARAMETERS  ));
+            }*/
+
             //clients.get(i).setTurn;
             //turn finished
         }
+
+        //calculate objective points and sum them to their actual points
+        for(int i=0; i<gameTable.getNumPlayers(); i++) {
+            player = players.get(i);
+            int points = player.getScore();
+            points += player.calculateObjectivePoints(gameTable.getCommonObjectives());
+            try {
+                player.setScore(points);
+            } catch (NegativeScoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+        //make leaderboard
+        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
+
+        List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
+
+        list.sort(Map.Entry.comparingByValue());
+
+        HashMap<Object, Integer> leaderboard = new LinkedHashMap<>();
+        for (Map.Entry<Player, Integer> entry : list) {
+            leaderboard.put(entry.getKey(), entry.getValue());
+        }
+
+        //System.out.println("Leaderboard:");
+        //for (Map.Entry<Player, Integer> entry : list) {
+        //    System.out.println(entry.getKey() + ": " + entry.getValue());
+        //}.
+
     }
 }
 
