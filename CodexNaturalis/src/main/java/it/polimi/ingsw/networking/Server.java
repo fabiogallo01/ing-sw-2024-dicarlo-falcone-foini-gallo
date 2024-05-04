@@ -70,10 +70,12 @@ public class Server {
             }
 
             // THE GAME HAS NOW STARTED
+            System.out.println("GAME HAS STARTED");
             // Send to all the clients a message which says that the game has started and their numbers
             int clientNum = 1;
             for (ClientHandlerSocket clientThread : clients) {
-                clientThread.sendMessageStartGame(clientNum);
+                clientThread.sendMessageStartGame();
+                clientThread.sendWaitTurnMessage();
                 clientNum++;
             }
 
@@ -208,18 +210,21 @@ public class Server {
 
         while (!controller.getGameTable().isEnded()){
             for (ClientHandlerSocket clientThread : clients) {
+                // Send a message to server
+                System.out.println("It's " + clientThread.getUsername() + "'s turn.");
+
+                // Play card "phase"
                 // Ask active player his play
+                clientThread.sendSelectPlayMessage();
                 clientThread.askPlay();
 
-                // Display wait message for other players
-                /*int activeIndex = clients.indexOf(clientThread);
-                for(int j=0; j<clients.size(); j++){
-                    if(j!=activeIndex){
-                        clients.get(j).sendWaitTurnMessage();
-                        clients.get(j).wait();
-                    }
-                }*/
+                // draw card "phase" and send messages
+                clientThread.sendSelectDrawMessage();
+                clientThread.askDraw();
+                clientThread.sendCorrectDrawMessage();
             }
+
+            // TODO: Check points, last turn, calculate total points, display standing and champion
         }
     }
 }
