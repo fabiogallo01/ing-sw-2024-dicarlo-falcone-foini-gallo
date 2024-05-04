@@ -1401,7 +1401,7 @@ public class GameTable {
      * @throws EmptyDeckException if the golden deck is empty
      * @author Lorenzo Foini
      */
-    public GamingCard drawGoldCardDeck() throws EmptyDeckException {
+    public GoldCard drawGoldCardDeck() throws EmptyDeckException {
         try {
             return (GoldCard) goldDeck.drawTopCard();
         } catch (EmptyDeckException e) {
