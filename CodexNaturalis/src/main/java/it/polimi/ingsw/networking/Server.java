@@ -14,11 +14,14 @@ import it.polimi.ingsw.controller.*;
  */
 public class Server {
     private static int numPlayers = 4; // Default value => Changed by first client to connect
+    private static int ready = 0;
     private static int countConnectedClients = 0; // Number of connected client to the game
     private static boolean gameEnded = false;
     private static final ArrayList<String> clientUsernames = new ArrayList<>();
     private static final ArrayList<String> availableColors = new ArrayList<>();
     private static ArrayList<ClientHandlerSocket> clients = new ArrayList<>();
+    private static volatile boolean firstClientConnected = false;
+    private static volatile boolean connected = false;
 
 
     /**
@@ -44,18 +47,34 @@ public class Server {
         try (ServerSocket ss = new ServerSocket(portNum)) {
             System.out.println("Server is connected.\nWait for connections...");
             // While loop until all players enter the game
-            while (countConnectedClients < numPlayers-1) {
+            while (countConnectedClients < numPlayers) {
                 Socket clientSocket = ss.accept(); // New client connections
 
                 ClientHandlerSocket clientThread = new ClientHandlerSocket(clientSocket); // Create a new client handler
                 clientThread.start(); // Start thread
-                /*while( PRIMO GIOCATORE NON HA INSERITO NUMERO DI GIOCATORI){
 
-                } //ESCO DAL WHILE QUANDO IL PRIMO GIOCATORE HA INSERITO IL NUMERO DI GIOCATORI
+                //waits for the player to actually be connected, so the conditions inside the while works properly
+                while (!connected) {
+                    Thread.onSpinWait();
+                }
+                connected = false;
+
+                //waits for the first player to insert the number of players of the game, so it does not mess with the condition in the while
+                while (!firstClientConnected) {
+                    Thread.onSpinWait();
+                }
+                /* DOVREBBE FUNZIONARE, VEDI SOPRA
+
+                while( PRIMO GIOCATORE NON HA INSERITO NUMERO DI GIOCATORI){}
+                ESCO DAL WHILE QUANDO IL PRIMO GIOCATORE HA INSERITO IL NUMERO DI GIOCATORI
+
                  */
                 clients.add(clientThread); // Add thread to controller's list of clients
             }
-
+            //waits for all the players to be ready
+            while(ready < numPlayers) {
+                Thread.onSpinWait();
+            }
             /*while(ULTIMO GIOCATORE DEVE AVER INSERITO TUTTI I SUOI DATI){
 
             }*/
@@ -87,6 +106,11 @@ public class Server {
         numPlayers = num;
     }
 
+    public static void setReady() {
+        Server.ready++;
+    }
+
+
     /**
      * count of connected clients getter
      *
@@ -95,6 +119,10 @@ public class Server {
      */
     public synchronized static int getCountConnectedClients() {
         return countConnectedClients;
+    }
+
+    public static void setConnected(boolean connected) {
+        Server.connected = connected;
     }
 
     /**
@@ -163,5 +191,9 @@ public class Server {
      */
     public static void addClientUsername(String clientUsername) {
         clientUsernames.add(clientUsername);
+    }
+
+    public static void setFistClientConnected(boolean fistClientConnected) {
+        Server.firstClientConnected = fistClientConnected;
     }
 }

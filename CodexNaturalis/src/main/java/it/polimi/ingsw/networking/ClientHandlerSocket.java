@@ -45,7 +45,7 @@ public class ClientHandlerSocket extends Thread{
             out = new PrintWriter(clientSocket.getOutputStream(), true); // Output => Server messages
 
             Server.incrementCountConnectedClients(); // Increment server's counter of connected clients
-
+            Server.setConnected(true);
             // If first client => Ask for number of players
             // Such number must be 2, 3 or 4
             if(Server.getCountConnectedClients() == 1) {
@@ -90,6 +90,7 @@ public class ClientHandlerSocket extends Thread{
             // Display message which says that the player has been added to the game and wait for start
             out.println("You have been added to the game.\nPlease wait for other players");
 
+            Server.setReady();
             /*
             while(!Server.getGameEnded()){
                 if(Server.getCountConnectedClients() == Server.getNumPlayers()) {
@@ -118,6 +119,7 @@ public class ClientHandlerSocket extends Thread{
 
         // Assign such number to server's param
         Server.setNumPlayers(num);
+        Server.setFistClientConnected(true);
     }
 
     /**
