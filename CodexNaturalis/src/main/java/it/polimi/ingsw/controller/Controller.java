@@ -88,8 +88,8 @@ public class Controller {
         gameTable.getScoreboard().setScore(player, 0);
     }
 
-//da cancellare
-   /* public void playGame(){
+    //da cancellare
+    /* public void playGame(){
         ArrayList<Player> players = gameTable.getPlayers();
         Player player;
         while(!gameTable.isEnded()){
@@ -133,28 +133,29 @@ public class Controller {
 
 
         //make leaderboard
-//        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
-//
-//        List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
-//
-//        list.sort(Map.Entry.comparingByValue());
-//
-//        HashMap<Object, Integer> leaderboard = new LinkedHashMap<>();
-//        for (Map.Entry<Player, Integer> entry : list) {
-//            leaderboard.put(entry.getKey(), entry.getValue());
-//        }
+        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
 
-        //System.out.println("Leaderboard:");
-        //for (Map.Entry<Player, Integer> entry : list) {
-        //    System.out.println(entry.getKey() + ": " + entry.getValue());
-        //}.
+        List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
 
-    }*/
+        list.sort(Map.Entry.comparingByValue());
+
+        HashMap<Object, Integer> leaderboard = new LinkedHashMap<>();
+        for (Map.Entry<Player, Integer> entry : list) {
+            leaderboard.put(entry.getKey(), entry.getValue());
+        }
+
+        System.out.println("Leaderboard:");
+        for (Map.Entry<Player, Integer> entry : list) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }.
+
+    }
+    */
 
     /**
-     * Method for calculate final points for all players
+     * Method to calculate the total final points for all the players
      *
-     * @author Gallo Fabio
+     * @author Fabio Gallo
      */
     public void calculateFinalPoints(){
         //calculate objective points and sum them to their actual points
@@ -174,6 +175,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Method to order the scoreboard, from the player with fewer points to the one with most
+     *
+     * @return the ordered scoreboard
+     * @author Fabio Gallo
+     * */
     public HashMap<Player, Integer> getLeaderboard(){
         HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
 
