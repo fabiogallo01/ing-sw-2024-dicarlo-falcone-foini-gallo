@@ -2,10 +2,11 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
+import it.polimi.ingsw.model.game.Player;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Class which handle multiple threads representing clients connections to server
@@ -498,4 +499,29 @@ public class ClientHandlerSocket extends Thread{
             }
         }
     }
+
+    public void sendEndGameMessage(HashMap<Player, Integer> leaderboard) throws IOException {
+        out.println("The game has ended.");
+
+        List<Map.Entry<Player, Integer>> list = new LinkedList<>(leaderboard.entrySet());
+        Map.Entry<Player, Integer> first = list.removeLast();
+        out.println("The winner is: " + first.getKey().getUsername());
+        out.println("Final scoreboard:");
+
+        out.println("1st: " + first.getKey().getUsername() + " " + first.getKey().getScore());
+        first = list.removeLast();
+        out.println("2nd: " + first.getKey().getUsername() + " " + first.getKey().getScore());
+
+        if(!list.isEmpty()){
+            first = list.removeLast();
+            out.println("3rd: " + first.getKey().getUsername() + " " + first.getKey().getScore());
+
+            if(!list.isEmpty()) {
+                first = list.removeLast();
+                out.println("4th: " + first.getKey().getUsername() + " " + first.getKey().getScore());
+            }
+        }
+
+    }
+
 }

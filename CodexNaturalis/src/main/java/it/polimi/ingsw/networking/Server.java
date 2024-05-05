@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import it.polimi.ingsw.controller.*;
+import it.polimi.ingsw.model.game.Player;
 
 /**
  * Server's class using socket
@@ -262,6 +264,10 @@ public class Server {
             System.out.println(p.getUsername() + " has scored " + p.getScore() + " points.");
         }*/
 
-        // TODO: Call to controller's method for ordering standing and get champion
+        HashMap<Player, Integer> leaderboard = controller.getLeaderboard();
+        for(ClientHandlerSocket clientThread : clients){
+            clientThread.sendEndGameMessage(leaderboard);
+        }
+
     }
 }

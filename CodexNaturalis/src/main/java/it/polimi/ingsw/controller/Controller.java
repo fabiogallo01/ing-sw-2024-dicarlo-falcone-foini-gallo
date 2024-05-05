@@ -88,8 +88,8 @@ public class Controller {
         gameTable.getScoreboard().setScore(player, 0);
     }
 
-
-    public void playGame(){
+//da cancellare
+   /* public void playGame(){
         ArrayList<Player> players = gameTable.getPlayers();
         Player player;
         while(!gameTable.isEnded()){
@@ -105,13 +105,15 @@ public class Controller {
             //player.playCard(   MISSING PARAMETERS   );
             //ASKS FROM WHICH DECK TO DRAW
 
-            /*if( MISSING CONDITION ){
+
+            if( MISSING CONDITION ){
               player.addCardHand( gameTable.drawResourceCardDeck());
             } else if( MISSING CONDITION ){
                 player.addCardHand(gameTable.drawGoldCardDeck());
             } else {
                 player.addCardHand(gameTable.drawCardFromTable(    MISSING PARAMETERS  ));
-            }*/
+            }
+
 
             //clients.get(i).setTurn;
             //turn finished
@@ -131,23 +133,23 @@ public class Controller {
 
 
         //make leaderboard
-        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
-
-        List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
-
-        list.sort(Map.Entry.comparingByValue());
-
-        HashMap<Object, Integer> leaderboard = new LinkedHashMap<>();
-        for (Map.Entry<Player, Integer> entry : list) {
-            leaderboard.put(entry.getKey(), entry.getValue());
-        }
+//        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
+//
+//        List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
+//
+//        list.sort(Map.Entry.comparingByValue());
+//
+//        HashMap<Object, Integer> leaderboard = new LinkedHashMap<>();
+//        for (Map.Entry<Player, Integer> entry : list) {
+//            leaderboard.put(entry.getKey(), entry.getValue());
+//        }
 
         //System.out.println("Leaderboard:");
         //for (Map.Entry<Player, Integer> entry : list) {
         //    System.out.println(entry.getKey() + ": " + entry.getValue());
         //}.
 
-    }
+    }*/
 
     /**
      * Method for calculate final points for all players
@@ -171,4 +173,19 @@ public class Controller {
             }
         }
     }
+
+    public HashMap<Player, Integer> getLeaderboard(){
+        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
+
+        List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
+
+        list.sort(Map.Entry.comparingByValue());
+
+        HashMap<Player, Integer> leaderboard = new LinkedHashMap<>();
+        for (Map.Entry<Player, Integer> entry : list) {
+            leaderboard.put(entry.getKey(), entry.getValue());
+        }
+        return leaderboard;
+    }
+
 }
