@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 /**
  * Class which handle multiple threads representing clients connections to server
+ * It is also used for handling players' turns
  * It extends Thread and override method run
  *
  * @author Foini Lorenzo
@@ -17,7 +18,6 @@ public class ClientHandlerSocket extends Thread{
     private final Socket clientSocket;
     private BufferedReader in; // Input message from client to server
     private PrintWriter out; // Output message from server to client
-    private boolean isYourTurn = false; // Boolean value representing if the current turn is client's turn
     private String username;
 
     /**
@@ -75,9 +75,9 @@ public class ClientHandlerSocket extends Thread{
             hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
             hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
             hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
-            displayResourceCard(hand.get(0));
-            displayResourceCard(hand.get(1));
-            displayGoldCard((GoldCard)hand.get(2));
+            displayResourceCard(hand.get(0)); // Call to View's method
+            displayResourceCard(hand.get(1)); // Call to View's method
+            displayGoldCard((GoldCard)hand.get(2)); // Call to View's method
 
             // Ask client to select his secret objective cards from two different objective cards
             ObjectiveCard secretObjectiveCard = askSecretObjectiveCard();
@@ -100,6 +100,132 @@ public class ClientHandlerSocket extends Thread{
     }
 
     /**
+     * Method to display a given starter card
+     *
+     * @param starterCard given starter card to be displayed
+     * @author Foini Lorenzo
+     */
+    public synchronized void displayStarterCard(StarterCard starterCard){
+        // TODO: Move to View
+        out.println("This is your starter card: " + starterCard.toString());
+    }
+
+    /**
+     * Method to display a given resource card
+     *
+     * @param resourceCard given resource card to be displayed
+     * @author Foini Lorenzo
+     */
+    public void displayResourceCard(GamingCard resourceCard){
+        // TODO: Move to View
+        out.println("Resource card: " + resourceCard.toString()); // To modify
+    }
+
+    /**
+     * Method to display a given gold card
+     *
+     * @param goldCard given gold card to be displayed
+     * @author Foini Lorenzo
+     */
+    public void displayGoldCard(GoldCard goldCard){
+        // TODO: Move to View
+        out.println("Gold card: " + goldCard.toString()); // To modify
+    }
+
+    /**
+     * Method to display a given objective card
+     *
+     * @param objectiveCard given objective card to be displayed
+     * @author Foini Lorenzo
+     */
+    public void displayObjectiveCard(ObjectiveCard objectiveCard){
+        // TODO: Move to View
+        out.println("Objective card: " + objectiveCard.toString()); // To modify
+    }
+
+    /**
+     * Send start game message to client
+     *
+     * @author Foini Lorenzo
+     */
+    public void sendStartGameMessage() {
+        out.println("\nThanks for waiting, now all the players are connected. The game will starts in a few seconds");
+    }
+
+    /**
+     * Send wait turn message to client
+     *
+     * @author Foini Lorenzo
+     */
+    public void sendWaitTurnMessage(){
+        out.println("\nPlease wait for your turn.");
+    }
+
+    /**
+     * Send finish turn message to client
+     *
+     * @author Foini Lorenzo
+     */
+    public void sendFinishTurnMessage(){
+        out.println("You have correctly play your turn.");
+    }
+
+    /**
+     * Send last turn message to client
+     *
+     * @author Foini Lorenzo
+     */
+    public void sendLastTurnMessage(){
+        out.println("A player has reached 20 points, so the last turn will now start.");
+    }
+
+    /**
+     * Send select play message to client
+     *
+     * @author Foini Lorenzo
+     */
+    public void sendSelectPlayMessage(){
+        out.println("It's your turn.\nNow you have to play a card from your hand.");
+    }
+
+    /**
+     * Send correct play message to client
+     *
+     * @author Foini Lorenzo
+     */
+    public void sendCorrectPlayMessage(){
+        out.println("You have correctly play the card in your game area.");
+        out.println("That card has been removed from your hand.");
+    }
+
+    /**
+     * Send select draw message to client
+     *
+     * @author Foini Lorenzo
+     */
+    public void sendSelectDrawMessage(){
+        out.println("Now you have to select from where you want to draw your next card.");
+    }
+
+    /**
+     * Send correct draw message to client
+     *
+     * @author Foini Lorenzo
+     */
+    public void sendCorrectDrawMessage(){
+        out.println("You have correctly draw a new card and added it in your hands.");
+    }
+
+    /**
+     * Client's username getter
+     *
+     * @author Foini Lorenzo
+     */
+    public String getUsername(){
+        return username;
+    }
+
+    /**
      * Method to ask number of players
      *
      * @author Foini Lorenzo
@@ -111,8 +237,8 @@ public class ClientHandlerSocket extends Thread{
             stringNum = in.readLine(); // Get client input
         }while(!stringNum.equals("2") && !stringNum.equals("3") && !stringNum.equals("4")); // Must be 2, 3 or 4
 
-        int num = Integer.parseInt(stringNum);
-        // Assign such number to server's param
+        int num = Integer.parseInt(stringNum); // Parse to int
+        // Assign such number to server's param and gameTable's param
         Server.setNumPlayers(num);
         Server.setFistClientConnected(true);
     }
@@ -169,63 +295,22 @@ public class ClientHandlerSocket extends Thread{
     }
 
     /**
-     * Method to display a given starter card
-     *
-     * @param starterCard given starter card to be displayed
-     * @author Foini Lorenzo
-     */
-    public synchronized void displayStarterCard(StarterCard starterCard){
-        // TODO: Display starter card's params
-        out.println("This is your starter card: " + starterCard.toString()); // To modify
-    }
-
-    /**
      * Method to ask the side of starter card
      *
      * @author Foini Lorenzo
      */
     public synchronized boolean askStarterCardSide() throws IOException {
+        // Display message
         out.println("On which side you want to play the starter card (insert front or back):");
         String stringSide = in.readLine().toLowerCase(); // Get client's input
+
+        // Check input
         while(!stringSide.equals("front") && !stringSide.equals("back")){
             out.println("Insert front or back:"); // INVALID
             stringSide = in.readLine().toLowerCase();
         }
 
         return stringSide.equals("front"); // true => front, false => back
-    }
-
-    /**
-     * Method to display a given resource card
-     *
-     * @param resourceCard given resource card to be displayed
-     * @author Foini Lorenzo
-     */
-    public void displayResourceCard(GamingCard resourceCard){
-        // TODO: Display resource card's params
-        out.println("Resource card: " + resourceCard.toString()); // To modify
-    }
-
-    /**
-     * Method to display a given gold card
-     *
-     * @param goldCard given gold card to be displayed
-     * @author Foini Lorenzo
-     */
-    public void displayGoldCard(GoldCard goldCard){
-        // TODO: Display gold card's params
-        out.println("Gold card: " + goldCard.toString()); // To modify
-    }
-
-    /**
-     * Method to display a given objective card
-     *
-     * @param objectiveCard given objective card to be displayed
-     * @author Foini Lorenzo
-     */
-    public void displayObjectiveCard(ObjectiveCard objectiveCard){
-        // TODO: Display objective card's params
-        out.println("Objective card: " + objectiveCard.toString()); // To modify
     }
 
     /**
@@ -253,57 +338,35 @@ public class ClientHandlerSocket extends Thread{
         return card2;
     }
 
-    public String getUsername(){
-        return username;
-    }
-
-    public boolean getTurn(){
-        return isYourTurn;
-    }
-
-    public void setTurn(boolean turn){
-        isYourTurn = turn;
-    }
-
-    public void sendMessageStartGame() {
-        out.println("\nThanks for waiting, now all the players are connected. The game will starts in a few seconds");
-    }
-
-    public void sendWaitTurnMessage(){
-        out.println("\nPlease wait for your turn.");
-    }
-
-    public void sendSelectPlayMessage(){
-        out.println("It's your turn.\nNow you have to play a card from your hand.");
-    }
-
-    public void sendSelectDrawMessage(){
-        out.println("Now you have to select from where you want to draw your next card.");
-    }
-
-    public void sendCorrectDrawMessage(){
-        out.println("You have correctly draw a new card and added it in your hands.");
-    }
-
+    /**
+     * Method for asking client which card he wants to play, his side and where to play such card
+     *
+     * @author Foini Lorenzo
+     */
     public void askPlay() throws IOException {
         // Display player's area and his hand
         out.println("This is your game area:");
-        // Call to View's function for display area
-        out.println("This is your hand:");
-        //Call to View's function for display hand
+        // TODO: Call to View's function for display area
 
-        // Ask player which card he wants to play
+        out.println("This is your hand:");
+        // TODO: Call to View's function for display hand
+
+        // Ask player which card he wants to play from his hand
         out.println("Which card you want to play (insert 1, 2 or 3):");
         String stringPositionCardHand = in.readLine();
+
+        // Check user input
         while(!stringPositionCardHand.equals("1") && !stringPositionCardHand.equals("2") && !stringPositionCardHand.equals("3")){
             out.println("Please insert 1, 2 or 3:");
             stringPositionCardHand = in.readLine();
         }
-        int cardPositionHand = Integer.parseInt(stringPositionCardHand);
+        int cardPositionHand = Integer.parseInt(stringPositionCardHand); // Parse to int
 
-        // Ask player which side to play
+        // Ask player which side to play such card
         out.println("On which side you want to play this card(insert front or back):");
         String stringSide = in.readLine().toLowerCase(); // Get client's input
+
+        // Check user input
         while(!stringSide.equals("front") && !stringSide.equals("back")){
             out.println("Insert front or back:"); // INVALID
             stringSide = in.readLine().toLowerCase();
@@ -316,30 +379,37 @@ public class ClientHandlerSocket extends Thread{
         int row = Integer.parseInt(in.readLine());
         out.println("Insert integer column value:");
         int column = Integer.parseInt(in.readLine());
+        // Throws exception after if position is not valid
 
         int[] positionArea = new int[2];
         positionArea[0] = row;
         positionArea[1] = column;
 
-        // TODO
         // Use controller's method for play this card
-        /*
         try{
-            Server.getController().playCardUsername(username, cardPositionHand, positionArea, sideCardToPlay);
+            // Play card
+            Server.getController().getGameTable().getPlayerByUsername(username).playCard(cardPositionHand, positionArea, sideCardToPlay);
+
+            // Show messages
             out.println("The card has been played correctly.");
             out.println("This is your score after this play: " + Server.getController().getGameTable().getPlayerByUsername(username).getScore() + " pts.");
-        }catch(InvalidPlayCardIndexException | InvalidPositionAreaException | InvalidPlayException e){
+        }catch(NoPlayerWithSuchUsernameException | InvalidPlayCardIndexException | InvalidPositionAreaException | InvalidPlayException e){
+            // An error has occur
             out.println(e.getMessage());
             out.println("Invalid play.\nNow you will be asked to insert again all the information.");
 
             // Recall this function for ask again all the information
             askPlay();
         }
-        */
     }
 
+    /**
+     * Method for asking client from where he wants to draw his next card
+     *
+     * @author Foini Lorenzo
+     */
     public void askDraw() throws IOException {
-        // Display the two decks and visible cards in the table
+        // TODO: Display the two decks and visible cards in the table
         out.println("This is the card in top of resource deck:");
         /*Server.getController().getView().displayResourceDeckTopCard();
         out.println("This is the card in top of gold deck:");
@@ -351,11 +421,13 @@ public class ClientHandlerSocket extends Thread{
         out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
         out.println("Insert 1, 2 or 3:");
         String stringChoice = in.readLine();
+
+        // Check user input
         while(!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")){
             out.println("Please insert 1, 2 or 3:");
             stringChoice = in.readLine();
         }
-        int choice = Integer.parseInt(stringChoice);
+        int choice = Integer.parseInt(stringChoice); // Parse to int
 
         // Switch case based on choice
         switch(choice){
@@ -371,7 +443,7 @@ public class ClientHandlerSocket extends Thread{
                     out.println(e.getMessage());
                     out.println("Select a different type of draw.");
 
-                    // Recall this function
+                    // Recall this function for asking again
                     askDraw();
                 }
                 break;
@@ -387,7 +459,7 @@ public class ClientHandlerSocket extends Thread{
                     out.println(e.getMessage());
                     out.println("Select a different type of draw.");
 
-                    // Recall this function
+                    // Recall this function for asking again
                     askDraw();
                 }
                 break;
@@ -396,27 +468,29 @@ public class ClientHandlerSocket extends Thread{
                 int size = Server.getController().getGameTable().getVisibleCard().size();
                 if(size == 0){
                     out.println("There are no cards in table.\nSelect a different type of draw.");
-                    // Recall this function
+                    // Recall this function for asking again
                     askDraw();
                 }else if(size == 1){
                     out.println("There is only 1 card in the table, so draw this card.");
                     try{
+                        // Call to method and add card to hand
                         GamingCard cardToDraw = Server.getController().getGameTable().drawCardFromTable(1);
                         Server.getController().getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
                     } catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
                         out.println(e.getMessage());
-                        // Recall this function
+                        // Recall this function for asking again
                         askDraw();
                     }
                 }else {
                     out.println("Insert the card's number:");
                     int selectedPosition = Integer.parseInt(in.readLine());
                     try{
+                        // Call to method and add card to hand
                         GamingCard cardToDraw = Server.getController().getGameTable().drawCardFromTable(selectedPosition);
                         Server.getController().getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
                     }catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
                         out.println(e.getMessage());
-                        // Recall this function
+                        // Recall this function for asking again
                         askDraw();
                     }
                 }
