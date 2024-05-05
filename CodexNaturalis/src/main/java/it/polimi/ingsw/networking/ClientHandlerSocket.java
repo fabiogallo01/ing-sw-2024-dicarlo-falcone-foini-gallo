@@ -8,7 +8,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-import static it.polimi.ingsw.networking.Server.controller;
+
 
 /**
  * Class which handle multiple threads representing clients connections to server
@@ -79,7 +79,7 @@ public class ClientHandlerSocket extends Thread{
             hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
             hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
             Server.getController().getView().displayResourceCard(hand.get(0), out); // Call to View's method
-            Server.getController().getView().displayResourceCard(hand.get(1)), out; // Call to View's method
+            Server.getController().getView().displayResourceCard(hand.get(1), out); // Call to View's method
             Server.getController().getView().displayGoldCard((GoldCard)hand.get(2), out); // Call to View's method
 
             // Ask client to select his secret objective cards from two different objective cards
