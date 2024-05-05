@@ -8,6 +8,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
+import static it.polimi.ingsw.networking.Server.controller;
+
 /**
  * Class which handle multiple threads representing clients connections to server
  * It is also used for handling players' turns
@@ -65,7 +67,7 @@ public class ClientHandlerSocket extends Thread{
             } catch (EmptyDeckException e) {
                 throw new RuntimeException(e);
             }
-            displayStarterCard(starterCard);
+            Server.getController().getView().displayStarterCard(starterCard,out);
             // Ask client on which side he wants to play the starter card
             boolean sideStarterCard = askStarterCardSide();
             // Assign such side to starter card
@@ -76,9 +78,9 @@ public class ClientHandlerSocket extends Thread{
             hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
             hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
             hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
-            displayResourceCard(hand.get(0)); // Call to View's method
-            displayResourceCard(hand.get(1)); // Call to View's method
-            displayGoldCard((GoldCard)hand.get(2)); // Call to View's method
+            Server.getController().getView().displayResourceCard(hand.get(0), out); // Call to View's method
+            Server.getController().getView().displayResourceCard(hand.get(1)), out; // Call to View's method
+            Server.getController().getView().displayGoldCard((GoldCard)hand.get(2), out); // Call to View's method
 
             // Ask client to select his secret objective cards from two different objective cards
             ObjectiveCard secretObjectiveCard = askSecretObjectiveCard();
@@ -100,49 +102,7 @@ public class ClientHandlerSocket extends Thread{
         }
     }
 
-    /**
-     * Method to display a given starter card
-     *
-     * @param starterCard given starter card to be displayed
-     * @author Foini Lorenzo
-     */
-    public synchronized void displayStarterCard(StarterCard starterCard){
-        // TODO: Move to View
-        out.println("This is your starter card: " + starterCard.toString());
-    }
 
-    /**
-     * Method to display a given resource card
-     *
-     * @param resourceCard given resource card to be displayed
-     * @author Foini Lorenzo
-     */
-    public void displayResourceCard(GamingCard resourceCard){
-        // TODO: Move to View
-        out.println("Resource card: " + resourceCard.toString()); // To modify
-    }
-
-    /**
-     * Method to display a given gold card
-     *
-     * @param goldCard given gold card to be displayed
-     * @author Foini Lorenzo
-     */
-    public void displayGoldCard(GoldCard goldCard){
-        // TODO: Move to View
-        out.println("Gold card: " + goldCard.toString()); // To modify
-    }
-
-    /**
-     * Method to display a given objective card
-     *
-     * @param objectiveCard given objective card to be displayed
-     * @author Foini Lorenzo
-     */
-    public void displayObjectiveCard(ObjectiveCard objectiveCard){
-        // TODO: Move to View
-        out.println("Objective card: " + objectiveCard.toString()); // To modify
-    }
 
     /**
      * Send start game message to client
@@ -325,8 +285,8 @@ public class ClientHandlerSocket extends Thread{
         ObjectiveCard card2 = Server.getController().getGameTable().getObjectiveDeck().drawTopCard();
 
         // Display the two cards
-        displayObjectiveCard(card1);
-        displayObjectiveCard(card2);
+        Server.getController().getView().displayObjectiveCard(card1, out);
+        Server.getController().getView().displayObjectiveCard(card2, out);
 
         // Ask choice to client (1 => First card, 2 => Second card)
         String stringChoice;
