@@ -14,7 +14,6 @@ public class View {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
 
@@ -26,6 +25,7 @@ public class View {
      * @author giacomofalcone
      */
     public String printCorner(Corner corner){
+        //TODO What does that a corner is visible mean?
         if(corner.getVisible()){
             if(corner.getEmpty()){
                 return "EMPTY";
@@ -126,7 +126,7 @@ public class View {
      * @author AndreaDiC11
      */
     public void displayResourceCard(GamingCard resourceCard, PrintWriter out){
-        out.println("Resource Card: \n" +
+        out.println("Resource Card: \nPoints: " + resourceCard.getPoints() + "\n" +
                 "Front:\n" +
                 "________________________________________________________________________________________\n" +
                 "|" + printCorner(resourceCard.getFrontCorners()[0]) + "              " + printCorner(resourceCard.getFrontCorners()[1]) +"|\n" +
@@ -151,12 +151,11 @@ public class View {
      * @author AndreaDiC11
      */
     public void displayGoldCard(GoldCard goldCard, PrintWriter out){
-        out.println("Gold card: \n" +
+        out.println("Gold card: \nPoints: " + goldCard.getPoints() + "\n" +
                 "Front:\n" +
                 "________________________________________________________________________________________\n" +
                 "|" + printCorner(goldCard.getFrontCorners()[0]) + "              " + printCorner(goldCard.getFrontCorners()[1]) +"|\n" +
-                "        " + goldCard.getConditionPoint().toString() +
-                "\n");
+                "Condition to make points: " + goldCard.getConditionPoint().toString() + "\n");
                 for (int i=0; i < goldCard.getResources().length; i++) {
                     out.println("          " + goldCard.getResources()[i].toString() + "   ");
                 }

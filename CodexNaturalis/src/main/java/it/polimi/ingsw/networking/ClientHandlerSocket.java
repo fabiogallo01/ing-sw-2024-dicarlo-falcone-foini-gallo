@@ -377,8 +377,8 @@ public class ClientHandlerSocket extends Thread{
      * @author Foini Lorenzo
      */
     public void askDraw() throws IOException {
-        // TODO: Display the two decks and visible cards in the table
         out.println("This is the card in top of resource deck:");
+        // TODO: Display the two decks
         /*Server.getController().getView().displayResourceDeckTopCard();
         out.println("This is the card in top of gold deck:");
         Server.getController().getView().displayGoldDeckTopCard();
