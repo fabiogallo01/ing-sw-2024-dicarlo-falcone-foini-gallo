@@ -392,7 +392,7 @@ public class Player {
         for(ObjectiveCard objective : objectives){
             if(objective.getFrontKingdom() == Kingdom.NONE){ // Points given by number of objects
                 int totalObject = 0;
-                int minOccurence = 0;
+                int minOccurrence = 0;
                 GameObject[] gameObjects = objective.getObjects();
 
                 if(gameObjects[0] == GameObject.MANUSCRIPT){ // Case two manuscripts
@@ -402,10 +402,10 @@ public class Player {
                 }else if(gameObjects[1] == GameObject.QUILL){ // Case two quills
                     totalObject += playerArea.countObject(GameObject.QUILL);
                 }else{ // Case all three objects
-                    minOccurence += Math.min(Math.min(playerArea.countObject(GameObject.QUILL), playerArea.countObject(GameObject.INKWELL)), playerArea.countObject(GameObject.MANUSCRIPT));
+                    minOccurrence += Math.min(Math.min(playerArea.countObject(GameObject.QUILL), playerArea.countObject(GameObject.INKWELL)), playerArea.countObject(GameObject.MANUSCRIPT));
                 }
                 // Assign points
-                totalPoint += (totalObject/2)*2 + minOccurence*3;
+                totalPoint += (totalObject/2)*2 + minOccurrence*3;
             }else if(objective.getPattern() != Pattern.NONE){ // Points given by number of patterns
                 Pattern pattern = objective.getPattern();
                 int numPatterns = playerArea.countPattern(objective.getFrontKingdom(), pattern);
