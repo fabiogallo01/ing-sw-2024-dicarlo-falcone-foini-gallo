@@ -12,35 +12,14 @@ public class View {
             if(corner.getEmpty()){
                 return "EMPTY";
             } else if (corner.getKingdom() != Kingdom.NONE) {
-                if(corner.getKingdom() == Kingdom.ANIMALKINGDOM){
-                    return "ANIMALKINGDOM";
-                }
-                if(corner.getKingdom() == Kingdom.PLANTKINGDOM){
-                    return "PLANTKINGDOM";
-                }
-                if(corner.getKingdom() == Kingdom.INSECTKINGDOM){
-                    return "INSECTKINGDOM";
-                }
-                if(corner.getKingdom() == Kingdom.FUNGIKINGDOM) {
-                    return "FUNGIKINGDOM";
-                }
+                return corner.getKingdom().toString();
             } else {
-                if(corner.getObject() == GameObject.INKWELL){
-                    return "INKWELL";
-                }
-                if(corner.getObject() == GameObject.QUILL){
-                    return "QUILL";
-                }
-                if(corner.getObject() == GameObject.MANUSCRIPT) {
-                    return "MANUSCRIPT";
-                }
+                return corner.getObject().toString();
             }
         }
         else {
             return "            ";
         }
-        return "            ";
-
     }
 
 
@@ -57,7 +36,7 @@ public class View {
                 "|" + printCorner(starterCard.getFrontCorners()[0]) + "              " + printCorner(starterCard.getFrontCorners()[1]) +"|\n" +
                 "           ");
         for (int i=0; i < starterCard.getFrontKingdoms().length; i++) {
-            out.println("                 " + starterCard.getFrontKingdoms()[i] + "   ");
+            out.println("        " + starterCard.getFrontKingdoms()[i] + "   ");
         }
         out.println(
                 "\n" +
@@ -81,7 +60,22 @@ public class View {
      * @author Foini Lorenzo
      */
     public void displayResourceCard(GamingCard resourceCard, PrintWriter out){
-        out.println("Resource card: " + resourceCard.toString());
+        out.println("Resource Card: \n" +
+                "Front:\n" +
+                "________________________________________________________________________________________\n" +
+                "|" + printCorner(resourceCard.getFrontCorners()[0]) + "              " + printCorner(resourceCard.getFrontCorners()[1]) +"|\n" +
+                "\n" +
+                "|" + printCorner(resourceCard.getFrontCorners()[2]) + "              " + printCorner(resourceCard.getFrontCorners()[3]) +"|\n" +
+                "________________________________________________________________________________________\n" +
+                "\n" +
+                "Back:\n" +
+                "________________________________________________________________________________________\n" +
+                "|" + printCorner(resourceCard.getBackCorners()[0]) + "              " + printCorner(resourceCard.getBackCorners()[1]) +"|\n" +
+                "\n" +
+                "        "  + resourceCard.getKingdom().toString() + "\n" + "\n" +
+                "|" + printCorner(resourceCard.getBackCorners()[2]) + "              " + printCorner(resourceCard.getBackCorners()[3]) +"|\n" +
+                "________________________________________________________________________________________\n"
+        );
     }
 
     /**
@@ -91,7 +85,27 @@ public class View {
      * @author Foini Lorenzo
      */
     public void displayGoldCard(GoldCard goldCard, PrintWriter out){
-        out.println("Gold card: " + goldCard.toString());
+        out.println("Gold card: \n" +
+                "Front:\n" +
+                "________________________________________________________________________________________\n" +
+                "|" + printCorner(goldCard.getFrontCorners()[0]) + "              " + printCorner(goldCard.getFrontCorners()[1]) +"|\n" +
+                "        " + goldCard.getConditionPoint().toString() +
+                "\n");
+                for (int i=0; i < goldCard.getResources().length; i++) {
+                    out.println("          " + goldCard.getResources()[i].toString() + "   ");
+                }
+        out.println("\n" +
+                "|" + printCorner(goldCard.getFrontCorners()[2]) + "              " + printCorner(goldCard.getFrontCorners()[3]) +"|\n" +
+                "________________________________________________________________________________________\n" +
+                "\n" +
+                "Back:\n" +
+                "________________________________________________________________________________________\n" +
+                "|" + printCorner(goldCard.getBackCorners()[0]) + "              " + printCorner(goldCard.getBackCorners()[1]) +"|\n" +
+                "\n" +
+                "       "  + goldCard.getKingdom().toString() + "\n" + "\n" +
+                "|" + printCorner(goldCard.getBackCorners()[2]) + "              " + printCorner(goldCard.getBackCorners()[3]) +"|\n" +
+                "________________________________________________________________________________________\n"
+        );
     }
 
     /**
