@@ -85,7 +85,7 @@ public class ClientHandlerSocket extends Thread{
             // Ask client to select his secret objective cards from two different objective cards
             ObjectiveCard secretObjectiveCard = askSecretObjectiveCard();
 
-            // Call to controller's method for create a new player
+            // Call to controller'This is your hand:s method for create a new player
             // It also inserts the new player in the game table
             Server.getController().createNewPlayer(username, color, starterCard, hand, secretObjectiveCard);
 
@@ -309,8 +309,15 @@ public class ClientHandlerSocket extends Thread{
         out.println("This is your game area:");
         // TODO: Call to View's function for display area
 
-        out.println("This is your hand:");
-        // TODO: Call to View's function for display hand
+        // Call to View's function for display hand
+        try{
+            // Get the player's hand and display it
+            ArrayList<GamingCard> handToPrint = Server.getController().getGameTable().getPlayerByUsername(username).getHand();
+            Server.getController().getView().displayHand(handToPrint, out);
+        } catch(NoPlayerWithSuchUsernameException e){
+            out.println(e.getMessage());
+        }
+
 
         // Ask player which card he wants to play from his hand
         out.println("Which card you want to play (insert 1, 2 or 3):");

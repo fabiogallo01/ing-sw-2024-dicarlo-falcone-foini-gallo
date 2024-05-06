@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.*;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class View {
 
@@ -303,5 +304,23 @@ public class View {
         out.println("\n");
     }
 
+    /**
+     * Method to display the hand of a player
+     *
+     * @param hand given hand to be displayed
+     * @author giacomofalcone
+     */
+    public synchronized void displayHand(ArrayList<GamingCard> hand, PrintWriter out){
+        out.println("This is your hand:\n");
+        for (int i=0; i < 3; i++) {
+            out.println("Card " + (i+1) + ":\n");
+            if (hand.get(i) instanceof GoldCard){
+                displayGoldCard((GoldCard) hand.get(i), out);
+            } else { //if (hand.get(i) is a resource card)
+                displayResourceCard(hand.get(i), out);
+            }
+            out.println("\n");
+        }
+    }
 
 }
