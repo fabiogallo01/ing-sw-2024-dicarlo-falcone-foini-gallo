@@ -188,15 +188,15 @@ public class Player {
         else{
             // Get selected card form hand
             GamingCard cardToPlay = hand.get(positionCardHand-1);
-
+            //Set the card to the playing side chosen by the user
+            cardToPlay.setSide(side);
             // Check if the card is actually playable given the game's rules
             String mistake = isPlayable(cardToPlay, positionArea); // Variable which contains the exception's message
             if (!mistake.equals("None")) { // Raised exception
                 throw new InvalidPlayException("You can't play this card in this position. Mistake: " + mistake);
             }
             else{ //The card is playable
-                //Set the card to the playing side chosen by the user
-                cardToPlay.setSide(side);
+
 
                 // Add the card in the given position
                 playerArea.addCard(cardToPlay, positionArea);
@@ -307,8 +307,8 @@ public class Player {
             // Check condition
             if(playerArea.countKingdoms(Kingdom.ANIMALKINGDOM) < countAnimalKingdom ||
                playerArea.countKingdoms(Kingdom.PLANTKINGDOM) < countPlantKingdom ||
-               playerArea.countKingdoms(Kingdom.INSECTKINGDOM) < countFungiKingdom ||
-               playerArea.countKingdoms(Kingdom.FUNGIKINGDOM) < countInsectKingdom){
+               playerArea.countKingdoms(Kingdom.FUNGIKINGDOM) < countFungiKingdom ||
+               playerArea.countKingdoms(Kingdom.INSECTKINGDOM) < countInsectKingdom){
                 return "There aren't enough resources to place the gold card.";
             }
         }
