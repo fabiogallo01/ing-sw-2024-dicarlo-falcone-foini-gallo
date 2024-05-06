@@ -2,6 +2,7 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.networking.Server;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -323,4 +324,22 @@ public class View {
         }
     }
 
+    /**
+     * Method to display the visible cards that can be drawn
+     *
+     * @param visibleCards given 4 visible cards of decks to be displayed
+     * @author giacomofalcone
+     */
+    public synchronized void displayVisibleTableCard(ArrayList<GamingCard> visibleCards, PrintWriter out){
+        out.println("Visible cards that can be drawn:\n");
+        for (int i=0; i < 4; i++) {
+            out.println("Card " + (i+1) + ":\n");
+            if (visibleCards.get(i) instanceof GoldCard){
+                displayGoldCard((GoldCard) visibleCards.get(i), out);
+            } else { //if (hand.get(i) is a resource card)
+                displayResourceCard(visibleCards.get(i), out);
+            }
+            out.println("\n");
+        }
+    }
 }

@@ -384,6 +384,9 @@ public class ClientHandlerSocket extends Thread{
         Server.getController().getView().displayGoldDeckTopCard();
         out.println("These are the cards visible in the table:");
         Server.getController().getView().displayVisibleTableCard();*/
+        ArrayList<GamingCard> visibleCards = Server.getController().getGameTable().getVisibleCard();
+        Server.getController().getView().displayVisibleTableCard(visibleCards, out);
+        // TODO Check what number of the visible cards is going to be drawn
 
         // Ask user's choice
         out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
