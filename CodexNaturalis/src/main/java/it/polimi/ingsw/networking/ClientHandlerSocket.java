@@ -87,7 +87,7 @@ public class ClientHandlerSocket extends Thread{
             out.println("\nThis are the two common objectives:\n");
             ObjectiveCard[] commonObjective = Server.getController().getGameTable().getCommonObjectives();
             Server.getController().getView().displayObjectiveCard(commonObjective[0], out);
-            Server.getController().getView().displayObjectiveCard(commonObjective[0], out);
+            Server.getController().getView().displayObjectiveCard(commonObjective[1], out);
 
             // Ask client to select his secret objective cards from two different objective cards
             out.println("Now you have to choose which secret objective card you want to use.");
@@ -493,20 +493,20 @@ public class ClientHandlerSocket extends Thread{
         out.println("The game has ended.");
 
         List<Map.Entry<Player, Integer>> list = new LinkedList<>(leaderboard.entrySet());
-        Map.Entry<Player, Integer> first = list.removeLast();
+        Map.Entry<Player, Integer> first = list.removeFirst();
         out.println("The winner is: " + first.getKey().getUsername());
         out.println("Final scoreboard:");
 
         out.println("1st: " + first.getKey().getUsername() + " " + first.getKey().getScore());
-        first = list.removeLast();
+        first = list.removeFirst();
         out.println("2nd: " + first.getKey().getUsername() + " " + first.getKey().getScore());
 
         if(!list.isEmpty()){
-            first = list.removeLast();
+            first = list.removeFirst();
             out.println("3rd: " + first.getKey().getUsername() + " " + first.getKey().getScore());
 
             if(!list.isEmpty()) {
-                first = list.removeLast();
+                first = list.removeFirst();
                 out.println("4th: " + first.getKey().getUsername() + " " + first.getKey().getScore());
             }
         }

@@ -1383,7 +1383,7 @@ public class GameTable {
      */
     public boolean isEnded() {
         for (Player player : players) {
-            if (player.getScore() >= 1)
+            if (player.getScore() >= 20)
                 return true;
         }
         return resourceDeck.deckSize()==0 && goldDeck.deckSize()==0 && visibleCards.isEmpty();
