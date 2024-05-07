@@ -18,7 +18,7 @@ public class GameTable {
     private ObjectiveCard[] commonObjectives;
     private int numPlayers;
     private ArrayList<Player> players;
-    private Scoreboard scoreboard;
+    private static Scoreboard scoreboard;
 
     /**
      * GameTable constructor, it builds all the decks and initializes the game
@@ -29,7 +29,7 @@ public class GameTable {
      * @author Fabio Gallo
      */
     public GameTable(int numPlayers) throws EmptyDeckException, EmptyObjectiveDeckException {
-        this.scoreboard = new Scoreboard();
+        scoreboard = new Scoreboard();
         this.numPlayers = numPlayers;
         this.resourceDeck = createResourceDeck();
         this.goldDeck = createGoldDeck();
@@ -1361,7 +1361,7 @@ public class GameTable {
      * @return Scoreboard
      * @author Fabio Gallo
      */
-    public Scoreboard getScoreboard() {
+    public static Scoreboard getScoreboard() {
         return scoreboard;
     }
 
