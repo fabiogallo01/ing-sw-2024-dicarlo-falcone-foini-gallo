@@ -8,8 +8,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-
-
 /**
  * Class which handle multiple threads representing clients connections to server
  * It is also used for handling players' turns
@@ -111,8 +109,6 @@ public class ClientHandlerSocket extends Thread{
             throw new RuntimeException(e);
         }
     }
-
-
 
     /**
      * Send start game message to client
@@ -490,11 +486,11 @@ public class ClientHandlerSocket extends Thread{
     }
 
     public void sendEndGameMessage(HashMap<Player, Integer> leaderboard) {
-        out.println("The game has ended.");
+        out.println("\nThe game has ended.\n");
 
         List<Map.Entry<Player, Integer>> list = new LinkedList<>(leaderboard.entrySet());
         Map.Entry<Player, Integer> first = list.removeFirst();
-        out.println("The winner is: " + first.getKey().getUsername());
+        out.println("THE WINNER IS ... " + first.getKey().getUsername());
         out.println("Final scoreboard:");
 
         out.println("1st: " + first.getKey().getUsername() + " " + first.getKey().getScore());
@@ -510,7 +506,5 @@ public class ClientHandlerSocket extends Thread{
                 out.println("4th: " + first.getKey().getUsername() + " " + first.getKey().getScore());
             }
         }
-
     }
-
 }
