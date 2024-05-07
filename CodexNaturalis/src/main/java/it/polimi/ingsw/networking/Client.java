@@ -22,9 +22,10 @@ public class Client {
         // Initialise server IP and port
         String hostName = "127.0.0.1";
         int port = 54321;
+        Socket socket = null; // Initialise socket
 
         try {
-            Socket socket = new Socket(hostName, port);
+            socket = new Socket(hostName, port);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // Input => Server messages to client
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true); // Output => Client messages to server
             BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in)); // Read client keyboard
@@ -66,6 +67,15 @@ public class Client {
             }
         } catch (IOException e){
             System.err.println("Game ended because an I/O error occurred: " + e.getMessage());
+        } finally {
+            // Close connection
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
         }
     }
 }
