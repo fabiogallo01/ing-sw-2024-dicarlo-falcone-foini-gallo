@@ -79,6 +79,7 @@ public class ClientHandlerSocket extends Thread{
             hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
             hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
             hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
+            out.println("\nThis is your hand:\n");
             Server.getController().getView().displayResourceCard(hand.get(0), out); // Call to View's method
             Server.getController().getView().displayResourceCard(hand.get(1), out); // Call to View's method
             Server.getController().getView().displayGoldCard((GoldCard)hand.get(2), out); // Call to View's method
@@ -309,6 +310,11 @@ public class ClientHandlerSocket extends Thread{
         // Display player's area and his hand
         out.println("This is your game area:");
         // TODO: Call to View's function for display area
+        try {
+            Server.getController().getView().displayArea(Server.getController().getGameTable().getPlayerByUsername(username).getPlayerArea().getCards(), out);
+        } catch (NoPlayerWithSuchUsernameException e) {
+            throw new RuntimeException(e);
+        }
 
         // Call to View's function for display hand
         try{
