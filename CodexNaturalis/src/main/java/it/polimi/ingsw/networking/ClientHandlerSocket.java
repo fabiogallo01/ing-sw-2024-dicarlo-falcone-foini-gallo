@@ -2,6 +2,7 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
+import it.polimi.ingsw.model.game.GamingDeck;
 import it.polimi.ingsw.model.game.Player;
 
 import java.io.*;
@@ -377,13 +378,15 @@ public class ClientHandlerSocket extends Thread{
      * @author Foini Lorenzo
      */
     public void askDraw() throws IOException {
-        out.println("This is the card in top of resource deck:");
-        // TODO: Display the two decks
-        /*Server.getController().getView().displayResourceDeckTopCard();
-        out.println("This is the card in top of gold deck:");
-        Server.getController().getView().displayGoldDeckTopCard();
-        out.println("These are the cards visible in the table:");
-        Server.getController().getView().displayVisibleTableCard();*/
+        // To display the back of the top card of resource deck
+        ArrayList<Card> resourceDeck = Server.getController().getGameTable().getResourceDeck().getDeck();
+        GamingCard topResourceCard = (GamingCard) resourceDeck.get(resourceDeck.size()-1);
+        Server.getController().getView().displayTopResource(topResourceCard, out);
+        // To display the back of the top card of gold deck
+        ArrayList<Card> goldDeck = Server.getController().getGameTable().getGoldDeck().getDeck();
+        GoldCard topGoldCard = (GoldCard) goldDeck.get(goldDeck.size()-1);
+        Server.getController().getView().displayTopGold(topGoldCard, out);
+        // To display the 4 visible drawable cards
         ArrayList<GamingCard> visibleCards = Server.getController().getGameTable().getVisibleCard();
         Server.getController().getView().displayVisibleTableCard(visibleCards, out);
         // TODO Check what number of the visible cards is going to be drawn
@@ -445,7 +448,7 @@ public class ClientHandlerSocket extends Thread{
                     out.println("There is only 1 card in the table, so draw this card.");
                     try{
                         // Call to method and add card to hand
-                        GamingCard cardToDraw = Server.getController().getGameTable().drawCardFromTable(1);
+                        GamingCard cardToDraw = Server.getController().getGameTable().drawCardFromTable(0);
                         Server.getController().getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
                     } catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
                         out.println(e.getMessage());
@@ -457,7 +460,7 @@ public class ClientHandlerSocket extends Thread{
                     int selectedPosition = Integer.parseInt(in.readLine());
                     try{
                         // Call to method and add card to hand
-                        GamingCard cardToDraw = Server.getController().getGameTable().drawCardFromTable(selectedPosition);
+                        GamingCard cardToDraw = Server.getController().getGameTable().drawCardFromTable(selectedPosition-1);
                         Server.getController().getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
                     }catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
                         out.println(e.getMessage());

@@ -26,63 +26,79 @@ public class View {
      */
     public String printCorner(Corner corner, Boolean left){
         //TODO What does that a corner is visible mean?
-        if(corner.getVisible()){
-            if(corner.getEmpty()){
-                if(!left){
-                    return "          EMPTY";}
-                else{
-                    return "EMPTY          ";}
-            } else if (corner.getKingdom() != Kingdom.NONE) {
-                if(corner.getKingdom() == Kingdom.ANIMALKINGDOM){
-                    if(!left) {
-                        return (ANSI_CYAN + "  ANIMALKINGDOM" + ANSI_RESET);}
-                    else{
-                        return (ANSI_CYAN + "ANIMALKINGDOM  " + ANSI_RESET);}
-                }
-                if(corner.getKingdom() == Kingdom.PLANTKINGDOM){
-                    if(!left) {
-                        return (ANSI_GREEN + "   PLANTKINGDOM" + ANSI_RESET);}
-                    else {
-                        return (ANSI_GREEN + "PLANTKINGDOM   " + ANSI_RESET);}
-                }
-                if(corner.getKingdom() == Kingdom.INSECTKINGDOM){
-                    if(!left) {
-                        return (ANSI_PURPLE + "  INSECTKINGDOM" + ANSI_RESET);}
-                    else {
-                        return (ANSI_PURPLE + "INSECTKINGDOM  " + ANSI_RESET);}
-                }
-                if(corner.getKingdom() == Kingdom.FUNGIKINGDOM) {
-                    if(!left) {
-                        return (ANSI_RED + "   FUNGIKINGDOM" + ANSI_RESET);}
-                    else {
-                        return (ANSI_RED + "FUNGIKINGDOM   " + ANSI_RESET);}
-                }
-            } else {
-                if(corner.getObject() == GameObject.INKWELL){
-                    if(!left) {
-                        return (ANSI_YELLOW + "        INKWELL" + ANSI_RESET);}
-                    else {
-                            return (ANSI_YELLOW + "INKWELL        " + ANSI_RESET);}
-                }
-                if(corner.getObject() == GameObject.QUILL){
-                    if(!left) {
-                        return (ANSI_YELLOW + "          QUILL" + ANSI_RESET);}
-                    else {
-                        return (ANSI_YELLOW + "QUILL          " + ANSI_RESET);}
-                }
-                if(corner.getObject() == GameObject.MANUSCRIPT) {
-                    if(!left) {
-                        return (ANSI_YELLOW + "     MANUSCRIPT" + ANSI_RESET);}
-                    else {
-                        return (ANSI_YELLOW + "MANUSCRIPT     " + ANSI_RESET);}
+        if (corner.getVisible()){
+            if(!corner.getEmpty()) {
+                if (corner.getKingdom() != Kingdom.NONE) {
+                    if (corner.getKingdom() == Kingdom.ANIMALKINGDOM) {
+                        if (!left) {
+                            return (ANSI_CYAN + "  ANIMALKINGDOM" + ANSI_RESET);
+                        } else {
+                            return (ANSI_CYAN + "ANIMALKINGDOM  " + ANSI_RESET);
+                        }
+                    }
+                    if (corner.getKingdom() == Kingdom.PLANTKINGDOM) {
+                        if (!left) {
+                            return (ANSI_GREEN + "   PLANTKINGDOM" + ANSI_RESET);
+                        } else {
+                            return (ANSI_GREEN + "PLANTKINGDOM   " + ANSI_RESET);
+                        }
+                    }
+                    if (corner.getKingdom() == Kingdom.INSECTKINGDOM) {
+                        if (!left) {
+                            return (ANSI_PURPLE + "  INSECTKINGDOM" + ANSI_RESET);
+                        } else {
+                            return (ANSI_PURPLE + "INSECTKINGDOM  " + ANSI_RESET);
+                        }
+                    }
+                    if (corner.getKingdom() == Kingdom.FUNGIKINGDOM) {
+                        if (!left) {
+                            return (ANSI_RED + "   FUNGIKINGDOM" + ANSI_RESET);
+                        } else {
+                            return (ANSI_RED + "FUNGIKINGDOM   " + ANSI_RESET);
+                        }
+                    }
+                } else if(corner.getObject() != GameObject.NONE){
+                    if (corner.getObject() == GameObject.INKWELL) {
+                        if (!left) {
+                            return (ANSI_YELLOW + "        INKWELL" + ANSI_RESET);
+                        } else {
+                            return (ANSI_YELLOW + "INKWELL        " + ANSI_RESET);
+                        }
+                    }
+                    if (corner.getObject() == GameObject.QUILL) {
+                        if (!left) {
+                            return (ANSI_YELLOW + "          QUILL" + ANSI_RESET);
+                        } else {
+                            return (ANSI_YELLOW + "QUILL          " + ANSI_RESET);
+                        }
+                    }
+                    if (corner.getObject() == GameObject.MANUSCRIPT) {
+                        if (!left) {
+                            return (ANSI_YELLOW + "     MANUSCRIPT" + ANSI_RESET);
+                        } else {
+                            return (ANSI_YELLOW + "MANUSCRIPT     " + ANSI_RESET);
+                        }
+                    }
+                } else {
+                    if (!left) {
+                        return "          EMPTY";
+                    } else {
+                        return "EMPTY          ";
+                    }
                 }
             }
-        }
-        else {
+            else{
+                return "               ";
+            }
             return "               ";
         }
-        return "               ";
-
+        else {
+            if (!left) {
+                return "        COVERED";
+            } else {
+                return "COVERED        ";
+            }
+        }
     }
 
     /*
@@ -365,4 +381,54 @@ public class View {
             out.println("\n");
         }
     }
+
+
+    /**
+     * Method to display the back of the top card of resource deck
+     *
+     * @param topResource given the top card of resource deck
+     * @author giacomofalcone
+     */
+    public synchronized void displayTopResource(GamingCard topResource, PrintWriter out){
+        out.println("This is the card in top of resource deck: ");
+        if(topResource.getKingdom() == Kingdom.ANIMALKINGDOM){
+            out.println(ANSI_CYAN + "ANIMALKINGDOM" + ANSI_RESET);
+        }
+        if(topResource.getKingdom() == Kingdom.PLANTKINGDOM){
+            out.println(ANSI_GREEN + "PLANTKINGDOM" + ANSI_RESET);
+        }
+        if(topResource.getKingdom() == Kingdom.INSECTKINGDOM){
+            out.println(ANSI_PURPLE + "INSECTKINGDOM" + ANSI_RESET);
+        }
+        if(topResource.getKingdom() == Kingdom.FUNGIKINGDOM) {
+            out.println(ANSI_RED + "FUNGIKINGDOM" + ANSI_RESET);
+        }
+        out.println("\n");
+    }
+
+
+    /**
+     * Method to display the back of the top card of gold deck
+     *
+     * @param topGold given the top card of gold deck
+     * @author giacomofalcone
+     */
+    public synchronized void displayTopGold(GoldCard topGold, PrintWriter out){
+        out.println("This is the card in top of gold deck: ");
+        if(topGold.getKingdom() == Kingdom.ANIMALKINGDOM){
+            out.println(ANSI_CYAN + "ANIMALKINGDOM" + ANSI_RESET);
+        }
+        if(topGold.getKingdom() == Kingdom.PLANTKINGDOM){
+            out.println(ANSI_GREEN + "PLANTKINGDOM" + ANSI_RESET);
+        }
+        if(topGold.getKingdom() == Kingdom.INSECTKINGDOM){
+            out.println(ANSI_PURPLE + "INSECTKINGDOM" + ANSI_RESET);
+        }
+        if(topGold.getKingdom() == Kingdom.FUNGIKINGDOM) {
+            out.println(ANSI_RED + "FUNGIKINGDOM" + ANSI_RESET);
+        }
+        out.println("\n");
+    }
+
+
 }
