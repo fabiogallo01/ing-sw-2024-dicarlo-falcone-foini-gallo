@@ -312,59 +312,58 @@ public class Player {
                 return "There aren't enough resources to place the gold card.";
             }
         }
-        else{
-            // Get the 4 cards in the corner and check condition n.4
-            for (Card playedCard : playerArea.getCards()){
-                if(playedCard.getInGamePosition()[0] == (position[0]-1) &&
-                   playedCard.getInGamePosition()[1] == (position[1]-1)){
-                    if(playedCard.getSide()){ // Card is played on the front
-                        if(playedCard.getFrontCorners()[3].getEmpty()){
-                            return "Card covers a corner which can't be covered";
-                        }
-                    }
-                    else{ // Card is played on the back
-                        if(playedCard.getBackCorners()[3].getEmpty()){
-                            return "Card covers a corner which can't be covered";
-                        }
+
+        // Get the 4 cards in the corner and check condition n.4
+        for (Card playedCard : playerArea.getCards()){
+            if(playedCard.getInGamePosition()[0] == (position[0]-1) &&
+               playedCard.getInGamePosition()[1] == (position[1]-1)){
+                if(playedCard.getSide()){ // Card is played on the front
+                    if(playedCard.getFrontCorners()[3].getEmpty()){
+                        return "Card covers a corner which can't be covered";
                     }
                 }
-                else if(playedCard.getInGamePosition()[0] == (position[0]-1) &&
-                        playedCard.getInGamePosition()[1] == (position[1]+1)){
-                    if(playedCard.getSide()){ // Card is played on the front
-                        if(playedCard.getFrontCorners()[2].getEmpty()){
-                            return "Card covers a corner which can't be covered";
-                        }
-                    }
-                    else{ // Card is played on the back
-                        if(playedCard.getBackCorners()[2].getEmpty()){
-                            return "Card covers a corner which can't be covered";
-                        }
+                else{ // Card is played on the back
+                    if(playedCard.getBackCorners()[3].getEmpty()){
+                        return "Card covers a corner which can't be covered";
                     }
                 }
-                else if(playedCard.getInGamePosition()[0] == (position[0]+1) &&
-                        playedCard.getInGamePosition()[1] == (position[1]-1)){
-                    if(playedCard.getSide()){ // Card is played on the front
-                        if(playedCard.getFrontCorners()[1].getEmpty()){
-                            return "Card covers a corner which can't be covered";
-                        }
-                    }
-                    else{ // Card is played on the back
-                        if(playedCard.getBackCorners()[1].getEmpty()){
-                            return "Card covers a corner which can't be covered";
-                        }
+            }
+            else if(playedCard.getInGamePosition()[0] == (position[0]-1) &&
+                    playedCard.getInGamePosition()[1] == (position[1]+1)){
+                if(playedCard.getSide()){ // Card is played on the front
+                    if(playedCard.getFrontCorners()[2].getEmpty()){
+                        return "Card covers a corner which can't be covered";
                     }
                 }
-                else if(playedCard.getInGamePosition()[0] == (position[0]+1) &&
-                        playedCard.getInGamePosition()[1] == (position[1]+1)){
-                    if(playedCard.getSide()){ // Card is played on the front
-                        if(playedCard.getFrontCorners()[0].getEmpty()){
-                            return "Card covers a corner which can't be covered";
-                        }
+                else{ // Card is played on the back
+                    if(playedCard.getBackCorners()[2].getEmpty()){
+                        return "Card covers a corner which can't be covered";
                     }
-                    else{ // Card is played on the back
-                        if(playedCard.getBackCorners()[0].getEmpty()){
-                            return "Card covers a corner which can't be covered";
-                        }
+                }
+            }
+            else if(playedCard.getInGamePosition()[0] == (position[0]+1) &&
+                    playedCard.getInGamePosition()[1] == (position[1]-1)){
+                if(playedCard.getSide()){ // Card is played on the front
+                    if(playedCard.getFrontCorners()[1].getEmpty()){
+                        return "Card covers a corner which can't be covered";
+                    }
+                }
+                else{ // Card is played on the back
+                    if(playedCard.getBackCorners()[1].getEmpty()){
+                        return "Card covers a corner which can't be covered";
+                    }
+                }
+            }
+            else if(playedCard.getInGamePosition()[0] == (position[0]+1) &&
+                    playedCard.getInGamePosition()[1] == (position[1]+1)){
+                if(playedCard.getSide()){ // Card is played on the front
+                    if(playedCard.getFrontCorners()[0].getEmpty()){
+                        return "Card covers a corner which can't be covered";
+                    }
+                }
+                else{ // Card is played on the back
+                    if(playedCard.getBackCorners()[0].getEmpty()){
+                        return "Card covers a corner which can't be covered";
                     }
                 }
             }

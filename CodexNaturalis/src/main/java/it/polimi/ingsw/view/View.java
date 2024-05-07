@@ -125,7 +125,7 @@ public class View {
      * @author giacomofalcone
      */
     public synchronized void displayStarterCard(StarterCard starterCard, PrintWriter out){
-        out.println("This is your starter card: \n" +
+        out.println("\nThis is your starter card: \n" +
                 "Front:\n" +
                 "______________________________________________\n" +
                 "|" + printCorner(starterCard.getFrontCorners()[0], true) + "              " + printCorner(starterCard.getFrontCorners()[1], false) +"|\n" +
@@ -223,7 +223,8 @@ public class View {
      * @author giacomofalcone
      */
     public void displayObjectiveCard(ObjectiveCard objectiveCard, PrintWriter out) {
-        out.println("Objective card: \nPoints:" + objectiveCard.getPoints());
+        out.println("Objective card:\nPoints:" + objectiveCard.getPoints());
+        out.println("Type of objective:");
         if (objectiveCard.getFrontKingdom() != Kingdom.NONE) {
             if(objectiveCard.getPattern() == Pattern.NONE) {
                 if (objectiveCard.getFrontKingdom() == Kingdom.ANIMALKINGDOM) {
@@ -344,7 +345,7 @@ public class View {
                 }
             }
         }
-        out.println("\n");
+        out.print("\n");
     }
 
     /**
@@ -356,13 +357,12 @@ public class View {
     public synchronized void displayHand(ArrayList<GamingCard> hand, PrintWriter out){
         out.println("This is your hand:\n");
         for (int i=0; i < 3; i++) {
-            out.println("Card " + (i+1) + ":\n");
+            out.println("Card " + (i+1));
             if (hand.get(i) instanceof GoldCard){
                 displayGoldCard((GoldCard) hand.get(i), out);
             } else { //if (hand.get(i) is a resource card)
                 displayResourceCard(hand.get(i), out);
             }
-            out.println("\n");
         }
     }
 
@@ -375,13 +375,12 @@ public class View {
     public synchronized void displayVisibleTableCard(ArrayList<GamingCard> visibleCards, PrintWriter out){
         out.println("Visible cards that can be drawn:\n");
         for (int i=0; i < 4; i++) {
-            out.println("Card " + (i+1) + ":\n");
+            out.println("Card " + (i+1));
             if (visibleCards.get(i) instanceof GoldCard){
                 displayGoldCard((GoldCard) visibleCards.get(i), out);
             } else { //if (hand.get(i) is a resource card)
                 displayResourceCard(visibleCards.get(i), out);
             }
-            out.println("\n");
         }
     }
 
@@ -406,7 +405,7 @@ public class View {
         if(topResource.getKingdom() == Kingdom.FUNGIKINGDOM) {
             out.println(ANSI_RED + "FUNGIKINGDOM" + ANSI_RESET);
         }
-        out.println("\n");
+        out.print("\n");
     }
 
 
@@ -430,7 +429,7 @@ public class View {
         if(topGold.getKingdom() == Kingdom.FUNGIKINGDOM) {
             out.println(ANSI_RED + "FUNGIKINGDOM" + ANSI_RESET);
         }
-        out.println("\n");
+        out.print("\n");
     }
 
 

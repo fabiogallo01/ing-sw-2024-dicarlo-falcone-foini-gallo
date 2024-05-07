@@ -2,7 +2,6 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
-import it.polimi.ingsw.model.game.GamingDeck;
 import it.polimi.ingsw.model.game.Player;
 
 import java.io.*;
@@ -84,15 +83,24 @@ public class ClientHandlerSocket extends Thread{
             Server.getController().getView().displayResourceCard(hand.get(1), out); // Call to View's method
             Server.getController().getView().displayGoldCard((GoldCard)hand.get(2), out); // Call to View's method
 
+            // Show the two common objective cards
+            out.println("\nThis are the two common objectives:\n");
+            ObjectiveCard[] commonObjective = Server.getController().getGameTable().getCommonObjectives();
+            Server.getController().getView().displayObjectiveCard(commonObjective[0], out);
+            Server.getController().getView().displayObjectiveCard(commonObjective[0], out);
+
             // Ask client to select his secret objective cards from two different objective cards
+            out.println("Now you have to choose which secret objective card you want to use.");
+            out.println("You can choose one card from the following two objective cards\n");
+
             ObjectiveCard secretObjectiveCard = askSecretObjectiveCard();
 
-            // Call to controller'This is your hand:s method for create a new player
+            // Call to controller's method for create a new player
             // It also inserts the new player in the game table
             Server.getController().createNewPlayer(username, color, starterCard, hand, secretObjectiveCard);
 
             // Display message which says that the player has been added to the game and wait for start
-            out.println("You have been added to the game.\nPlease wait for other players.");
+            out.println("\nYou have been added to the game.\nPlease wait for other players.");
 
             // Set server ready
             Server.setReady();
@@ -121,7 +129,7 @@ public class ClientHandlerSocket extends Thread{
      * @author Foini Lorenzo
      */
     public void sendWaitTurnMessage(){
-        out.println("\nPlease wait for your turn.");
+        out.println("\nPlease wait for your turn.\n");
     }
 
     /**
@@ -148,7 +156,7 @@ public class ClientHandlerSocket extends Thread{
      * @author Foini Lorenzo
      */
     public void sendSelectPlayMessage(){
-        out.println("It's your turn.\nNow you have to play a card from your hand.");
+        out.println("It's your turn.\nNow you have to play a card from your hand.\n");
     }
 
     /**
@@ -167,7 +175,7 @@ public class ClientHandlerSocket extends Thread{
      * @author Foini Lorenzo
      */
     public void sendSelectDrawMessage(){
-        out.println("Now you have to select from where you want to draw your next card.");
+        out.println("\nNow you have to select from where you want to draw your next card.");
     }
 
     /**
@@ -176,7 +184,11 @@ public class ClientHandlerSocket extends Thread{
      * @author Foini Lorenzo
      */
     public void sendCorrectDrawMessage(){
-        out.println("You have correctly draw a new card and added it in your hands.");
+        out.println("\nYou have correctly draw a new card and added it in your hands.");
+    }
+
+    public void sendWaitFinishGameMessage(){
+        out.println("\nWait for others players' last turns.\nThe game will end soon");
     }
 
     /**
@@ -309,7 +321,6 @@ public class ClientHandlerSocket extends Thread{
     public void askPlay() throws IOException {
         // Display player's area and his hand
         out.println("This is your game area:");
-        // TODO: Call to View's function for display area
         try {
             Server.getController().getView().displayArea(Server.getController().getGameTable().getPlayerByUsername(username).getPlayerArea().getCards(), out);
         } catch (NoPlayerWithSuchUsernameException e) {
@@ -366,12 +377,12 @@ public class ClientHandlerSocket extends Thread{
             Server.getController().getGameTable().getPlayerByUsername(username).playCard(cardPositionHand, positionArea, sideCardToPlay);
 
             // Show messages
-            out.println("The card has been played correctly.");
+            out.println("\nThe card has been played correctly.");
             out.println("This is your score after this play: " + Server.getController().getGameTable().getPlayerByUsername(username).getScore() + " pts.");
         }catch(NoPlayerWithSuchUsernameException | InvalidPlayCardIndexException | InvalidPositionAreaException | InvalidPlayException e){
             // An error has occur
-            out.println(e.getMessage());
-            out.println("Invalid play.\nNow you will be asked to insert again all the information.");
+            out.println("\nInvalid play." + e.getMessage());
+            out.println("Now you will be asked to insert again all the information.\n");
 
             // Recall this function for ask again all the information
             askPlay();
@@ -386,16 +397,15 @@ public class ClientHandlerSocket extends Thread{
     public void askDraw() throws IOException {
         // To display the back of the top card of resource deck
         ArrayList<Card> resourceDeck = Server.getController().getGameTable().getResourceDeck().getDeck();
-        GamingCard topResourceCard = (GamingCard) resourceDeck.get(resourceDeck.size()-1);
+        GamingCard topResourceCard = (GamingCard) resourceDeck.getLast();
         Server.getController().getView().displayTopResource(topResourceCard, out);
         // To display the back of the top card of gold deck
         ArrayList<Card> goldDeck = Server.getController().getGameTable().getGoldDeck().getDeck();
-        GoldCard topGoldCard = (GoldCard) goldDeck.get(goldDeck.size()-1);
+        GoldCard topGoldCard = (GoldCard) goldDeck.getLast();
         Server.getController().getView().displayTopGold(topGoldCard, out);
         // To display the 4 visible drawable cards
         ArrayList<GamingCard> visibleCards = Server.getController().getGameTable().getVisibleCard();
         Server.getController().getView().displayVisibleTableCard(visibleCards, out);
-        // TODO Check what number of the visible cards is going to be drawn
 
         // Ask user's choice
         out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
@@ -479,7 +489,7 @@ public class ClientHandlerSocket extends Thread{
         }
     }
 
-    public void sendEndGameMessage(HashMap<Player, Integer> leaderboard) throws IOException {
+    public void sendEndGameMessage(HashMap<Player, Integer> leaderboard) {
         out.println("The game has ended.");
 
         List<Map.Entry<Player, Integer>> list = new LinkedList<>(leaderboard.entrySet());

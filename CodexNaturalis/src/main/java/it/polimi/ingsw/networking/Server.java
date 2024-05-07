@@ -70,7 +70,7 @@ public class Server {
             }
 
             // THE GAME HAS NOW STARTED
-            System.out.println("GAME HAS STARTED");
+            System.out.println("\nGAME HAS STARTED\n");
             // Send to all the clients a message which says that the game has started and their numbers
             int clientNum = 1;
             for (ClientHandlerSocket clientThread : clients) {
@@ -229,6 +229,7 @@ public class Server {
                 clientThread.sendFinishTurnMessage();
                 clientThread.sendWaitTurnMessage();
             }
+            System.out.print("\n");
         }
         // Exit from while loop => At least a player has reach 20 points
         // Now play last turn: we can avoid to ask the client to draw a card after the play
@@ -252,7 +253,7 @@ public class Server {
 
             // Send turn messages
             clientThread.sendFinishTurnMessage();
-            clientThread.sendWaitTurnMessage();
+            clientThread.sendWaitFinishGameMessage();
         }
 
         // Call controller's method for calculate final points
