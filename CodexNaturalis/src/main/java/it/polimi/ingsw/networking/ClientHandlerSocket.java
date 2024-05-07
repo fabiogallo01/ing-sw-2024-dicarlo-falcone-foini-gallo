@@ -491,7 +491,7 @@ public class ClientHandlerSocket extends Thread{
         List<Map.Entry<Player, Integer>> list = new LinkedList<>(leaderboard.entrySet());
         Map.Entry<Player, Integer> first = list.removeFirst();
         out.println("THE WINNER IS ... " + first.getKey().getUsername());
-        out.println("Final scoreboard:");
+        out.println("\nFinal scoreboard:");
 
         out.println("1st: " + first.getKey().getUsername() + " " + first.getKey().getScore());
         first = list.removeFirst();
