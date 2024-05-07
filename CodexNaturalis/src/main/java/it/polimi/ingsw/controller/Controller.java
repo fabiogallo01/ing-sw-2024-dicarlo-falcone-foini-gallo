@@ -85,7 +85,7 @@ public class Controller {
         // Create new player and add it into gameTable and scoreboard
         Player player = new Player(username, 0, playerArea, colorEnum, secretObjectiveCard, starterCard, hand);
         gameTable.addPlayer(player);
-        gameTable.getScoreboard().setScore(player, 0);
+        GameTable.getScoreboard().setScore(player, 0);
     }
 
     //da cancellare
@@ -182,7 +182,7 @@ public class Controller {
      * @author Fabio Gallo
      * */
     public HashMap<Player, Integer> getLeaderboard(){
-        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
+        HashMap<Player,Integer> scoreboard =  GameTable.getScoreboard().getScores();
 
         List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
 
@@ -194,5 +194,4 @@ public class Controller {
         }
         return leaderboard;
     }
-
 }
