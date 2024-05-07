@@ -40,9 +40,11 @@ public class Server {
         availableColors.add("yellow");
 
         int portNum = 54321; // Get random port
+        ServerSocket ss = null; // Initialise server socket
 
         // Try to get clients' connections
-        try (ServerSocket ss = new ServerSocket(portNum)) {
+        try {
+            ss = new ServerSocket(portNum);
             System.out.println("Server is connected.\nWait for connections...");
             // While loop until all players enter the game
             while (countConnectedClients < numPlayers) {
@@ -84,8 +86,18 @@ public class Server {
             // For the active player: ask turn information
             playGame();
 
+
         } catch (IOException | InterruptedException e) {
             System.err.println("Game ended because an I/O error occurred: " + e.getMessage());
+        } finally {
+            // Close connection
+            if (ss != null) {
+                try {
+                    ss.close();
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
         }
     }
 
@@ -260,15 +272,15 @@ public class Server {
         controller.calculateFinalPoints();
 
         //CHECK IF THE SERVER WORKS PROPERLY: EXECUTION SEEMS TO WORK FINE
-        /*ArrayList<Player> player = controller.getGameTable().getPlayers();
+        System.out.println("\nTHE GAME IS ENDED\n");
+        ArrayList<Player> player = controller.getGameTable().getPlayers();
         for(Player p : player){
             System.out.println(p.getUsername() + " has scored " + p.getScore() + " points.");
-        }*/
+        }
 
         HashMap<Player, Integer> leaderboard = controller.getLeaderboard();
         for(ClientHandlerSocket clientThread : clients){
             clientThread.sendEndGameMessage(leaderboard);
         }
-
     }
 }
