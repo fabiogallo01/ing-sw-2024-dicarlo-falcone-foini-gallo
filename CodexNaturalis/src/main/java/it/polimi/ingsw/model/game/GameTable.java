@@ -1428,10 +1428,10 @@ public class GameTable {
      * @author Lorenzo Foini
      */
     public GamingCard drawCardFromTable(int position) throws InvalidDrawFromTableException {
-        if (position < 1 || position > visibleCards.size()) {
+        if (position < 0 || position > visibleCards.size() - 1) {
             throw new InvalidDrawFromTableException("Invalid draw from table. Select one of the cards or draw from a deck.");
         } else {
-            GamingCard selectedCard = visibleCards.get(position-1);
+            GamingCard selectedCard = visibleCards.get(position);
             /*
                 Replace the selected card with a new one
                 Three cases:
@@ -1444,14 +1444,14 @@ public class GameTable {
             if(selectedCard instanceof GoldCard){
                 try { // Case 1 with a gold card
                     GoldCard topCardResource = (GoldCard) goldDeck.drawTopCard();
-                    visibleCards.set(position-1, topCardResource);
+                    visibleCards.set(position, topCardResource);
                 } catch (EmptyDeckException e) {
                     try { // Case 2
                         GamingCard topCardGold = (GamingCard) resourceDeck.drawTopCard();
-                        visibleCards.set(position-1, topCardGold);
+                        visibleCards.set(position, topCardGold);
                     } catch (EmptyDeckException ex) { // Case 3
                         // Shift to the left
-                        for (int i = position-1; i < visibleCards.size() - 1; i++) {
+                        for (int i = position; i < visibleCards.size() - 1; i++) {
                             visibleCards.set(i, visibleCards.get(i + 1));
                         }
                         //Remove last element
