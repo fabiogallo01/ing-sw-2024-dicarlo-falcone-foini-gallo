@@ -196,8 +196,6 @@ public class Player {
                 throw new InvalidPlayException("You can't play this card in this position. Mistake: " + mistake);
             }
             else{ //The card is playable
-
-
                 // Add the card in the given position
                 playerArea.addCard(cardToPlay, positionArea);
 
@@ -226,6 +224,9 @@ public class Player {
                     // Some resource cards assign one point
                     score += cardToPlay.getPoints();
                 }
+
+                // Assign such score in the scoreboard
+                GameTable.getScoreboard().setScore(this, score);
             }
         }
     }
