@@ -1372,7 +1372,7 @@ public class GameTable {
      * @author Fabio Gallo
      */
     public void setScoreboard(Scoreboard scoreboard) {
-        this.scoreboard = scoreboard;
+        GameTable.scoreboard = scoreboard;
     }
 
     /**
