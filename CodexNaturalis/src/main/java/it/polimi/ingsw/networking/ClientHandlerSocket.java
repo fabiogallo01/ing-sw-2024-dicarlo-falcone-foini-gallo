@@ -2,6 +2,7 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
+import it.polimi.ingsw.model.game.GameTable;
 import it.polimi.ingsw.model.game.Player;
 
 import java.io.*;
@@ -185,6 +186,86 @@ public class ClientHandlerSocket extends Thread{
 
     public void sendWaitFinishGameMessage(){
         out.println("\nWait for others players' last turns.\nThe game will end soon");
+    }
+
+    /**
+     * Send message with winners
+     *
+     * @param winners list of winners
+     * @author Foini Lorenzo
+     */
+    public void sendWinnersMessage(ArrayList<Player> winners){
+        boolean hasWon = false; // true: player has won, false: player has lost.
+
+        out.println("\nGAME OVER.\n");
+        if(winners.size() == 1){
+            out.print("THE WINNER IS ... ");
+        }else{
+            out.print("THE WINNERS ARE ... ");
+        }
+
+        for(Player winner : winners){
+            out.print(winner.getUsername() + " ");
+            if(winner.getUsername().equals(username)){
+                hasWon = true;
+            }
+        }
+
+        // Send message to show if the player has won or lost
+        if(hasWon){
+            out.println("\nCONGRATULATIONS, YOU WIN!!!");
+        }else{
+            out.println("\nSORRY, YOU LOST.");
+        }
+    }
+
+    /**
+     * Send final leaderboard to client
+     *
+     * @param leaderboard final leaderboard
+     * @author Foini Lorenzo
+     */
+    public void sendLeaderboardMessage(LinkedHashMap<Player, Integer> leaderboard) {
+        // Send final leaderboard message
+        out.println("\nFinal scoreboard:");
+
+        // If a player has a different score respect to the last one, then "update" his final position.
+        int current_index = 1;
+        int lastScore = -1; // Keep track of last score
+        String lastPosition = ""; // Keep track of last position
+
+        for (Map.Entry<Player, Integer> entry : leaderboard.entrySet()) {
+            int current_score = entry.getValue(); // Get player's score
+            if (current_score != lastScore) {
+                String position = current_index + getSuffix(current_index); // "Update" final position
+                out.println(position + entry.getKey().getUsername() + ", score: " + current_score);
+                lastPosition = position;
+                lastScore = current_score;
+            }else{
+                out.println(lastPosition + entry.getKey().getUsername() + ", score: " + current_score);
+            }
+            current_index++;
+        }
+
+        // Send end game message
+        out.println("\nTHANKS FOR PLAYING, the connection will now be reset.\n");
+    }
+
+    /**
+     * Method to return string suffix based on index param
+     *
+     * @param index position
+     * @author Foini Lorenzo
+     */
+    public String getSuffix(int index){
+        if (index == 1) {
+            return "st: ";
+        } else if (index == 2) {
+            return "nd: ";
+        } else if (index == 3) {
+            return "rd: ";
+        }
+        return "th: ";
     }
 
     /**
@@ -481,29 +562,6 @@ public class ClientHandlerSocket extends Thread{
                     }
                 }
                 break;
-            }
-        }
-    }
-
-    public void sendEndGameMessage(HashMap<Player, Integer> leaderboard) {
-        out.println("\nThe game has ended.\n");
-
-        List<Map.Entry<Player, Integer>> list = new LinkedList<>(leaderboard.entrySet());
-        Map.Entry<Player, Integer> first = list.removeFirst();
-        out.println("THE WINNER IS ... " + first.getKey().getUsername());
-        out.println("\nFinal scoreboard:");
-
-        out.println("1st: " + first.getKey().getUsername() + " " + first.getKey().getScore());
-        first = list.removeFirst();
-        out.println("2nd: " + first.getKey().getUsername() + " " + first.getKey().getScore());
-
-        if(!list.isEmpty()){
-            first = list.removeFirst();
-            out.println("3rd: " + first.getKey().getUsername() + " " + first.getKey().getScore());
-
-            if(!list.isEmpty()) {
-                first = list.removeFirst();
-                out.println("4th: " + first.getKey().getUsername() + " " + first.getKey().getScore());
             }
         }
     }
