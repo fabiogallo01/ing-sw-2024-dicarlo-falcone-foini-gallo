@@ -176,22 +176,65 @@ public class Controller {
     }
 
     /**
-     * Method to order the scoreboard, from the player with fewer points to the one with most
+     * Method to set final points in the scoreboard
+     *
+     * @author Lorenzo Foini
+     */
+    public void finalScoreboard(){
+        for(Player player : gameTable.getPlayers()) {
+            GameTable.getScoreboard().setScore(player, player.getScore());
+        }
+    }
+
+    /**
+     * Method to order the scoreboard, from the player with max points to the one with less
      *
      * @return the ordered scoreboard
-     * @author Fabio Gallo
-     * */
-    public HashMap<Player, Integer> getLeaderboard(){
+     * @author Lorenzo Foini, Fabio Gallo
+     */
+    public LinkedHashMap<Player, Integer> getLeaderboard(){
         HashMap<Player,Integer> scoreboard =  GameTable.getScoreboard().getScores();
 
-        List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
+        // Create a list with map entries
+        List<Map.Entry<Player, Integer>> orderedList = new LinkedList<>(scoreboard.entrySet());
 
-        list.sort(Map.Entry.comparingByValue());
+        orderedList.sort((entry1, entry2) -> {
+            // Decreasing order
+            return entry2.getValue().compareTo(entry1.getValue());
+        });
 
-        HashMap<Player, Integer> leaderboard = new LinkedHashMap<>();
-        for (Map.Entry<Player, Integer> entry : list) {
-            leaderboard.put(entry.getKey(), entry.getValue());
+        // Create a new ordered LinkedHashMap
+        LinkedHashMap<Player, Integer> orderedHash = new LinkedHashMap<>();
+
+        // Add ordered couple player-score
+        for (Map.Entry<Player, Integer> entry : orderedList) {
+            orderedHash.put(entry.getKey(), entry.getValue());
         }
-        return leaderboard;
+
+        return orderedHash;
+    }
+
+    /**
+     * Method to calculate who are the winners
+     *
+     * @param leaderboard ordered from first to last
+     * @return list of winners
+     * @author Lorenzo Foini
+     */
+    public ArrayList<Player> calculateWinners(LinkedHashMap<Player, Integer> leaderboard){
+        // Find max score
+        int maxScore = 0;
+        for (int score : leaderboard.values()) {
+            maxScore = Math.max(maxScore, score);
+        }
+
+        // Get list of winners
+        ArrayList<Player> winners = new ArrayList<>();
+        for (Map.Entry<Player, Integer> entry : leaderboard.entrySet()) {
+            if (entry.getValue() == maxScore) {
+                winners.add(entry.getKey());
+            }
+        }
+        return winners;
     }
 }
