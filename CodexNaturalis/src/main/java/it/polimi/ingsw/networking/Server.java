@@ -3,8 +3,7 @@ package it.polimi.ingsw.networking;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 import it.polimi.ingsw.controller.*;
 import it.polimi.ingsw.model.game.Player;
@@ -270,17 +269,24 @@ public class Server {
 
         // Call controller's method for calculate final points
         controller.calculateFinalPoints();
+        controller.finalScoreboard();
 
-        //CHECK IF THE SERVER WORKS PROPERLY: EXECUTION SEEMS TO WORK FINE
         System.out.println("\nTHE GAME IS ENDED\n");
-        ArrayList<Player> player = controller.getGameTable().getPlayers();
-        for(Player p : player){
-            System.out.println(p.getUsername() + " has scored " + p.getScore() + " points.");
+
+        // Call controller's method for getting final leaderboard
+        LinkedHashMap<Player, Integer> leaderboard = controller.getLeaderboard();
+        System.out.println("\nLeaderboard:");
+        for (Map.Entry<Player, Integer> entry : leaderboard.entrySet()) {
+            System.out.println(entry.getKey().getUsername() + ": " + entry.getValue());
         }
 
-        HashMap<Player, Integer> leaderboard = controller.getLeaderboard();
+        // Call to controller's method for getting winners
+        ArrayList<Player> winners = controller.calculateWinners(leaderboard);
+
+        // Send winners and scoreboard messages to clients
         for(ClientHandlerSocket clientThread : clients){
-            clientThread.sendEndGameMessage(leaderboard);
+            clientThread.sendWinnersMessage(winners);
+            clientThread.sendLeaderboardMessage(leaderboard);
         }
     }
 }
