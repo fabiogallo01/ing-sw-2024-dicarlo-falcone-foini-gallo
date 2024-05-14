@@ -3,7 +3,8 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.*;
-import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.ViewTUI;
+import it.polimi.ingsw.view.ViewGUI;
 
 import java.util.*;
 
@@ -15,7 +16,8 @@ import java.util.*;
  */
 public class Controller {
     private final GameTable gameTable;
-    private final View view;
+    private final ViewTUI viewTui;
+    private final ViewGUI viewGui;
 
     /**
      * Controller constructor, it creates a new instance of GameTable
@@ -26,7 +28,8 @@ public class Controller {
     public Controller(int numPlayers) {
         try {
             gameTable = new GameTable(numPlayers);
-            view = new View();
+            viewTui = new ViewTUI();
+            viewGui = new ViewGUI();
         } catch (EmptyDeckException | EmptyObjectiveDeckException e) {
             throw new RuntimeException(e);
         }
@@ -43,13 +46,23 @@ public class Controller {
     }
 
     /**
-     * View getter
+     * ViewTUI getter
      *
-     * @return View
+     * @return ViewTui
      * @author Foini Lorenzo
      */
-    public View getView(){
-        return view;
+    public ViewTUI getViewTui(){
+        return viewTui;
+    }
+
+    /**
+     * ViewGUI getter
+     *
+     * @return ViewGui
+     * @author Foini Lorenzo
+     */
+    public ViewGUI getViewGui(){
+        return viewGui;
     }
 
     /**
