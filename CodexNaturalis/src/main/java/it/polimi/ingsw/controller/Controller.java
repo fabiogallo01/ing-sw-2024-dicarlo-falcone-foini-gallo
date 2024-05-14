@@ -18,6 +18,9 @@ public class Controller {
     private final GameTable gameTable;
     private final ViewTUI viewTui;
     private final ViewGUI viewGui;
+    private final ArrayList<String> availableColors = new ArrayList<>();
+
+
 
     /**
      * Controller constructor, it creates a new instance of GameTable
@@ -30,6 +33,10 @@ public class Controller {
             gameTable = new GameTable(numPlayers);
             viewTui = new ViewTUI();
             viewGui = new ViewGUI();
+            availableColors.add("blue");
+            availableColors.add("green");
+            availableColors.add("red");
+            availableColors.add("yellow");
         } catch (EmptyDeckException | EmptyObjectiveDeckException e) {
             throw new RuntimeException(e);
         }
@@ -63,6 +70,26 @@ public class Controller {
      */
     public ViewGUI getViewGui(){
         return viewGui;
+    }
+
+    /**
+     * available colors getter
+     *
+     * @return list of available colors
+     * @author Foini Lorenzo
+     */
+    public ArrayList<String> getAvailableColors() {
+        return availableColors;
+    }
+
+    /**
+     * Method for removing a given color from the list of available colors
+     *
+     * @param color which color to be removed from list
+     * @author Foini Lorenzo
+     */
+    public void removeAvailableColor(String color) {
+        availableColors.remove(color);
     }
 
     /**
@@ -101,69 +128,7 @@ public class Controller {
         GameTable.getScoreboard().setScore(player, 0);
     }
 
-    //da cancellare
-    /* public void playGame(){
-        ArrayList<Player> players = gameTable.getPlayers();
-        Player player;
-        while(!gameTable.isEnded()){
-            for(int i=0; i<gameTable.getNumPlayers(); i++) {
-                //clients.get(i).setTurn(true);
-                //turn finished => Set false
-            }
-        }
 
-        for(int i=0; i<gameTable.getNumPlayers(); i++) {
-            player = players.get(i);
-            //ASKS FOR WHICH CARD TO PLAY FROM THE HAND, WHICH SIDE AND WHERE TO PLACE IT
-            //player.playCard(   MISSING PARAMETERS   );
-            //ASKS FROM WHICH DECK TO DRAW
-
-
-            if( MISSING CONDITION ){
-              player.addCardHand( gameTable.drawResourceCardDeck());
-            } else if( MISSING CONDITION ){
-                player.addCardHand(gameTable.drawGoldCardDeck());
-            } else {
-                player.addCardHand(gameTable.drawCardFromTable(    MISSING PARAMETERS  ));
-            }
-
-
-            //clients.get(i).setTurn;
-            //turn finished
-        }
-
-        //calculate objective points and sum them to their actual points
-        for(int i=0; i<gameTable.getNumPlayers(); i++) {
-            player = players.get(i);
-            int points = player.getScore();
-            points += player.calculateObjectivePoints(gameTable.getCommonObjectives());
-            try {
-                player.setScore(points);
-            } catch (NegativeScoreException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-
-        //make leaderboard
-        HashMap<Player,Integer> scoreboard =  gameTable.getScoreboard().getScores();
-
-        List<Map.Entry<Player, Integer>> list = new LinkedList<>(scoreboard.entrySet());
-
-        list.sort(Map.Entry.comparingByValue());
-
-        HashMap<Object, Integer> leaderboard = new LinkedHashMap<>();
-        for (Map.Entry<Player, Integer> entry : list) {
-            leaderboard.put(entry.getKey(), entry.getValue());
-        }
-
-        System.out.println("Leaderboard:");
-        for (Map.Entry<Player, Integer> entry : list) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }.
-
-    }
-    */
 
     /**
      * Method to calculate the total final points for all the players

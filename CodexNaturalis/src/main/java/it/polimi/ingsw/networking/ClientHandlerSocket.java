@@ -308,7 +308,7 @@ public class ClientHandlerSocket extends Thread{
         int num = Integer.parseInt(stringNum); // Parse to int
         // Assign such number to server's param and gameTable's param
         Server.setNumPlayers(num);
-        Server.setFistClientConnected(true);
+        Server.setFirstClientConnected(true);
     }
 
     /**
@@ -342,7 +342,7 @@ public class ClientHandlerSocket extends Thread{
      */
     public synchronized String AskColor() throws IOException {
         // Display available colors
-        ArrayList<String> availableColors = Server.getAvailableColors();
+        ArrayList<String> availableColors = Server.getController().getAvailableColors();
         out.println("Now you have to choose a color from this list:");
         for(String color : availableColors){
             out.println(color);
@@ -357,7 +357,7 @@ public class ClientHandlerSocket extends Thread{
         }
 
         // Remove such color from available list
-        Server.removeAvailableColor(selectedColor);
+        Server.getController().removeAvailableColor(selectedColor);
 
         return selectedColor;
     }

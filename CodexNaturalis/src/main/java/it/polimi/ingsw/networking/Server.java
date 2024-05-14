@@ -18,7 +18,6 @@ public class Server {
     private static int ready = 0;
     private static int countConnectedClients = 0; // Number of connected client to the game
     private static final ArrayList<String> clientUsernames = new ArrayList<>();
-    private static final ArrayList<String> availableColors = new ArrayList<>();
     private static ArrayList<ClientHandlerSocket> clients = new ArrayList<>();
     private static volatile boolean firstClientConnected = false;
     private static volatile boolean connected = false;
@@ -33,10 +32,6 @@ public class Server {
      */
     public static void main(String[] args) {
         // Add available colors as string
-        availableColors.add("blue");
-        availableColors.add("green");
-        availableColors.add("red");
-        availableColors.add("yellow");
 
         int portNum = 54321; // Get random port
         ServerSocket ss = null; // Initialise server socket
@@ -158,26 +153,6 @@ public class Server {
     }
 
     /**
-     * available colors getter
-     *
-     * @return list of available colors
-     * @author Foini Lorenzo
-     */
-    public static ArrayList<String> getAvailableColors() {
-        return availableColors;
-    }
-
-    /**
-     * Method for removing a given color from the list of available colors
-     *
-     * @param color which color to be removed from list
-     * @author Foini Lorenzo
-     */
-    public static void removeAvailableColor(String color) {
-        availableColors.remove(color);
-    }
-
-    /**
      * clients' username getter
      *
      * @return list of clients' username
@@ -203,7 +178,7 @@ public class Server {
      * @param firstClientConnected boolean to be set
      * @author Foini Lorenzo
      */
-    public static void setFistClientConnected(boolean firstClientConnected) {
+    public static void setFirstClientConnected(boolean firstClientConnected) {
         Server.firstClientConnected = firstClientConnected;
     }
 
