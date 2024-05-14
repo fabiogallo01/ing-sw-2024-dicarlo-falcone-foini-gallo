@@ -2,7 +2,6 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
-import it.polimi.ingsw.model.game.GameTable;
 import it.polimi.ingsw.model.game.Player;
 
 import java.io.*;
@@ -59,6 +58,7 @@ public class ClientHandlerSocket extends Thread{
             }
 
             // Check UI: TUI or GUI
+            // TODO
 
             // Ask client's username and insert such username in list of players' username
             username = askUsername();
@@ -273,6 +273,15 @@ public class ClientHandlerSocket extends Thread{
             return "rd: ";
         }
         return "th: ";
+    }
+
+    /**
+     * Client's UI getter
+     *
+     * @author Foini Lorenzo
+     */
+    public String getUserInterface(){
+        return userInterface;
     }
 
     /**
