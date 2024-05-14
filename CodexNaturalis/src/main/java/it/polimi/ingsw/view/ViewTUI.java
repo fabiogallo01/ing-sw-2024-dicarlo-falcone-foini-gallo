@@ -1,13 +1,11 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.*;
-import it.polimi.ingsw.networking.Server;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class View {
+public class ViewTUI {
 
     // ANSI escape codes for colors
     public static final String ANSI_RESET = "\u001B[0m";
@@ -17,7 +15,6 @@ public class View {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
 
-
     /**
      * Method to print card's corners
      *
@@ -25,7 +22,6 @@ public class View {
      * @author giacomofalcone
      */
     public String printCorner(Corner corner, Boolean left){
-        //TODO What does that a corner is visible mean?
         if (corner.getVisible()){
             if(!corner.getEmpty()) {
                 if (corner.getKingdom() != Kingdom.NONE) {
