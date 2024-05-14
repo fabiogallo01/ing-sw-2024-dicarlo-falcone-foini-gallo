@@ -20,8 +20,8 @@ public class GamingCard extends Card{
      * @param frontCorners for card's front corners
      * @author Andrea Di Carlo, Foini Lorenzo
      */
-    public GamingCard(boolean side, Kingdom kingdom, int points, Corner[] frontCorners) {
-        super(side, frontCorners); // Using the constructor without backCorners
+    public GamingCard(boolean side, Kingdom kingdom, int points, Corner[] frontCorners, int ID) {
+        super(side, frontCorners, ID); // Using the constructor without backCorners
         this.kingdom = kingdom;
         this.points = points;
     }

@@ -12,6 +12,7 @@ public abstract class Card {
     protected Corner[] backCorners;
     protected int[] inGamePosition;
     protected boolean counted; // true => Counted in patter, false => Not counted in pattern
+    protected final int ID;
 
     /**
      * Card constructor, it assigns all the parameters (back corners)
@@ -23,7 +24,7 @@ public abstract class Card {
      * @param backCorners for card's back corners
      * @author Andrea Di Carlo, Foini Lorenzo
      */
-    public Card(boolean side, Corner[] frontCorners, Corner[] backCorners) {
+    public Card(boolean side, Corner[] frontCorners, Corner[] backCorners, int ID) {
         this.side = side;
         this.frontCorners = frontCorners;
         this.backCorners = backCorners;
@@ -31,6 +32,7 @@ public abstract class Card {
         this.inGamePosition[0] = -1;
         this.inGamePosition[1] = -1; // At the beginning the cards do not have a position
         this.counted = false; // Parameter used for counting pattern for objective cards
+        this.ID = ID;
     }
 
     /**
@@ -42,7 +44,7 @@ public abstract class Card {
      * @param frontCorners for card's front corners
      * @author Foini Lorenzo, Fabio Gallo
      */
-    public Card(boolean side, Corner[] frontCorners) {
+    public Card(boolean side, Corner[] frontCorners, int ID) {
         this.side = side;
         this.frontCorners = frontCorners;
         this.backCorners = new Corner[]{
@@ -55,6 +57,7 @@ public abstract class Card {
         this.inGamePosition[0] = -1;
         this.inGamePosition[1] = -1; // At the beginning the cards do not have a position
         this.counted = false; // Parameter used for counting pattern for objective cards
+        this.ID = ID;
     }
 
     /**
@@ -150,5 +153,9 @@ public abstract class Card {
         { getFrontCorners()[position].setVisible(false); }
         else
         { getBackCorners()[position].setVisible(false); }
+    }
+
+    public int getID() {
+        return ID;
     }
 }

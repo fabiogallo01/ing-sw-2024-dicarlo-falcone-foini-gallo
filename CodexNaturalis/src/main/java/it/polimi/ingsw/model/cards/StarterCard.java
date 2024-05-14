@@ -17,8 +17,8 @@ public class StarterCard extends Card{
      * @param frontKingdoms for card's front kingdoms
      * @author Foini Lorenzo
      */
-    public StarterCard(boolean side, Corner[] frontCorners, Corner[] backCorners, Kingdom[] frontKingdoms) {
-        super(side, frontCorners, backCorners); // Using the constructor with backCorners
+    public StarterCard(boolean side, Corner[] frontCorners, Corner[] backCorners, Kingdom[] frontKingdoms, int ID) {
+        super(side, frontCorners, backCorners, ID); // Using the constructor with backCorners
         this.frontKingdoms = frontKingdoms;
     }
 

@@ -28,14 +28,14 @@ public class PlayerTest {
 
         //2 sets of common objectives, to test different cases, only one secret objective
 
-        ObjectiveCard secretObjective = new ObjectiveCard(2, true, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM);
+        ObjectiveCard secretObjective = new ObjectiveCard(2, true, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0);
 
-        ObjectiveCard commonObjective3 = new ObjectiveCard(2, false, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.ANIMALKINGDOM);
-        ObjectiveCard commonObjective4 = new ObjectiveCard(3, false, new GameObject[]{GameObject.QUILL, GameObject.INKWELL, GameObject.MANUSCRIPT}, Pattern.NONE, Kingdom.NONE);
+        ObjectiveCard commonObjective3 = new ObjectiveCard(2, false, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.ANIMALKINGDOM, 0);
+        ObjectiveCard commonObjective4 = new ObjectiveCard(3, false, new GameObject[]{GameObject.QUILL, GameObject.INKWELL, GameObject.MANUSCRIPT}, Pattern.NONE, Kingdom.NONE, 0);
         commonObjectives = new ObjectiveCard[]{commonObjective3, commonObjective4};
 
-        ObjectiveCard commonObjective1 = new ObjectiveCard(2, false, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.FUNGIKINGDOM);
-        ObjectiveCard commonObjective2 = new ObjectiveCard(3, false, new GameObject[]{GameObject.NONE}, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM);
+        ObjectiveCard commonObjective1 = new ObjectiveCard(2, false, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.FUNGIKINGDOM, 0);
+        ObjectiveCard commonObjective2 = new ObjectiveCard(3, false, new GameObject[]{GameObject.NONE}, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM, 0);
         commonObjectives2 = new ObjectiveCard[]{commonObjective1, commonObjective2};
 
         //starter card
@@ -56,7 +56,7 @@ public class PlayerTest {
 
         Kingdom[] kingdoms = new Kingdom[]{Kingdom.PLANTKINGDOM, Kingdom.ANIMALKINGDOM, Kingdom.FUNGIKINGDOM};
 
-        StarterCard starterCard = new StarterCard(false, frontCorners, backCorners, kingdoms);
+        StarterCard starterCard = new StarterCard(false, frontCorners, backCorners, kingdoms, 0);
 
         //cards in the hand of the player
 
@@ -71,7 +71,7 @@ public class PlayerTest {
 
         Kingdom[] resources = new Kingdom[]{Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.ANIMALKINGDOM};
 
-        GoldCard goldCard1 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 1, frontCorners, resources, ConditionPoint.QUILL);
+        GoldCard goldCard1 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 1, frontCorners, resources, ConditionPoint.QUILL, 0);
 
         hand.add(goldCard1);
 
@@ -85,7 +85,7 @@ public class PlayerTest {
 
         resources = new Kingdom[]{Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.PLANTKINGDOM};
 
-        GoldCard goldCard2 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 2, frontCorners, resources, ConditionPoint.INKWELL);
+        GoldCard goldCard2 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 2, frontCorners, resources, ConditionPoint.INKWELL, 0);
 
         hand.add(goldCard2);
 
@@ -97,7 +97,7 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
 
-        GamingCard resourceCard = new GamingCard(true, Kingdom.INSECTKINGDOM, 1, frontCorners);
+        GamingCard resourceCard = new GamingCard(true, Kingdom.INSECTKINGDOM, 1, frontCorners, 0);
 
         hand.add(resourceCard);
 
@@ -111,7 +111,7 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
 
-        GamingCard playedResourceCard1 = new GamingCard(true, Kingdom.FUNGIKINGDOM, 0, frontCorners);
+        GamingCard playedResourceCard1 = new GamingCard(true, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0);
 
 
         frontCorners = new Corner[]{
@@ -121,7 +121,7 @@ public class PlayerTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        GamingCard playedResourceCard2 = new GamingCard(true, Kingdom.PLANTKINGDOM, 0, frontCorners);
+        GamingCard playedResourceCard2 = new GamingCard(true, Kingdom.PLANTKINGDOM, 0, frontCorners, 0);
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
@@ -130,7 +130,7 @@ public class PlayerTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        GamingCard playedResourceCard3 = new GamingCard(true, Kingdom.FUNGIKINGDOM, 0, frontCorners);
+        GamingCard playedResourceCard3 = new GamingCard(true, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0);
 
 
         frontCorners = new Corner[]{
@@ -142,7 +142,7 @@ public class PlayerTest {
 
         resources = new Kingdom[]{Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.PLANTKINGDOM};
 
-        GoldCard playedGoldCard1 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 2, frontCorners, resources, ConditionPoint.HIDDENCORNER);
+        GoldCard playedGoldCard1 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 2, frontCorners, resources, ConditionPoint.HIDDENCORNER, 0);
 
 
         frontCorners = new Corner[]{
@@ -152,7 +152,7 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
         };
 
-        GamingCard playedResourceCard4 = new GamingCard(true, Kingdom.PLANTKINGDOM, 0, frontCorners);
+        GamingCard playedResourceCard4 = new GamingCard(true, Kingdom.PLANTKINGDOM, 0, frontCorners, 0);
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
@@ -161,7 +161,7 @@ public class PlayerTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        GamingCard playedResourceCard5 = new GamingCard(true, Kingdom.INSECTKINGDOM, 0, frontCorners);
+        GamingCard playedResourceCard5 = new GamingCard(true, Kingdom.INSECTKINGDOM, 0, frontCorners, 0);
 
 
         //creation of the player area

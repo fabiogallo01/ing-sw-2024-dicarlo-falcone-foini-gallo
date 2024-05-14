@@ -20,8 +20,8 @@ public class GoldCard extends GamingCard {
      * @param resources the amount of kingdoms objects that must be present on the playing field for the card to be played
      * @param conditionPoints the conditions that are applied for the assignment of points
      */
-    public GoldCard(boolean side, Kingdom kingdom, int points, Corner[] frontCorners, Kingdom[] resources, ConditionPoint conditionPoints) {
-        super(side, kingdom, points, frontCorners);
+    public GoldCard(boolean side, Kingdom kingdom, int points, Corner[] frontCorners, Kingdom[] resources, ConditionPoint conditionPoints, int ID) {
+        super(side, kingdom, points, frontCorners, ID);
         this.resources = resources;
         this.conditionPoint = conditionPoints;
     }

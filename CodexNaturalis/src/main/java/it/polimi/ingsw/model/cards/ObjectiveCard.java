@@ -11,7 +11,7 @@ public class ObjectiveCard {
     private final GameObject[] objects;
     private final Pattern pattern;
     private final Kingdom frontKingdom;
-
+    private final int ID;
     /**
      * Objective card constructor, it assigns all the parameters
      *
@@ -22,12 +22,13 @@ public class ObjectiveCard {
      * @param frontKingdom representing card kingdom (Can be None)
      * @author Foini Lorenzo
      */
-    public ObjectiveCard(int points, boolean isSecret, GameObject[] objects, Pattern pattern, Kingdom frontKingdom) {
+    public ObjectiveCard(int points, boolean isSecret, GameObject[] objects, Pattern pattern, Kingdom frontKingdom, int ID) {
         this.points = points;
         this.isSecret = isSecret;
         this.objects = objects;
         this.pattern = pattern;
         this.frontKingdom = frontKingdom;
+        this.ID = ID;
     }
 
     /**
@@ -88,5 +89,9 @@ public class ObjectiveCard {
      */
     public Kingdom getFrontKingdom() {
         return frontKingdom;
+    }
+
+    public int getID() {
+        return ID;
     }
 }

@@ -218,8 +218,8 @@ public class GameTableTest {
         PlayerArea playerArea = new PlayerArea(Area, new ArrayList<Card>());
 
         //creating all the cards needed for the player to start the game
-        ObjectiveCard secretObjective = new ObjectiveCard(1, true, null, Pattern.NONE, Kingdom.NONE);
-        StarterCard starterCard = new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE});
+        ObjectiveCard secretObjective = new ObjectiveCard(1, true, null, Pattern.NONE, Kingdom.NONE, 0);
+        StarterCard starterCard = new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE}, 0);
         ArrayList<GamingCard> hand = new ArrayList<>();  //empty hand
 
         Color playerColor = Color.GREEN;
