@@ -21,6 +21,7 @@ public class ClientHandlerSocket extends Thread{
     private BufferedReader in; // Input message from client to server
     private PrintWriter out; // Output message from server to client
     private String username;
+    private String userInterface;
 
     /**
      * ViewClientHandler constructor, it assigns/creates all class's parameters
@@ -45,6 +46,10 @@ public class ClientHandlerSocket extends Thread{
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); // Input => Client messages
             out = new PrintWriter(clientSocket.getOutputStream(), true); // Output => Server messages
 
+            // Get client UI choice: TUI or GUI
+            userInterface = in.readLine();
+            System.out.println(userInterface);
+
             Server.incrementCountConnectedClients(); // Increment server's counter of connected clients
             Server.setConnected(true);
             // If first client => Ask for number of players
@@ -52,6 +57,8 @@ public class ClientHandlerSocket extends Thread{
             if(Server.getCountConnectedClients() == 1) {
                 askNumberPlayers();
             }
+
+            // Check UI: TUI or GUI
 
             // Ask client's username and insert such username in list of players' username
             username = askUsername();
@@ -66,7 +73,7 @@ public class ClientHandlerSocket extends Thread{
             } catch (EmptyDeckException e) {
                 throw new RuntimeException(e);
             }
-            Server.getController().getView().displayStarterCard(starterCard,out);
+            Server.getController().getViewTui().displayStarterCard(starterCard,out);
             // Ask client on which side he wants to play the starter card
             boolean sideStarterCard = askStarterCardSide();
             // Assign such side to starter card
@@ -78,15 +85,15 @@ public class ClientHandlerSocket extends Thread{
             hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
             hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
             out.println("\nThis is your hand:\n");
-            Server.getController().getView().displayResourceCard(hand.get(0), out); // Call to View's method
-            Server.getController().getView().displayResourceCard(hand.get(1), out); // Call to View's method
-            Server.getController().getView().displayGoldCard((GoldCard)hand.get(2), out); // Call to View's method
+            Server.getController().getViewTui().displayResourceCard(hand.get(0), out); // Call to View's method
+            Server.getController().getViewTui().displayResourceCard(hand.get(1), out); // Call to View's method
+            Server.getController().getViewTui().displayGoldCard((GoldCard)hand.get(2), out); // Call to View's method
 
             // Show the two common objective cards
             out.println("\nThis are the two common objectives:\n");
             ObjectiveCard[] commonObjective = Server.getController().getGameTable().getCommonObjectives();
-            Server.getController().getView().displayObjectiveCard(commonObjective[0], out);
-            Server.getController().getView().displayObjectiveCard(commonObjective[1], out);
+            Server.getController().getViewTui().displayObjectiveCard(commonObjective[0], out);
+            Server.getController().getViewTui().displayObjectiveCard(commonObjective[1], out);
 
             // Ask client to select his secret objective cards from two different objective cards
             out.println("Now you have to choose which secret objective card you want to use.");
@@ -376,8 +383,8 @@ public class ClientHandlerSocket extends Thread{
         ObjectiveCard card2 = Server.getController().getGameTable().getObjectiveDeck().drawTopCard();
 
         // Display the two cards
-        Server.getController().getView().displayObjectiveCard(card1, out);
-        Server.getController().getView().displayObjectiveCard(card2, out);
+        Server.getController().getViewTui().displayObjectiveCard(card1, out);
+        Server.getController().getViewTui().displayObjectiveCard(card2, out);
 
         // Ask choice to client (1 => First card, 2 => Second card)
         String stringChoice;
@@ -399,7 +406,7 @@ public class ClientHandlerSocket extends Thread{
         // Display player's area and his hand
         out.println("This is your game area:");
         try {
-            Server.getController().getView().displayArea(Server.getController().getGameTable().getPlayerByUsername(username).getPlayerArea().getCards(), out);
+            Server.getController().getViewTui().displayArea(Server.getController().getGameTable().getPlayerByUsername(username).getPlayerArea().getCards(), out);
         } catch (NoPlayerWithSuchUsernameException e) {
             throw new RuntimeException(e);
         }
@@ -408,7 +415,7 @@ public class ClientHandlerSocket extends Thread{
         try{
             // Get the player's hand and display it
             ArrayList<GamingCard> handToPrint = Server.getController().getGameTable().getPlayerByUsername(username).getHand();
-            Server.getController().getView().displayHand(handToPrint, out);
+            Server.getController().getViewTui().displayHand(handToPrint, out);
         } catch(NoPlayerWithSuchUsernameException e){
             out.println(e.getMessage());
         }
@@ -475,14 +482,14 @@ public class ClientHandlerSocket extends Thread{
         // To display the back of the top card of resource deck
         ArrayList<Card> resourceDeck = Server.getController().getGameTable().getResourceDeck().getDeck();
         GamingCard topResourceCard = (GamingCard) resourceDeck.getLast();
-        Server.getController().getView().displayTopResource(topResourceCard, out);
+        Server.getController().getViewTui().displayTopResource(topResourceCard, out);
         // To display the back of the top card of gold deck
         ArrayList<Card> goldDeck = Server.getController().getGameTable().getGoldDeck().getDeck();
         GoldCard topGoldCard = (GoldCard) goldDeck.getLast();
-        Server.getController().getView().displayTopGold(topGoldCard, out);
+        Server.getController().getViewTui().displayTopGold(topGoldCard, out);
         // To display the 4 visible drawable cards
         ArrayList<GamingCard> visibleCards = Server.getController().getGameTable().getVisibleCard();
-        Server.getController().getView().displayVisibleTableCard(visibleCards, out);
+        Server.getController().getViewTui().displayVisibleTableCard(visibleCards, out);
 
         // Ask user's choice
         out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
