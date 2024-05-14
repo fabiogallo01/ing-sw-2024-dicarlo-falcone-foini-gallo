@@ -49,16 +49,24 @@ public class ClientHandlerSocket extends Thread{
             userInterface = in.readLine();
             System.out.println(userInterface);
 
+            // Check UI: TUI or GUI
+            // TODO
+            if(userInterface.equals("TUI")) {
+                playTui();
+            }else{
+                playGui();
+            }
+
             Server.incrementCountConnectedClients(); // Increment server's counter of connected clients
             Server.setConnected(true);
+
+            // TODO: Move the following lines in method playTui()
+
             // If first client => Ask for number of players
             // Such number must be 2, 3 or 4
             if(Server.getCountConnectedClients() == 1) {
                 askNumberPlayers();
             }
-
-            // Check UI: TUI or GUI
-            // TODO
 
             // Ask client's username and insert such username in list of players' username
             username = askUsername();
@@ -580,5 +588,25 @@ public class ClientHandlerSocket extends Thread{
                 break;
             }
         }
+    }
+
+    /**
+     * Method called when client decides to use TUI
+     * It handles the communication between client and server
+     *
+     * @author Foini Lorenzo
+     */
+    private void playTui(){
+        // TODO
+    }
+
+    /**
+     * Method called when client decides to use GUI
+     * It handles the communication between client and server
+     *
+     * @author Foini Lorenzo
+     */
+    private void playGui(){
+
     }
 }
