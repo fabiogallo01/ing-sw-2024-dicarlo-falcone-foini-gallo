@@ -7,51 +7,79 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+// TODO: Add listener and get correct ID of cards to be displayed
+
+/**
+ * Class representing GUI
+ * It has different methods which will be used in teh client-server communication using GUI
+ * Made using Swing
+ *
+ * @author Foini Lorenzo
+ */
+
 public class ViewGUI {
     public static void main(String[] args){
-        MyFrame frame = new MyFrame("CODEX NATURALIS");
+        // TODO: Create new panel for login window
+
+        GameFrame frame = new GameFrame("CODEX NATURALIS");
         frame.pack();
+
+        // TODO: Create new panel for post game window
     }
 }
 
-class MyFrame extends JFrame {
+/**
+ * New class for creating a new window which will be used by client
+ * It represents the after login window.
+ * It extends JFrame.
+ *
+ * @author Falcone Giacomo, Foini Lorenzo
+ */
+class GameFrame extends JFrame {
     final int NUM_ROWS = 81;
     final int NUM_COLS = 81;
 
-    BufferedImage originalImage = null;
-    Image scaledImage = null;
-    ImageIcon imageIcon = null;
-
-    MyFrame(String title){
+    /**
+     * MyFrame constructor, it calls method init() for initialization of panel
+     *
+     * @param title window's title
+     * @author Foini Lorenzo
+     */
+    GameFrame(String title){
         super(title);
         init();
     }
 
+    /**
+     * This method is used for initialization of panel
+     *
+     * @author Foini Lorenzo
+     */
     void init(){
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH); // MAX dimension
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
 
-        // Create new panel for north
+        // Call to function createPanelNorth() for creating new panel to be addend in the content pane
         JPanel panelNorth = createPanelNorth();
 
-        // Create new panel for west
+        // Call to function createPanelWest() for creating new panel to be addend in the content pane
         JPanel panelWest = createPanelWest();
 
-        // Create new panel for center
+        // Call to function createPanelCenter() for creating new scroll panel to be addend in the content pane
         JScrollPane scrollPaneCenter = createPanelCenter();
 
-        // Create new panel for east
+        // Call to function createPanelEast() for creating new panel to be addend in the content pane
         JPanel panelEast = createPanelEast();
 
-        // Create new panel for south
+        // Call to function createPanelSouth() for creating new panel to be addend in the content pane
         JPanel panelSouth = createPanelSouth();
 
-        // Get container
+        // Get content pane
         Container contentPane = this.getContentPane();
 
-        // Add JPanel in contentPane
+        // Add JPanels and scroll pane in the content pane
         contentPane.add(panelNorth,BorderLayout.NORTH);
         contentPane.add(panelWest,BorderLayout.WEST);
         contentPane.add(scrollPaneCenter,BorderLayout.CENTER);
@@ -59,63 +87,54 @@ class MyFrame extends JFrame {
         contentPane.add(panelSouth,BorderLayout.SOUTH);
     }
 
-    // Method for create north panel
+    /**
+     * This method is used for creating the north panel
+     * The north panel contains the two common objectives and the secret one
+     *
+     * @return the panel that will be added in the content pane
+     * @author Falcone Giacomo, Foini Lorenzo
+     */
     public JPanel createPanelNorth(){
+        // Create new panel and use a GridBagLayout, so we can choose the size of the cells
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
-        // Create label
-        JLabel label1 = new JLabel("Common objective n.1");
-        JLabel label2 = new JLabel("Common objective n.2");
-        JLabel label3 = new JLabel("Secret objective");
+        // Create labels for objectives
+        JLabel commonObjective1 = new JLabel("Common objective n.1");
+        JLabel commonObjective2 = new JLabel("Common objective n.2");
+        JLabel secretObjective1 = new JLabel("Secret objective");
 
-        label1.setHorizontalAlignment(JLabel.CENTER);
-        label1.setVerticalAlignment(JLabel.CENTER);
-        label2.setHorizontalAlignment(JLabel.CENTER);
-        label2.setVerticalAlignment(JLabel.CENTER);
-        label3.setHorizontalAlignment(JLabel.CENTER);
-        label3.setVerticalAlignment(JLabel.CENTER);
+        // Set horizontal and vertical alignment to center
+        commonObjective1.setHorizontalAlignment(JLabel.CENTER);
+        commonObjective1.setVerticalAlignment(JLabel.CENTER);
+        commonObjective2.setHorizontalAlignment(JLabel.CENTER);
+        commonObjective2.setVerticalAlignment(JLabel.CENTER);
+        secretObjective1.setHorizontalAlignment(JLabel.CENTER);
+        secretObjective1.setVerticalAlignment(JLabel.CENTER);
 
-        addComponent(panel, label1, gbc, 0, 0, 1, 1, 1, 0.3); // Prima riga
-        addComponent(panel, label2, gbc, 0, 1, 1, 1, 1, 0.3); // Prima riga
-        addComponent(panel, label3, gbc, 0, 2, 1, 1, 1, 0.3); // Prima riga
+        // Add labels in the panel in first row
+        // These labels will occupy 30% of the panel
+        addComponent(panel, commonObjective1, gbc, 0, 0, 1, 1, 1, 0.3);
+        addComponent(panel, commonObjective2, gbc, 0, 1, 1, 1, 1, 0.3);
+        addComponent(panel, secretObjective1, gbc, 0, 2, 1, 1, 1, 0.3);
 
-        // Get images
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_91.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image1 = new JLabel(imageIcon);
+        // Get images of the three objective cards
+        // For doing so we call method getImageFromID with teh cards' IDs, width and height
+        JLabel imageCommonObjective1 = new JLabel(getImageFromID(91, true,200, 80));
+        JLabel imageCommonObjective2 = new JLabel(getImageFromID(92, true,200, 80));
+        JLabel imageSecretObjective = new JLabel(getImageFromID(93, true,200, 80));
 
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_92.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image2 = new JLabel(imageIcon);
+        // Set image label in center
+        imageCommonObjective1.setVerticalAlignment(JLabel.CENTER);
+        imageCommonObjective2.setVerticalAlignment(JLabel.CENTER);
+        imageSecretObjective.setVerticalAlignment(JLabel.CENTER);
 
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_93.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image3 = new JLabel(imageIcon);
-
-        image1.setVerticalAlignment(JLabel.CENTER);
-        image2.setVerticalAlignment(JLabel.CENTER);
-        image3.setVerticalAlignment(JLabel.CENTER);
-
-        addComponent(panel, image1, gbc, 1, 0, 1, 1, 1, 0.7);
-        addComponent(panel, image2, gbc, 1, 1, 1, 1, 1, 0.7);
-        addComponent(panel, image3, gbc, 1, 2, 1, 1, 1, 0.7); // Seconda riga
+        // Add image labels in the panel in second row
+        // These labels will occupy 70% of the panel
+        addComponent(panel, imageCommonObjective1, gbc, 1, 0, 1, 1, 1, 0.7);
+        addComponent(panel, imageCommonObjective2, gbc, 1, 1, 1, 1, 1, 0.7);
+        addComponent(panel, imageSecretObjective, gbc, 1, 2, 1, 1, 1, 0.7);
 
         // Set panel values
         panel.setBackground(Color.CYAN);
@@ -125,292 +144,268 @@ class MyFrame extends JFrame {
         return panel;
     }
 
-    // Method for create west panel
+    /**
+     * This method is used for creating the west panel
+     * The west panel contains the cards that can be drawn from a deck or from table
+     *
+     * @return the panel that will be added in the content pane
+     * @author Foini Lorenzo
+     */
     public JPanel createPanelWest(){
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-
-        // Add grid constraint: 5%
-        JPanel panel1 = new JPanel();
+        // Create new panel and use a GridBagLayout, so we can choose the size of the cells
+        JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weighty = 0.05; // 5% of height
         gbc.fill = GridBagConstraints.BOTH;
 
-        // Create label
+
+        // Create label for scoreboard
         JLabel scoreboard = new JLabel("Live scoreboard:");
         scoreboard.setHorizontalAlignment(JLabel.CENTER);
         scoreboard.setVerticalAlignment(JLabel.CENTER);
-        panel1.add(scoreboard);
 
-        mainPanel.add(panel1, gbc);
+        // Add label in the panel in first row
+        // This label will occupy 10% of the panel
+        addComponent(panel, scoreboard, gbc, 0, 0, 1, 1, 1, 0.1);
 
-        // add grid constraint: 45%
-        JPanel panel2 = new JPanel(new GridLayout(4,2));
-        gbc.gridy = 1;
-        gbc.weighty = 0.45; // 45% of height
 
-        // Create labels
-        JLabel player1 = new JLabel("- Player 1");
-        player1.setHorizontalAlignment(JLabel.CENTER);
+        // Create labels for players and their scores
+        JLabel player1 = new JLabel("- Player 1: 5 pts");
+        JLabel player2 = new JLabel("- Player 2: 3 pts");
+        JLabel player3 = new JLabel("- Player 3: 7 pts");
+        JLabel player4 = new JLabel("- Player 4: 2 pts");
+
+        // Set vertical alignment to center
         player1.setVerticalAlignment(JLabel.CENTER);
-
-        JLabel player2 = new JLabel("- Player 2");
-        player2.setHorizontalAlignment(JLabel.CENTER);
         player2.setVerticalAlignment(JLabel.CENTER);
-
-        JLabel player3 = new JLabel("- Player 3");
-        player3.setHorizontalAlignment(JLabel.CENTER);
         player3.setVerticalAlignment(JLabel.CENTER);
-
-        JLabel player4 = new JLabel("- Player 4");
-        player4.setHorizontalAlignment(JLabel.CENTER);
         player4.setVerticalAlignment(JLabel.CENTER);
 
-        JLabel score1 = new JLabel("1 pts");
-        score1.setHorizontalAlignment(JLabel.CENTER);
-        score1.setVerticalAlignment(JLabel.CENTER);
+        // Add labels in the panel using bag constraints
+        addComponent(panel, player1, gbc, 1, 0, 1, 1, 1, 0.1);
+        addComponent(panel, player2, gbc, 2, 0, 1, 1, 1, 0.1);
+        addComponent(panel, player3, gbc, 3, 0, 1, 1, 1, 0.1);
+        addComponent(panel, player4, gbc, 4, 0, 1, 1, 1, 0.1);
 
-        JLabel score2 = new JLabel("2 pts");
-        score2.setHorizontalAlignment(JLabel.CENTER);
-        score2.setVerticalAlignment(JLabel.CENTER);
 
-        JLabel score3 = new JLabel("3 pts");
-        score3.setHorizontalAlignment(JLabel.CENTER);
-        score3.setVerticalAlignment(JLabel.CENTER);
+        // Create buttons to reset scroll bar and add it in the panel
+        JButton buttonResetScrollBar = new JButton("Reset scroll bar");
+        addComponent(panel, buttonResetScrollBar, gbc, 5, 0, 1, 1, 1, 0.1);
 
-        JLabel score4 = new JLabel("4 pts");
-        score4.setHorizontalAlignment(JLabel.CENTER);
-        score4.setVerticalAlignment(JLabel.CENTER);
 
-        // Add all labels in panel
-        panel2.add(player1);
-        panel2.add(score1);
-        panel2.add(player2);
-        panel2.add(score2);
-        panel2.add(player3);
-        panel2.add(score3);
-        panel2.add(player4);
-        panel2.add(score4);
+        // Create buttons to see others players' game area
+        JButton buttonPlayerArea1 = new JButton("Player 1 area");
+        JButton buttonPlayerArea2 = new JButton("Player 2 area");
+        JButton buttonPlayerArea3 = new JButton("Player 3 area");
+        JButton buttonPlayerArea4 = new JButton("Player 4 area");
 
-        mainPanel.add(panel2, gbc);
+        // Add buttons in the panel in second row
+        // These buttons will occupy 30% of the panel
+        addComponent(panel, buttonPlayerArea1, gbc, 6, 0, 1, 1, 1, 0.1);
+        addComponent(panel, buttonPlayerArea2, gbc, 7, 0, 1, 1, 1, 0.1);
+        addComponent(panel, buttonPlayerArea3, gbc, 8, 0, 1, 1, 1, 0.1);
+        addComponent(panel, buttonPlayerArea4, gbc, 9, 0, 1, 1, 1, 0.1);
 
-        // Add grid constraint: 50%
-        JPanel panel3 = new JPanel(new GridLayout(4, 1));
-        gbc.gridy = 2;
-        gbc.weighty = 0.5; // 50% of height
+        // Set panel values
+        panel.setBackground(Color.RED);
+        panel.setOpaque(true);
+        panel.setPreferredSize(new Dimension(175, 100));
 
-        JButton button1 = new JButton("P. 1 game area");
-        JButton button2 = new JButton("P. 2 game area");
-        JButton button3 = new JButton("P. 3 game area");
-        JButton button4 = new JButton("P. 4 game area");
-
-        panel3.add(button1);
-        panel3.add(button2);
-        panel3.add(button3);
-        panel3.add(button4);
-
-        mainPanel.add(panel3, gbc);
-
-        mainPanel.setBackground(Color.RED);
-        mainPanel.setOpaque(true);
-        mainPanel.setPreferredSize(new Dimension(150, 150));
-
-        return mainPanel;
+        return panel;
     }
 
-    // Method for create center panel
+    /**
+     * This method is used for creating the center scroll panel
+     * The center scroll panel contains the player's game area
+     *
+     * @return the panel that will be added in the content pane
+     * @author Foini Lorenzo
+     */
     public JScrollPane createPanelCenter(){
-        JPanel panelCenter = new JPanel(new GridLayout(NUM_ROWS, NUM_COLS));
+        JPanel panel = new JPanel(new GridLayout(NUM_ROWS, NUM_COLS));
 
         // Add button in the grid
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
-                JButton button = null;
+                JButton button;
                 if(i == 39 && j == 39){
-                    originalImage = null; // Carica l'immagine di input
-                    try {
-                        originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_57.jpeg"));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    scaledImage = originalImage.getScaledInstance(250, 100, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-                    imageIcon = new ImageIcon(scaledImage);
-                    button = new JButton(imageIcon);
-                    button.setEnabled(false);
-                    button.setDisabledIcon(imageIcon);
+                    // Create new button with image
+                    button = new JButton(getImageFromID(57, true,250, 100));
+                    button.setDisabledIcon(getImageFromID(57, true,250, 100));
                 } else if(i == 40 && j == 40){
-                    originalImage = null; // Carica l'immagine di input
-                    try {
-                        originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_82.jpeg"));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    scaledImage = originalImage.getScaledInstance(250, 100, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-                    imageIcon = new ImageIcon(scaledImage);
-                    button = new JButton(imageIcon);
-                    button.setEnabled(false);
-                    button.setDisabledIcon(imageIcon);
+                    // Create new button with image
+                    button = new JButton(getImageFromID(82, true,250, 100));
+                    button.setDisabledIcon(getImageFromID(82, true,250, 100));
                 }else{
                     button = new JButton("(" + i + ", " + j + ")");
-                    button.setEnabled(false);
                 }
+                button.setEnabled(false);
                 button.setPreferredSize(new Dimension(250, 100));
-                panelCenter.add(button);
+                panel.add(button);
             }
         }
 
         // Create scrollbar for visualization of the game area
-        JScrollPane scrollPane = new JScrollPane(panelCenter);
+        JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        // Impost scroll bar to center
+        // Impost scroll bar to center: we want (40,40) to be in the center of the window
         JViewport viewport = scrollPane.getViewport();
         int viewWidth = viewport.getViewSize().width;
         int viewHeight = viewport.getViewSize().height;
-        int offsetX = (viewWidth - viewport.getWidth()) / 2 - 600;
-        int offsetY = (viewHeight - viewport.getHeight()) / 2 - 250;
+        int offsetX = (viewWidth - viewport.getWidth()) / 2 - 600; // Offset for put (40,40) at center
+        int offsetY = (viewHeight - viewport.getHeight()) / 2 - 250; // Offset for put (40,40) at center
         viewport.setViewPosition(new Point(offsetX, offsetY));
 
         return scrollPane;
     }
 
-    // Method for create east panel
+    /**
+     * This method is used for creating the east panel
+     * The east panel contains the live scoreboard and buttons for view other players' game area
+     *
+     * @return the panel that will be added in the content pane
+     * @author Foini Lorenzo
+     */
     public JPanel createPanelEast(){
-        JPanel panel = new JPanel(new GridLayout(9,1));
+        // Create new panel and use a GridBagLayout, so we can choose the size of the cells
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
 
-        // Create labels
-        JLabel top1 = new JLabel("Resource deck top card:");
-        JLabel top2 = new JLabel("Gold deck top card:");
-        JLabel visible = new JLabel("Visible cards:");
+        // Create label for resource deck top card
+        JLabel resourceDeckTopCard = new JLabel("Resource deck top card:");
+        resourceDeckTopCard.setHorizontalAlignment(JLabel.CENTER);
+        resourceDeckTopCard.setVerticalAlignment(JLabel.CENTER);
 
-        top1.setHorizontalAlignment(JLabel.CENTER);
-        top1.setVerticalAlignment(JLabel.CENTER);
-        top2.setHorizontalAlignment(JLabel.CENTER);
-        top2.setVerticalAlignment(JLabel.CENTER);
-        visible.setHorizontalAlignment(JLabel.CENTER);
-        visible.setVerticalAlignment(JLabel.CENTER);
+        // Add label in the panel in first row
+        // This label will occupy 7% of the panel
+        addComponent(panel, resourceDeckTopCard, gbc, 0, 0, 1, 1, 1, 0.07);
 
-        // Get images
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\back\\img_11.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image1 = new JLabel(imageIcon);
+        // Create image button for resource deck top card
+        JButton imageResourceDeckTopCard = new JButton(getImageFromID(11, false,175, 80));
+        imageResourceDeckTopCard.setEnabled(false);
+        imageResourceDeckTopCard.setDisabledIcon(getImageFromID(11, false,175, 80));
+        imageResourceDeckTopCard.setVerticalAlignment(JLabel.CENTER);
 
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\back\\img_41.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image2 = new JLabel(imageIcon);
+        // Add image button in the panel in second row
+        // This image button will occupy 12% of the panel
+        addComponent(panel, imageResourceDeckTopCard, gbc, 1, 0, 1, 1, 1, 0.12);
 
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_23.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(120, 60, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image3 = new JLabel(imageIcon);
 
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_25.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(120, 60, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image4 = new JLabel(imageIcon);
+        // Create label for gold deck top card
+        JLabel goldDeckTopCard = new JLabel("Gold deck top card:");
+        goldDeckTopCard.setHorizontalAlignment(JLabel.CENTER);
+        goldDeckTopCard.setVerticalAlignment(JLabel.CENTER);
 
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_58.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(120, 60, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image5 = new JLabel(imageIcon);
+        // Add label in the panel in third row
+        // This label will occupy 7% of the panel
+        addComponent(panel, goldDeckTopCard, gbc, 2, 0, 1, 1, 1, 0.07);
 
-        try {
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_59.jpeg"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        scaledImage = originalImage.getScaledInstance(120, 60, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-        imageIcon = new ImageIcon(scaledImage);
-        JLabel image6 = new JLabel(imageIcon);
+        // Create image button for gold deck top card
+        JButton imageGoldDeckTopCard = new JButton(getImageFromID(41, false,175, 80));
+        imageGoldDeckTopCard.setEnabled(false);
+        imageGoldDeckTopCard.setDisabledIcon(getImageFromID(41, false,175, 80));
+        imageGoldDeckTopCard.setVerticalAlignment(JLabel.CENTER);
 
-        image1.setVerticalAlignment(JLabel.CENTER);
-        image2.setVerticalAlignment(JLabel.CENTER);
-        image3.setVerticalAlignment(JLabel.CENTER);
-        image4.setVerticalAlignment(JLabel.CENTER);
-        image5.setVerticalAlignment(JLabel.CENTER);
-        image6.setVerticalAlignment(JLabel.CENTER);
+        // Add image button in the panel in forth row
+        // This image button will occupy 12% of the panel
+        addComponent(panel, imageGoldDeckTopCard, gbc, 3, 0, 1, 1, 1, 0.12);
 
-        // Add all labels and images in panel
-        panel.add(top1);
-        panel.add(image1);
-        panel.add(top2);
-        panel.add(image2);
-        panel.add(visible);
-        panel.add(image3);
-        panel.add(image4);
-        panel.add(image5);
-        panel.add(image6);
 
-        panel.setBackground(Color.GREEN);
+        // Create label for visible cards in the table
+        JLabel visibleCards = new JLabel("Visible cards:");
+        visibleCards.setHorizontalAlignment(JLabel.CENTER);
+        visibleCards.setVerticalAlignment(JLabel.CENTER);
+
+        // Add label in the panel in fifth row
+        // This label will occupy 6% of the panel
+        addComponent(panel, visibleCards, gbc, 4, 0, 1, 1, 1, 0.06);
+
+        // Create image button for first visible card
+        JButton imageVisibleCard1 = new JButton(getImageFromID(23, true,175, 80));
+        imageVisibleCard1.setEnabled(false);
+        imageVisibleCard1.setDisabledIcon(getImageFromID(23, true,175, 80));
+        imageVisibleCard1.setVerticalAlignment(JLabel.CENTER);
+
+        // Add image button in the panel in sixth row
+        // This image button will occupy 14% of the panel
+        addComponent(panel, imageVisibleCard1, gbc, 5, 0, 1, 1, 1, 0.14);
+
+        // Create image button for second visible card
+        JButton imageVisibleCard2 = new JButton(getImageFromID(24, true,175, 80));
+        imageVisibleCard2.setEnabled(false);
+        imageVisibleCard2.setDisabledIcon(getImageFromID(24, true,175, 80));
+        imageVisibleCard2.setVerticalAlignment(JLabel.CENTER);
+
+        // Add image button in the panel in seventh row
+        // This image button will occupy 14% of the panel
+        addComponent(panel, imageVisibleCard2, gbc, 6, 0, 1, 1, 1, 0.14);
+
+        // Create image button for third visible card
+        JButton imageVisibleCard3 = new JButton(getImageFromID(46, true,175, 80));
+        imageVisibleCard3.setEnabled(false);
+        imageVisibleCard3.setDisabledIcon(getImageFromID(46, true,175, 80));
+        imageVisibleCard3.setVerticalAlignment(JLabel.CENTER);
+
+        // Add image button in the panel in eight row
+        // This image button will occupy 14% of the panel
+        addComponent(panel, imageVisibleCard3, gbc, 7, 0, 1, 1, 1, 0.14);
+
+        // Create image button for forth visible card
+        JButton imageVisibleCard4 = new JButton(getImageFromID(47, true,175, 80));
+        imageVisibleCard4.setEnabled(false);
+        imageVisibleCard4.setDisabledIcon(getImageFromID(47, true,175, 80));
+        imageVisibleCard4.setVerticalAlignment(JLabel.CENTER);
+
+        // Add image button in the panel in ninth row
+        // This image button will occupy 14% of the panel
+        addComponent(panel, imageVisibleCard4, gbc, 8, 0, 1, 1, 1, 0.14);
+
+
+        // Set panel values
+        panel.setBackground(Color.YELLOW);
         panel.setOpaque(true);
-        panel.setPreferredSize(new Dimension(150, 150));
+        panel.setPreferredSize(new Dimension(175, 100));
 
         return panel;
     }
 
-    // Method for create south panel
+    /**
+     * This method is used for creating the south panel
+     * The south panel contains player's hand
+     *
+     * @return the panel that will be added in the content pane
+     * @author Falcone Giacomo, Foini Lorenzo
+     */
     public JPanel createPanelSouth(){
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
-        // get buttons for player's hand: 70% - 30%
-        try {
-            BufferedImage originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\back\\img_21.jpeg"));
-            Image scaledImage = originalImage.getScaledInstance(350, 120, Image.SCALE_SMOOTH);
-            ImageIcon imageIcon = new ImageIcon(scaledImage);
-            JButton button1 = new JButton(imageIcon);
-            addComponent(panel, button1, gbc, 0, 0, 1, 1, 1, 0.7); // Prima riga
+        // Create buttons for player's cards
+        JButton buttonCard1 = new JButton(getImageFromID(21, false,350, 120));
+        JButton buttonCard2 = new JButton(getImageFromID(23, true,350, 120));
+        JButton buttonCard3 = new JButton(getImageFromID(42, true,350, 120));
 
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_23.jpeg"));
-            scaledImage = originalImage.getScaledInstance(350, 120, Image.SCALE_SMOOTH);
-            imageIcon = new ImageIcon(scaledImage);
-            JButton button2 = new JButton(imageIcon);
-            addComponent(panel, button2, gbc, 0, 1, 1, 1, 1, 0.7); // Prima riga
+        // Add buttons in the panel in first row
+        // These buttons will occupy 70% of the panel
+        addComponent(panel, buttonCard1, gbc, 0, 0, 1, 1, 1, 0.7);
+        addComponent(panel, buttonCard2, gbc, 0, 1, 1, 1, 1, 0.7);
+        addComponent(panel, buttonCard3, gbc, 0, 2, 1, 1, 1, 0.7);
 
-            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_42.jpeg"));
-            scaledImage = originalImage.getScaledInstance(350, 120, Image.SCALE_SMOOTH);
-            imageIcon = new ImageIcon(scaledImage);
-            JButton button3 = new JButton(imageIcon);
-            addComponent(panel, button3, gbc, 0, 2, 1, 1, 1, 0.7); // Prima riga
+        // Create buttons for playing the respective card
+        JButton buttonPlayCard1 = new JButton("Play card 1");
+        JButton buttonPlayCard2 = new JButton("Play card 2");
+        JButton buttonPlayCard3 = new JButton("Play card 3");
 
-            JButton button4 = new JButton("Play card 1");
-            addComponent(panel, button4, gbc, 1, 0, 1, 1, 1, 0.3); // Seconda riga
+        // Add buttons in the panel in second row
+        // These buttons will occupy 30% of the panel
+        addComponent(panel, buttonPlayCard1, gbc, 1, 0, 1, 1, 1, 0.3);
+        addComponent(panel, buttonPlayCard2, gbc, 1, 1, 1, 1, 1, 0.3);
+        addComponent(panel, buttonPlayCard3, gbc, 1, 2, 1, 1, 1, 0.3);
 
-            JButton button5 = new JButton("Play card 2");
-            addComponent(panel, button5, gbc, 1, 1, 1, 1, 1, 0.3); // Seconda riga
-
-            JButton button6 = new JButton("Play card 3");
-            addComponent(panel, button6, gbc, 1, 2, 1, 1, 1, 0.3); // Seconda riga
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        // Set panel values
         panel.setBackground(Color.ORANGE);
         panel.setOpaque(true);
         panel.setPreferredSize(new Dimension(150, 170));
@@ -418,6 +413,20 @@ class MyFrame extends JFrame {
         return panel;
     }
 
+    /**
+     * This method is used for adding in the given JPanel a component with given constraints
+     *
+     * @param panel: Panel to which to add the component.
+     * @param comp: The component to add to the panel.
+     * @param gbc: Layout specifications for positioning and sizing the component.
+     * @param row: Row to place the component in the layout.
+     * @param col: Column to place the component in the layout.
+     * @param width: Horizontal cells the component should occupy in the layout.
+     * @param height: Vertical cells the component should occupy in the layout.
+     * @param weightx: Horizontal expansion priority of the component in the layout.
+     * @param weighty: Vertical expansion priority of the component in the layout.
+     * @author Falcone Giacomo
+     */
     private void addComponent(JPanel panel, Component comp, GridBagConstraints gbc,
                               int row, int col, int width, int height, double weightx, double weighty) {
         gbc.gridx = col;
@@ -427,5 +436,39 @@ class MyFrame extends JFrame {
         gbc.weightx = weightx;
         gbc.weighty = weighty;
         panel.add(comp, gbc);
+    }
+
+    /**
+     * This method is used for return the image (which a fixed size) of a card given its ID
+     *
+     * @param cardID: card's id.
+     * @param side: card's side.
+     * @param width: final card's width.
+     * @param height: final card's height.
+     * @return the image as a ImageIcon
+     * @author Foini Lorenzo
+     */
+    private ImageIcon getImageFromID(int cardID, boolean side, int width, int height){
+        BufferedImage originalImage; // Original image with its size
+        Image scaledImage; // Same image as before but with parameters size
+        ImageIcon imageIcon; // ImageIcon to return
+
+        String stringSide;
+        if(side) stringSide="front"; // side: true => front
+        else stringSide="back"; // side: false => back
+
+        String path = "C:\\Users\\Lenovo\\Desktop\\Politecnico\\Materie\\3 Anno\\Ingegneria del software\\Progetto\\ing-sw-2024-dicarlo-falcone-foini-gallo\\CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
+        //String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
+        try {
+            originalImage = ImageIO.read(new File(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Re-dimensioning the image
+        scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+
+        return imageIcon;
     }
 }
