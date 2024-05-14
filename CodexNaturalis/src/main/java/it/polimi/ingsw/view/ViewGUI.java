@@ -15,11 +15,12 @@ public class ViewGUI {
 }
 
 class MyFrame extends JFrame {
-    final int WIDTH = 1500;
-    final int HEIGHT = 800;
     final int NUM_ROWS = 81;
     final int NUM_COLS = 81;
-    final int TOTAL_GRID_SIZE = NUM_ROWS * NUM_COLS;
+
+    BufferedImage originalImage = null;
+    Image scaledImage = null;
+    ImageIcon imageIcon = null;
 
     MyFrame(String title){
         super(title);
@@ -27,7 +28,6 @@ class MyFrame extends JFrame {
     }
 
     void init(){
-        //this.setSize(WIDTH,HEIGHT);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,7 +51,7 @@ class MyFrame extends JFrame {
         // Get container
         Container contentPane = this.getContentPane();
 
-        // Add JPanel in JFrame
+        // Add JPanel in contentPane
         contentPane.add(panelNorth,BorderLayout.NORTH);
         contentPane.add(panelWest,BorderLayout.WEST);
         contentPane.add(scrollPaneCenter,BorderLayout.CENTER);
@@ -59,11 +59,13 @@ class MyFrame extends JFrame {
         contentPane.add(panelSouth,BorderLayout.SOUTH);
     }
 
+    // Method for create north panel
     public JPanel createPanelNorth(){
-        // Create a new JPanel with a horizontal BoxLayout
-        // This panel has three cells, where each cell contains an objective(2 commons, 1 secret)
-        JPanel panel = new JPanel(new GridLayout(2, 3)); // Vertical BoxLayout for cells
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
 
+        // Create label
         JLabel label1 = new JLabel("Common objective n.1");
         JLabel label2 = new JLabel("Common objective n.2");
         JLabel label3 = new JLabel("Secret objective");
@@ -75,41 +77,67 @@ class MyFrame extends JFrame {
         label3.setHorizontalAlignment(JLabel.CENTER);
         label3.setVerticalAlignment(JLabel.CENTER);
 
-        JLabel image1 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta1.png"));
-        JLabel image2 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta2.png"));
-        JLabel image3 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta3.png"));
+        addComponent(panel, label1, gbc, 0, 0, 1, 1, 1, 0.3); // Prima riga
+        addComponent(panel, label2, gbc, 0, 1, 1, 1, 1, 0.3); // Prima riga
+        addComponent(panel, label3, gbc, 0, 2, 1, 1, 1, 0.3); // Prima riga
+
+        // Get images
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_91.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image1 = new JLabel(imageIcon);
+
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_92.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image2 = new JLabel(imageIcon);
+
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_93.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image3 = new JLabel(imageIcon);
 
         image1.setVerticalAlignment(JLabel.CENTER);
         image2.setVerticalAlignment(JLabel.CENTER);
         image3.setVerticalAlignment(JLabel.CENTER);
 
-        // Add all labels in panel
-        panel.add(label1);
-        panel.add(label2);
-        panel.add(label3);
-        panel.add(image1);
-        panel.add(image2);
-        panel.add(image3);
+        addComponent(panel, image1, gbc, 1, 0, 1, 1, 1, 0.7);
+        addComponent(panel, image2, gbc, 1, 1, 1, 1, 1, 0.7);
+        addComponent(panel, image3, gbc, 1, 2, 1, 1, 1, 0.7); // Seconda riga
 
+        // Set panel values
         panel.setBackground(Color.CYAN);
         panel.setOpaque(true);
-        panel.setPreferredSize(new Dimension(150, 150));
+        panel.setPreferredSize(new Dimension(150, 100));
 
         return panel;
     }
 
+    // Method for create west panel
     public JPanel createPanelWest(){
-        // Crea il pannello principale con GridBagLayout
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
-        // Imposta i vincoli per la prima griglia (5%)
+        // Add grid constraint: 5%
         JPanel panel1 = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weighty = 0.05; // 5% della altezza del pannello principale
+        gbc.weighty = 0.05; // 5% of height
         gbc.fill = GridBagConstraints.BOTH;
 
+        // Create label
         JLabel scoreboard = new JLabel("Live scoreboard:");
         scoreboard.setHorizontalAlignment(JLabel.CENTER);
         scoreboard.setVerticalAlignment(JLabel.CENTER);
@@ -117,11 +145,12 @@ class MyFrame extends JFrame {
 
         mainPanel.add(panel1, gbc);
 
-        // Imposta i vincoli per la seconda griglia (45%)
+        // add grid constraint: 45%
         JPanel panel2 = new JPanel(new GridLayout(4,2));
         gbc.gridy = 1;
-        gbc.weighty = 0.45; // 45% della altezza del pannello principale
+        gbc.weighty = 0.45; // 45% of height
 
+        // Create labels
         JLabel player1 = new JLabel("- Player 1");
         player1.setHorizontalAlignment(JLabel.CENTER);
         player1.setVerticalAlignment(JLabel.CENTER);
@@ -166,10 +195,10 @@ class MyFrame extends JFrame {
 
         mainPanel.add(panel2, gbc);
 
-        // Imposta i vincoli per la terza griglia (50%)
+        // Add grid constraint: 50%
         JPanel panel3 = new JPanel(new GridLayout(4, 1));
         gbc.gridy = 2;
-        gbc.weighty = 0.5; // 50% della altezza del pannello principale
+        gbc.weighty = 0.5; // 50% of height
 
         JButton button1 = new JButton("P. 1 game area");
         JButton button2 = new JButton("P. 2 game area");
@@ -190,6 +219,7 @@ class MyFrame extends JFrame {
         return mainPanel;
     }
 
+    // Method for create center panel
     public JScrollPane createPanelCenter(){
         JPanel panelCenter = new JPanel(new GridLayout(NUM_ROWS, NUM_COLS));
 
@@ -198,27 +228,32 @@ class MyFrame extends JFrame {
             for (int j = 0; j < NUM_COLS; j++) {
                 JButton button = null;
                 if(i == 39 && j == 39){
-                    BufferedImage originalImage = null; // Carica l'immagine di input
+                    originalImage = null; // Carica l'immagine di input
                     try {
-                        originalImage = ImageIO.read(new File("C:\\Users\\Lenovo\\Desktop\\res.png"));
+                        originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_57.jpeg"));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    Image scaledImage = originalImage.getScaledInstance(250, 100, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-                    ImageIcon imageIcon = new ImageIcon(scaledImage);
+                    scaledImage = originalImage.getScaledInstance(250, 100, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+                    imageIcon = new ImageIcon(scaledImage);
                     button = new JButton(imageIcon);
+                    button.setEnabled(false);
+                    button.setDisabledIcon(imageIcon);
                 } else if(i == 40 && j == 40){
-                    BufferedImage originalImage = null; // Carica l'immagine di input
+                    originalImage = null; // Carica l'immagine di input
                     try {
-                        originalImage = ImageIO.read(new File("C:\\Users\\Lenovo\\Desktop\\start.png"));
+                        originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_82.jpeg"));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    Image scaledImage = originalImage.getScaledInstance(250, 100, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
-                    ImageIcon imageIcon = new ImageIcon(scaledImage);
+                    scaledImage = originalImage.getScaledInstance(250, 100, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+                    imageIcon = new ImageIcon(scaledImage);
                     button = new JButton(imageIcon);
+                    button.setEnabled(false);
+                    button.setDisabledIcon(imageIcon);
                 }else{
                     button = new JButton("(" + i + ", " + j + ")");
+                    button.setEnabled(false);
                 }
                 button.setPreferredSize(new Dimension(250, 100));
                 panelCenter.add(button);
@@ -230,7 +265,7 @@ class MyFrame extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        // Impost scroll bat to center
+        // Impost scroll bar to center
         JViewport viewport = scrollPane.getViewport();
         int viewWidth = viewport.getViewSize().width;
         int viewHeight = viewport.getViewSize().height;
@@ -241,9 +276,11 @@ class MyFrame extends JFrame {
         return scrollPane;
     }
 
+    // Method for create east panel
     public JPanel createPanelEast(){
         JPanel panel = new JPanel(new GridLayout(9,1));
 
+        // Create labels
         JLabel top1 = new JLabel("Resource deck top card:");
         JLabel top2 = new JLabel("Gold deck top card:");
         JLabel visible = new JLabel("Visible cards:");
@@ -255,12 +292,60 @@ class MyFrame extends JFrame {
         visible.setHorizontalAlignment(JLabel.CENTER);
         visible.setVerticalAlignment(JLabel.CENTER);
 
-        JLabel image1 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta1.png"));
-        JLabel image2 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta2.png"));
-        JLabel image3 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta3.png"));
-        JLabel image4 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta1.png"));
-        JLabel image5 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta2.png"));
-        JLabel image6 = new JLabel(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta3.png"));
+        // Get images
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\back\\img_11.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image1 = new JLabel(imageIcon);
+
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\back\\img_41.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(200, 80, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image2 = new JLabel(imageIcon);
+
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_23.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(120, 60, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image3 = new JLabel(imageIcon);
+
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_25.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(120, 60, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image4 = new JLabel(imageIcon);
+
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_58.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(120, 60, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image5 = new JLabel(imageIcon);
+
+        try {
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_59.jpeg"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        scaledImage = originalImage.getScaledInstance(120, 60, Image.SCALE_SMOOTH); // Ridimensiona l'immagine
+        imageIcon = new ImageIcon(scaledImage);
+        JLabel image6 = new JLabel(imageIcon);
 
         image1.setVerticalAlignment(JLabel.CENTER);
         image2.setVerticalAlignment(JLabel.CENTER);
@@ -269,8 +354,7 @@ class MyFrame extends JFrame {
         image5.setVerticalAlignment(JLabel.CENTER);
         image6.setVerticalAlignment(JLabel.CENTER);
 
-
-        // Add all labels in panel
+        // Add all labels and images in panel
         panel.add(top1);
         panel.add(image1);
         panel.add(top2);
@@ -288,44 +372,60 @@ class MyFrame extends JFrame {
         return panel;
     }
 
+    // Method for create south panel
     public JPanel createPanelSouth(){
-        JPanel panel = new JPanel(new GridLayout(3,3));
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
 
-        JLabel hand1 = new JLabel("Card 1");
-        JLabel hand2 = new JLabel("Card 2");
-        JLabel hand3 = new JLabel("Card 3");
+        // get buttons for player's hand: 70% - 30%
+        try {
+            BufferedImage originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\back\\img_21.jpeg"));
+            Image scaledImage = originalImage.getScaledInstance(350, 120, Image.SCALE_SMOOTH);
+            ImageIcon imageIcon = new ImageIcon(scaledImage);
+            JButton button1 = new JButton(imageIcon);
+            addComponent(panel, button1, gbc, 0, 0, 1, 1, 1, 0.7); // Prima riga
 
-        hand1.setHorizontalAlignment(JLabel.CENTER);
-        hand1.setVerticalAlignment(JLabel.CENTER);
-        hand2.setHorizontalAlignment(JLabel.CENTER);
-        hand2.setVerticalAlignment(JLabel.CENTER);
-        hand3.setHorizontalAlignment(JLabel.CENTER);
-        hand3.setVerticalAlignment(JLabel.CENTER);
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_23.jpeg"));
+            scaledImage = originalImage.getScaledInstance(350, 120, Image.SCALE_SMOOTH);
+            imageIcon = new ImageIcon(scaledImage);
+            JButton button2 = new JButton(imageIcon);
+            addComponent(panel, button2, gbc, 0, 1, 1, 1, 1, 0.7); // Prima riga
 
-        JButton button1 = new JButton(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta1.png"));
-        JButton button2 = new JButton(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta2.png"));
-        JButton button3 = new JButton(new ImageIcon("C:\\Users\\Lenovo\\Desktop\\Carta3.png"));
+            originalImage = ImageIO.read(new File("CodexNaturalis\\resources\\front\\img_42.jpeg"));
+            scaledImage = originalImage.getScaledInstance(350, 120, Image.SCALE_SMOOTH);
+            imageIcon = new ImageIcon(scaledImage);
+            JButton button3 = new JButton(imageIcon);
+            addComponent(panel, button3, gbc, 0, 2, 1, 1, 1, 0.7); // Prima riga
 
-        JButton button4 = new JButton("Play card 1");
-        JButton button5 = new JButton("Play card 2");
-        JButton button6 = new JButton("Play card 3");
+            JButton button4 = new JButton("Play card 1");
+            addComponent(panel, button4, gbc, 1, 0, 1, 1, 1, 0.3); // Seconda riga
 
+            JButton button5 = new JButton("Play card 2");
+            addComponent(panel, button5, gbc, 1, 1, 1, 1, 1, 0.3); // Seconda riga
 
-        // Add all labels in panel
-        panel.add(hand1);
-        panel.add(hand2);
-        panel.add(hand3);
-        panel.add(button1);
-        panel.add(button2);
-        panel.add(button3);
-        panel.add(button4);
-        panel.add(button5);
-        panel.add(button6);
+            JButton button6 = new JButton("Play card 3");
+            addComponent(panel, button6, gbc, 1, 2, 1, 1, 1, 0.3); // Seconda riga
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         panel.setBackground(Color.ORANGE);
         panel.setOpaque(true);
-        panel.setPreferredSize(new Dimension(150, 150));
+        panel.setPreferredSize(new Dimension(150, 170));
 
         return panel;
+    }
+
+    private void addComponent(JPanel panel, Component comp, GridBagConstraints gbc,
+                              int row, int col, int width, int height, double weightx, double weighty) {
+        gbc.gridx = col;
+        gbc.gridy = row;
+        gbc.gridwidth = width;
+        gbc.gridheight = height;
+        gbc.weightx = weightx;
+        gbc.weighty = weighty;
+        panel.add(comp, gbc);
     }
 }
