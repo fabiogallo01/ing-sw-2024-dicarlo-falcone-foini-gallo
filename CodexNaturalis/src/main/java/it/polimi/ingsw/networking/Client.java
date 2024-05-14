@@ -15,7 +15,7 @@ public class Client {
     private static BufferedReader in;
     private static PrintWriter out;
     private static BufferedReader userInput;
-    private static boolean useTUI = false; // GUI as default
+    private static String userChoice;
 
     /**
      * Main method
@@ -36,13 +36,12 @@ public class Client {
 
             // Check if user plays with TUI or GUI
             try {
-                String userChoice = args[0].toUpperCase();
+                userChoice = args[0].toUpperCase();
                 out.println(userChoice);
                 if (userChoice.equals("TUI")) {
-                    useTUI = true;
-                    startTUI();
+                    startTUI(); // Start communication with TUI
                 } else {
-                    startGUI();
+                    startGUI(); // Start communication with GUI
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
                 out.println("GUI");
@@ -63,6 +62,11 @@ public class Client {
         }
     }
 
+    /**
+     * This method is called when the client chooses to use TUI
+     *
+     * @author Foini Lorenzo
+     */
     private static void startTUI() throws IOException {
         /*
               The following code it is used for handles communication between the client and the server.
@@ -75,6 +79,7 @@ public class Client {
         while ((serverMessage = in.readLine()) != null) {
             System.out.println(serverMessage); // Display server message
 
+            // TODO: Create new class Message with this messages???
             // If the message requires an answer from the user, then catch that answer
             if (serverMessage.startsWith("Specify the number of players (insert 2, 3 or 4):") ||
                     serverMessage.startsWith("Insert your username:") ||
@@ -101,11 +106,22 @@ public class Client {
         }
     }
 
+    /**
+     * This method is called when the client chooses to use GUI
+     *
+     * @author Foini Lorenzo
+     */
     private static void startGUI() throws IOException{
         // TODO
     }
 
-    private boolean getUseTui(){
-        return useTUI;
+    /**
+     * userChoice getter
+     *
+     * @return client choice: "TUI" or "GUI"
+     * @author Foini Lorenzo
+     */
+    private static String getUserChoice(){
+        return userChoice;
     }
 }
