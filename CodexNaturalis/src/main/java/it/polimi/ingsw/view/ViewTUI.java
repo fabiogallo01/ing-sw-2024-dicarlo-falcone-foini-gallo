@@ -5,6 +5,12 @@ import it.polimi.ingsw.model.cards.*;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/**
+ * Class representing TUI
+ * It has different methods which will be used in teh client-server communication using TUI
+ *
+ * @author Di Carlo Andrea, Falcone Giacomo
+ */
 public class ViewTUI {
 
     // ANSI escape codes for colors
