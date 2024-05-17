@@ -1388,6 +1388,9 @@ public class GameTable {
         }
         return resourceDeck.deckSize()==0 && goldDeck.deckSize()==0 && visibleCards.isEmpty();
     }
+    public boolean isFull(){
+        return getNumPlayers()==players.size();
+    }
 
     /**
      * Method for the players to draw a resource card from the resource deck
