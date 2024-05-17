@@ -22,6 +22,7 @@ public class Client2 {
             String response;
             while ((response = in.readLine()) != null) {
                 System.out.println(response);
+                //TODO sostituire tutti gli or con una condizione sola, creando una classe di un genere di messaggi
                 if (response.equals("Enter your choice (create/join):") ||
                         response.equals("Enter number of players (2-4):") ||
                         response.equals("Specify the number of players (insert 2, 3 or 4):") ||

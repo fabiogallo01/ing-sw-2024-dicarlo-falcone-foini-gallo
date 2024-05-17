@@ -19,8 +19,16 @@ public class Controller {
     private final ViewTUI viewTui;
     private final ViewGUI viewGui;
     private final ArrayList<String> availableColors = new ArrayList<>();
+    private int ready = 0;
 
 
+    public int getReady() {
+        return ready;
+    }
+
+    public void setReady() {
+        this.ready++;
+    }
 
     /**
      * Controller constructor, it creates a new instance of GameTable
@@ -214,5 +222,9 @@ public class Controller {
             }
         }
         return winners;
+    }
+
+    public void startGame() {
+        gameTable.getPlayers().getFirst().setTurn(true);
     }
 }

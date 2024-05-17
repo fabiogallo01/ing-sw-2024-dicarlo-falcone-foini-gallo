@@ -17,6 +17,15 @@ public class Player {
     private final ObjectiveCard secretObjective;
     private final StarterCard starterCard;
     private ArrayList<GamingCard> hand;
+    private boolean turn;
+
+    public boolean isTurn() {
+        return turn;
+    }
+
+    public void setTurn(boolean turn) {
+        this.turn = turn;
+    }
 
     /**
      * Player constructor, it assigns all the parameters
@@ -38,6 +47,7 @@ public class Player {
         this.secretObjective = secretObjective;
         this.starterCard = starterCard;
         this.hand = hand;
+        this.turn = false;
     }
 
     /**

@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.StarterCard;
 import it.polimi.ingsw.model.exception.EmptyDeckException;
 import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
+import it.polimi.ingsw.model.exception.NoPlayerWithSuchUsernameException;
 import it.polimi.ingsw.model.game.Player;
 
 import java.io.BufferedReader;
@@ -54,7 +55,7 @@ public class ClientHandler2 implements Runnable {
                     joined = true;
                     out.println("Game created. Waiting for players...");
                 } else if ("join".equalsIgnoreCase(choice)) {
-                    int i=0;
+                    int i = 0;
                     controllers = Server2.getControllers();
                     for (Controller controller : controllers) {
                         i++;
@@ -66,7 +67,7 @@ public class ClientHandler2 implements Runnable {
                             out.println("Do you want to join this game? (Y/N)");
                             String ans = in.readLine();
                             if ("Y".equalsIgnoreCase(ans)) {
-                                gameController=controller;
+                                gameController = controller;
                                 initializePlayer(username);
                                 joined = true;
                                 out.println("Joined a game. Waiting for players...");
@@ -80,11 +81,21 @@ public class ClientHandler2 implements Runnable {
 
                 }
             }
-            while(!gameController.getGameTable().isFull()) {
+            gameController.setReady();
+            while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {
                 Thread.onSpinWait();
             }
-            out.println("Game starts now.");
 
+            out.println("Game starts now.");
+            gameController.startGame();
+            Player player = gameController.getGameTable().getPlayerByUsername(username);
+            //TODO logica dei turni
+            /*while (true) {
+                if (player.isTurn()) {
+                    playTurn();
+                }
+                Thread.onSpinWait();
+            }*/
             // Handle game-specific communication and actions here
             String input;
             while ((input = in.readLine()) != null) {
@@ -95,15 +106,21 @@ public class ClientHandler2 implements Runnable {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (EmptyObjectiveDeckException e) {
-            throw new RuntimeException(e);
-        } catch (EmptyDeckException e) {
+        } catch (EmptyObjectiveDeckException | EmptyDeckException | NoPlayerWithSuchUsernameException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private synchronized void playTurn() {
+    }
+
     private void startGame() {
 
+        gameController.startGame();//setta il turno del primo giocatore a true
+
+        while (!gameController.getGameTable().isEnded()) {
+
+        }
     }
 
     public String askUsername() throws IOException {
