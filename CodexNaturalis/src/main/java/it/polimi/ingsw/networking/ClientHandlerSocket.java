@@ -1,5 +1,6 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.Player;
@@ -45,9 +46,11 @@ public class ClientHandlerSocket extends Thread{
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); // Input => Client messages
             out = new PrintWriter(clientSocket.getOutputStream(), true); // Output => Server messages
 
+            Server.incrementCountConnectedClients(); // Increment server's counter of connected clients
+            Server.setConnected(true);
+
             // Get client UI choice: TUI or GUI
             userInterface = in.readLine();
-            System.out.println(userInterface);
 
             // Check UI: TUI or GUI
             // TODO
@@ -56,65 +59,6 @@ public class ClientHandlerSocket extends Thread{
             }else{
                 playGui();
             }
-
-            Server.incrementCountConnectedClients(); // Increment server's counter of connected clients
-            Server.setConnected(true);
-
-            // TODO: Move the following lines in method playTui()
-
-            // If first client => Ask for number of players
-            // Such number must be 2, 3 or 4
-            if(Server.getCountConnectedClients() == 1) {
-                askNumberPlayers();
-            }
-
-            // Ask client's username and insert such username in list of players' username
-            username = askUsername();
-
-            // Ask client's color and remove such color from list of available colors
-            String color = AskColor();
-
-            // Show to the client his starter card
-            StarterCard starterCard;
-            try {
-                starterCard = (StarterCard) Server.getController().getGameTable().getStarterDeck().drawTopCard();
-            } catch (EmptyDeckException e) {
-                throw new RuntimeException(e);
-            }
-            Server.getController().getViewTui().displayStarterCard(starterCard,out);
-            // Ask client on which side he wants to play the starter card
-            boolean sideStarterCard = askStarterCardSide();
-            // Assign such side to starter card
-            starterCard.setSide(sideStarterCard);
-
-            // Create player hand and display it
-            ArrayList<GamingCard> hand = new ArrayList<>();
-            hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
-            hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
-            hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
-            out.println("\nThis is your hand:\n");
-            Server.getController().getViewTui().displayResourceCard(hand.get(0), out); // Call to View's method
-            Server.getController().getViewTui().displayResourceCard(hand.get(1), out); // Call to View's method
-            Server.getController().getViewTui().displayGoldCard((GoldCard)hand.get(2), out); // Call to View's method
-
-            // Show the two common objective cards
-            out.println("\nThis are the two common objectives:\n");
-            ObjectiveCard[] commonObjective = Server.getController().getGameTable().getCommonObjectives();
-            Server.getController().getViewTui().displayObjectiveCard(commonObjective[0], out);
-            Server.getController().getViewTui().displayObjectiveCard(commonObjective[1], out);
-
-            // Ask client to select his secret objective cards from two different objective cards
-            out.println("Now you have to choose which secret objective card you want to use.");
-            out.println("You can choose one card from the following two objective cards\n");
-
-            ObjectiveCard secretObjectiveCard = askSecretObjectiveCard();
-
-            // Call to controller's method for create a new player
-            // It also inserts the new player in the game table
-            Server.getController().createNewPlayer(username, color, starterCard, hand, secretObjectiveCard);
-
-            // Display message which says that the player has been added to the game and wait for start
-            out.println("\nYou have been added to the game.\nPlease wait for other players.");
 
             // Set server ready
             Server.setReady();
@@ -437,7 +381,6 @@ public class ClientHandlerSocket extends Thread{
             out.println(e.getMessage());
         }
 
-
         // Ask player which card he wants to play from his hand
         out.println("Which card you want to play (insert 1, 2 or 3):");
         String stringPositionCardHand = in.readLine();
@@ -596,8 +539,60 @@ public class ClientHandlerSocket extends Thread{
      *
      * @author Foini Lorenzo
      */
-    private void playTui(){
-        // TODO
+    private void playTui() throws IOException, EmptyDeckException, EmptyObjectiveDeckException {
+        // If first client => Ask for number of players
+        // Such number must be 2, 3 or 4
+        if(Server.getCountConnectedClients() == 1) {
+            askNumberPlayers();
+        }
+
+        // Ask client's username and insert such username in list of players' username
+        username = askUsername();
+
+        // Ask client's color and remove such color from list of available colors
+        String color = AskColor();
+
+        // Show to the client his starter card
+        StarterCard starterCard;
+        try {
+            starterCard = (StarterCard) Server.getController().getGameTable().getStarterDeck().drawTopCard();
+        } catch (EmptyDeckException e) {
+            throw new RuntimeException(e);
+        }
+        Server.getController().getViewTui().displayStarterCard(starterCard,out);
+        // Ask client on which side he wants to play the starter card
+        boolean sideStarterCard = askStarterCardSide();
+        // Assign such side to starter card
+        starterCard.setSide(sideStarterCard);
+
+        // Create player hand and display it
+        ArrayList<GamingCard> hand = new ArrayList<>();
+        hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
+        hand.add((GamingCard) Server.getController().getGameTable().getResourceDeck().drawTopCard());
+        hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
+        out.println("\nThis is your hand:\n");
+        Server.getController().getViewTui().displayResourceCard(hand.get(0), out); // Call to View's method
+        Server.getController().getViewTui().displayResourceCard(hand.get(1), out); // Call to View's method
+        Server.getController().getViewTui().displayGoldCard((GoldCard)hand.get(2), out); // Call to View's method
+
+        // Show the two common objective cards
+        out.println("\nThis are the two common objectives:\n");
+        ObjectiveCard[] commonObjective = Server.getController().getGameTable().getCommonObjectives();
+        Server.getController().getViewTui().displayObjectiveCard(commonObjective[0], out);
+        Server.getController().getViewTui().displayObjectiveCard(commonObjective[1], out);
+
+        // Ask client to select his secret objective cards from two different objective cards
+        out.println("Now you have to choose which secret objective card you want to use.");
+        out.println("You can choose one card from the following two objective cards\n");
+
+        ObjectiveCard secretObjectiveCard = askSecretObjectiveCard();
+
+        // Call to controller's method for create a new player
+        // It also inserts the new player in the game table
+        Server.getController().createNewPlayer(username, color, starterCard, hand, secretObjectiveCard);
+
+        // Display message which says that the player has been added to the game and wait for start
+        out.println("\nYou have been added to the game.\nPlease wait for other players.");
     }
 
     /**
@@ -607,6 +602,7 @@ public class ClientHandlerSocket extends Thread{
      * @author Foini Lorenzo
      */
     private void playGui(){
-
+        // TODO
+        Controller.getViewGui().startGui();
     }
 }
