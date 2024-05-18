@@ -1,13 +1,8 @@
 package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.model.cards.GamingCard;
-import it.polimi.ingsw.model.cards.GoldCard;
-import it.polimi.ingsw.model.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cards.StarterCard;
-import it.polimi.ingsw.model.exception.EmptyDeckException;
-import it.polimi.ingsw.model.exception.EmptyObjectiveDeckException;
-import it.polimi.ingsw.model.exception.NoPlayerWithSuchUsernameException;
+import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.Player;
 
 import java.io.BufferedReader;
@@ -16,7 +11,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClientHandler2 implements Runnable {
     private Socket socket;
@@ -81,54 +78,93 @@ public class ClientHandler2 implements Runnable {
 
                 }
             }
-            gameController.setReady();
-            while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {
-                Thread.onSpinWait();
+            if(gameController.getReady()==gameController.getGameTable().getNumPlayers()-1) {
+                gameController.setReady();
+                gameController.startGame();
+            }else {
+                gameController.setReady();
+                while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {
+                    Thread.onSpinWait();
+                }
             }
-
             out.println("Game starts now.");
-            gameController.startGame();
+
             Player player = gameController.getGameTable().getPlayerByUsername(username);
             //TODO logica dei turni
-            /*while (true) {
-                if (player.isTurn()) {
-                    playTurn();
+            while(!gameController.getGameTable().isEnded()){
+                while(!player.isTurn()){
+                    Thread.onSpinWait();
                 }
-                Thread.onSpinWait();
-            }*/
-            // Handle game-specific communication and actions here
-            String input;
-            while ((input = in.readLine()) != null) {
-                // Process player input and communicate with the game controller
-                //gameController.processMove(player, input);
-                out.println("Move processed: " + input);
+                playTurn(username);
+                gameController.nextTurn();
             }
+            sendLastTurnMessage();
+            sendWaitTurnMessage();
+
+            while(!player.isTurn()){
+                Thread.onSpinWait();
+            }
+            playLastTurn(username);
+            gameController.nextTurn();
+            if(username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())){
+                notifyAll();
+            }else wait();
+            gameController.calculateFinalPoints();
+            gameController.finalScoreboard();
+
+            LinkedHashMap<Player, Integer> leaderboard = gameController.getLeaderboard();
+
+            ArrayList<Player> winners = gameController.calculateWinners(leaderboard);
+
+            sendWinnersMessage(winners, username);
+            sendLeaderboardMessage(leaderboard);
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (EmptyObjectiveDeckException | EmptyDeckException | NoPlayerWithSuchUsernameException e) {
+        } catch (EmptyObjectiveDeckException | EmptyDeckException | NoPlayerWithSuchUsernameException |
+                 InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private synchronized void playTurn() {
+    private synchronized void playTurn(String username) throws IOException {
+
+        // Play card "phase"
+        // Ask active player his play and send messages
+        sendSelectPlayMessage();
+        askPlay(username);
+        sendCorrectPlayMessage();
+
+        // draw card "phase" and send messages
+        sendSelectDrawMessage();
+        askDraw(username);
+        sendCorrectDrawMessage();
+
+        // Send turn messages
+        sendFinishTurnMessage();
+        sendWaitTurnMessage();
     }
 
-    private void startGame() {
+    private synchronized void playLastTurn(String username) throws IOException, InterruptedException {
 
-        gameController.startGame();//setta il turno del primo giocatore a true
+        // Play card "phase"
+        // Ask active player his play and send messages
+        sendSelectPlayMessage();
+        askPlay(username);
+        sendCorrectPlayMessage();
 
-        while (!gameController.getGameTable().isEnded()) {
-
-        }
+        // Send turn messages
+        sendFinishTurnMessage();
+        sendWaitFinishGameMessage();
     }
+
 
     public String askUsername() throws IOException {
         out.println("Insert your username:"); // Display message
         String username = in.readLine(); // Get client input
 
         // Check if the username is available or already present
-        ArrayList<String> alreadyUsedUsername = Server.getClientUsername();
+        ArrayList<String> alreadyUsedUsername = Server2.getClientUsername();
         while (alreadyUsedUsername.contains(username)) {
             out.println("This username is taken. Please insert a new username:"); // INVALID
             username = in.readLine();
@@ -137,7 +173,7 @@ public class ClientHandler2 implements Runnable {
         //System.out.println(username + " has connected to the game.");
 
         // Insert username in server's list of usernames
-        Server.addClientUsername(username);
+        Server2.addClientUsername(username);
 
         return username;
     }
@@ -234,6 +270,255 @@ public class ClientHandler2 implements Runnable {
         gameController.createNewPlayer(username, selectedColor, starterCard, hand, secretObjectiveCard);
     }
 
+
+    public void askPlay(String username) throws IOException {
+        // Display player's area and his hand
+        out.println("This is your game area:");
+        try {
+            gameController.getViewTui().displayArea(gameController.getGameTable().getPlayerByUsername(username).getPlayerArea().getCards(), out);
+        } catch (NoPlayerWithSuchUsernameException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Call to View's function for display hand
+        try{
+            // Get the player's hand and display it
+            ArrayList<GamingCard> handToPrint = gameController.getGameTable().getPlayerByUsername(username).getHand();
+            gameController.getViewTui().displayHand(handToPrint, out);
+        } catch(NoPlayerWithSuchUsernameException e){
+            out.println(e.getMessage());
+        }
+
+        // Ask player which card he wants to play from his hand
+        out.println("Which card you want to play (insert 1, 2 or 3):");
+        String stringPositionCardHand = in.readLine();
+
+        // Check user input
+        while(!stringPositionCardHand.equals("1") && !stringPositionCardHand.equals("2") && !stringPositionCardHand.equals("3")){
+            out.println("Please insert 1, 2 or 3:");
+            stringPositionCardHand = in.readLine();
+        }
+        int cardPositionHand = Integer.parseInt(stringPositionCardHand); // Parse to int
+
+        // Ask player which side to play such card
+        out.println("On which side you want to play this card(insert front or back):");
+        String stringSide = in.readLine().toLowerCase(); // Get client's input
+
+        // Check user input
+        while(!stringSide.equals("front") && !stringSide.equals("back")){
+            out.println("Insert front or back:"); // INVALID
+            stringSide = in.readLine().toLowerCase();
+        }
+        boolean sideCardToPlay = stringSide.equals("front");
+
+        // Ask where he wants to play that card in his game area
+        out.println("Given your game area, now choose the position in the area where you want to play such card.");
+        out.println("Insert integer row value:");
+        int row = Integer.parseInt(in.readLine());
+        out.println("Insert integer column value:");
+        int column = Integer.parseInt(in.readLine());
+        // Throws exception after if position is not valid
+
+        int[] positionArea = new int[2];
+        positionArea[0] = row;
+        positionArea[1] = column;
+
+        // Use controller's method for play this card
+        try{
+            // Play card
+            gameController.getGameTable().getPlayerByUsername(username).playCard(cardPositionHand, positionArea, sideCardToPlay);
+
+            // Show messages
+            out.println("\nThe card has been played correctly.");
+            out.println("This is your score after this play: " + gameController.getGameTable().getPlayerByUsername(username).getScore() + " pts.");
+        }catch(NoPlayerWithSuchUsernameException | InvalidPlayCardIndexException | InvalidPositionAreaException | InvalidPlayException e){
+            // An error has occur
+            out.println("\nInvalid play." + e.getMessage());
+            out.println("Now you will be asked to insert again all the information.\n");
+
+            // Recall this function for ask again all the information
+            askPlay(username);
+        }
+    }
+    public void askDraw(String username) throws IOException {
+        // To display the back of the top card of resource deck
+        ArrayList<Card> resourceDeck = gameController.getGameTable().getResourceDeck().getDeck();
+        GamingCard topResourceCard = (GamingCard) resourceDeck.getLast();
+        gameController.getViewTui().displayTopResource(topResourceCard, out);
+        // To display the back of the top card of gold deck
+        ArrayList<Card> goldDeck = gameController.getGameTable().getGoldDeck().getDeck();
+        GoldCard topGoldCard = (GoldCard) goldDeck.getLast();
+        gameController.getViewTui().displayTopGold(topGoldCard, out);
+        // To display the 4 visible drawable cards
+        ArrayList<GamingCard> visibleCards = gameController.getGameTable().getVisibleCard();
+        gameController.getViewTui().displayVisibleTableCard(visibleCards, out);
+
+        // Ask user's choice
+        out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
+        out.println("Insert 1, 2 or 3:");
+        String stringChoice = in.readLine();
+
+        // Check user input
+        while(!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")){
+            out.println("Please insert 1, 2 or 3:");
+            stringChoice = in.readLine();
+        }
+        int choice = Integer.parseInt(stringChoice); // Parse to int
+
+        // Switch case based on choice
+        switch(choice){
+            case 1:{
+                // Draw card from resource deck
+                try{
+                    // Draw card
+                    GamingCard cardToDraw = gameController.getGameTable().drawResourceCardDeck();
+                    // Add card in player's hand
+                    gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
+
+                } catch(EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                    out.println(e.getMessage());
+                    out.println("Select a different type of draw.");
+
+                    // Recall this function for asking again
+                    askDraw(username);
+                }
+                break;
+            }
+            case 2:{
+                // Draw card from gold deck
+                try{
+                    // Draw card
+                    GoldCard cardToDraw = gameController.getGameTable().drawGoldCardDeck();
+                    // Add card in player's hand
+                    gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
+                } catch(EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                    out.println(e.getMessage());
+                    out.println("Select a different type of draw.");
+
+                    // Recall this function for asking again
+                    askDraw(username);
+                }
+                break;
+            }
+            case 3:{
+                int size = gameController.getGameTable().getVisibleCard().size();
+                if(size == 0){
+                    out.println("There are no cards in table.\nSelect a different type of draw.");
+                    // Recall this function for asking again
+                    askDraw(username);
+                }else if(size == 1){
+                    out.println("There is only 1 card in the table, so draw this card.");
+                    try{
+                        // Call to method and add card to hand
+                        GamingCard cardToDraw = gameController.getGameTable().drawCardFromTable(0);
+                        gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
+                    } catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                        out.println(e.getMessage());
+                        // Recall this function for asking again
+                        askDraw(username);
+                    }
+                }else {
+                    out.println("Insert the card's number:");
+                    int selectedPosition = Integer.parseInt(in.readLine());
+                    try{
+                        // Call to method and add card to hand
+                        GamingCard cardToDraw = gameController.getGameTable().drawCardFromTable(selectedPosition-1);
+                        gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
+                    }catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                        out.println(e.getMessage());
+                        // Recall this function for asking again
+                        askDraw(username);
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    public void sendSelectPlayMessage(){
+        out.println("It's your turn.\nNow you have to play a card from your hand.\n");
+    }
+    public void sendCorrectPlayMessage(){
+        out.println("You have correctly play the card in your game area.");
+        out.println("That card has been removed from your hand.");
+    }
+    public void sendSelectDrawMessage(){
+        out.println("\nNow you have to select from where you want to draw your next card.");
+    }
+    public void sendCorrectDrawMessage(){
+        out.println("\nYou have correctly draw a new card and added it in your hands.");
+    }
+    public void sendFinishTurnMessage(){
+        out.println("You have correctly play your turn.");
+    }
+    public void sendWaitTurnMessage(){
+        out.println("\nPlease wait for your turn.\n");
+    }
+    public void sendLastTurnMessage(){
+        out.println("A player has reached 20 points, so the last turn will now start.");
+    }
+    public void sendWaitFinishGameMessage(){
+        out.println("\nWait for others players' last turns.\nThe game will end soon");
+    }
+    public void sendWinnersMessage(ArrayList<Player> winners, String username){
+        boolean hasWon = false; // true: player has won, false: player has lost.
+
+        out.println("\nGAME OVER.\n");
+        if(winners.size() == 1){
+            out.print("THE WINNER IS ... ");
+        }else{
+            out.print("THE WINNERS ARE ... ");
+        }
+
+        for(Player winner : winners){
+            out.print(winner.getUsername() + " ");
+            if(winner.getUsername().equals(username)){
+                hasWon = true;
+            }
+        }
+
+        // Send message to show if the player has won or lost
+        if(hasWon){
+            out.println("\nCONGRATULATIONS, YOU WIN!!!");
+        }else{
+            out.println("\nSORRY, YOU LOST.");
+        }
+    }
+    public void sendLeaderboardMessage(LinkedHashMap<Player, Integer> leaderboard) {
+        // Send final leaderboard message
+        out.println("\nFinal scoreboard:");
+
+        // If a player has a different score respect to the last one, then "update" his final position.
+        int current_index = 1;
+        int lastScore = -1; // Keep track of last score
+        String lastPosition = ""; // Keep track of last position
+
+        for (Map.Entry<Player, Integer> entry : leaderboard.entrySet()) {
+            int current_score = entry.getValue(); // Get player's score
+            if (current_score != lastScore) {
+                String position = current_index + getSuffix(current_index); // "Update" final position
+                out.println(position + entry.getKey().getUsername() + ", score: " + current_score);
+                lastPosition = position;
+                lastScore = current_score;
+            }else{
+                out.println(lastPosition + entry.getKey().getUsername() + ", score: " + current_score);
+            }
+            current_index++;
+        }
+
+        // Send end game message
+        out.println("\nTHANKS FOR PLAYING, the connection will now be reset.\n");
+    }
+    public String getSuffix(int index){
+        if (index == 1) {
+            return "st: ";
+        } else if (index == 2) {
+            return "nd: ";
+        } else if (index == 3) {
+            return "rd: ";
+        }
+        return "th: ";
+    }
 }
 
 

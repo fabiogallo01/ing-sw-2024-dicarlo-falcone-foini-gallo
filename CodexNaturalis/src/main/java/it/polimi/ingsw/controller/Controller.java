@@ -225,4 +225,19 @@ public class Controller {
     public void startGame() {
         gameTable.getPlayers().getFirst().setTurn(true);
     }
+    public void nextTurn(){
+        int i=0;
+        for(Player player : gameTable.getPlayers()) {
+            if(player.isTurn()) {
+                player.setTurn(false);
+                if(i==gameTable.getNumPlayers()-1){
+                    gameTable.getPlayers().getFirst().setTurn(true);
+                    break;
+                }
+                gameTable.getPlayers().get(i+1).setTurn(true);
+                break;
+            }
+            i++;
+        }
+    }
 }

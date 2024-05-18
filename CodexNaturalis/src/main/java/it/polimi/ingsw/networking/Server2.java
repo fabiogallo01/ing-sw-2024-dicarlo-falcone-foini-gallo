@@ -12,6 +12,7 @@ import it.polimi.ingsw.controller.Controller;
 public class Server2 {
     private static final int PORT = 12345;
     private static List<Controller> controllers = new ArrayList<>();
+    private static final ArrayList<String> clientUsernames = new ArrayList<>();
 
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -28,6 +29,9 @@ public class Server2 {
             e.printStackTrace();
         }
     }
+    public static ArrayList<String> getClientUsername() {
+        return clientUsernames;
+    }
 
     public static List<Controller> getControllers() {
         return controllers;
@@ -35,4 +39,8 @@ public class Server2 {
     public static void addController(Controller controller) {
         controllers.add(controller);
     }
+    public static void addClientUsername(String clientUsername) {
+        clientUsernames.add(clientUsername);
+    }
+
 }
