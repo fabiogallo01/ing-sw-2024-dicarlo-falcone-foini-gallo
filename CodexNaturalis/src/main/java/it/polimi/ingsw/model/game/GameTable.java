@@ -19,7 +19,7 @@ public class GameTable {
     private int numPlayers;
     private ArrayList<Player> players;
     private static Scoreboard scoreboard;
-
+    private boolean lastTurn = false;
     /**
      * GameTable constructor, it builds all the decks and initializes the game
      *
@@ -1318,6 +1318,14 @@ public class GameTable {
         return players;
     }
 
+    public boolean isLastTurn() {
+        return lastTurn;
+    }
+
+    public void setLastTurn() {
+        this.lastTurn = true;
+    }
+
     /**
      * Player getter by username
      *
@@ -1383,7 +1391,7 @@ public class GameTable {
      */
     public boolean isEnded() {
         for (Player player : players) {
-            if (player.getScore() >= 20)
+            if (player.getScore() >= 1)
                 return true;
         }
         return resourceDeck.deckSize()==0 && goldDeck.deckSize()==0 && visibleCards.isEmpty();
