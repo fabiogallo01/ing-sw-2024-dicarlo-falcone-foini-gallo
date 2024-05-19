@@ -15,7 +15,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ClientHandler2 implements Runnable {
+/**
+ * Class which handles a thread representing a client connections to the server
+ * It is also used to handle players' turns
+ * It extends Thread and override method run
+ *
+ * @author Foini Lorenzo
+ * @author Gallo Fabio
+ */
+public class ClientHandler2 extends Thread {
     private Socket socket;
     private List<Controller> controllers;
     private BufferedReader in;
@@ -23,10 +31,27 @@ public class ClientHandler2 implements Runnable {
     private Controller gameController;
     private boolean joined = false;
 
+    /**
+     * ViewClientHandler constructor, it assigns/creates all class's parameters
+     *
+     * @param socket      representing the client's socket
+     * @param controllers representing all the controllers(matches) playing on the server
+     * @author Foini Lorenzo
+     * @author Gallo Fabio
+     */
     public ClientHandler2(Socket socket, List<Controller> controllers) {
         this.socket = socket;
         this.controllers = controllers;
     }
+
+    /**
+     * Override of method run
+     * It asks the client to either join or create a game, insert the username and all the players parameters, then plays the game.
+     * Catches IOException if an I/O error occurred
+     * Catches game exceptions
+     *
+     * @author Foini Lorenzo
+     */
 
     @Override
     public void run() {
@@ -34,29 +59,32 @@ public class ClientHandler2 implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
+            //insertion of the username
             String username = askUsername();
+
+            //it allows the client to create or join a match
             while (!joined) {
                 out.println("Enter your choice (create/join):");
                 String choice = in.readLine();
 
 
-                if ("create".equalsIgnoreCase(choice)) {
+                if ("create".equalsIgnoreCase(choice)) {//if it creates a match, it asks how many players should play
                     out.println("Enter number of players (2-4):");
                     int numberOfPlayers = Integer.parseInt(in.readLine());
 
-                    gameController = new Controller(numberOfPlayers);
-                    initializePlayer(username);
+                    gameController = new Controller(numberOfPlayers);//it creates the gameTable inside the controller
+                    initializePlayer(username);//inserts all the player info
 
-                    Server2.addController(gameController);
+                    Server2.addController(gameController);//it adds the match to the matches that can be now joined
 
                     joined = true;
                     out.println("Game created. Waiting for players...");
                 } else if ("join".equalsIgnoreCase(choice)) {
                     int i = 0;
-                    controllers = Server2.getControllers();
-                    for (Controller controller : controllers) {
+                    controllers = Server2.getControllers();//it updates the list of games that can be joined
+                    for (Controller controller : controllers) {// it checks the existent games that the player can join
                         i++;
-                        if (!controller.getGameTable().isFull()) {
+                        if (!controller.getGameTable().isFull()) {//it prints the username of the players that are in the game
                             out.println("Game " + i + ":");
                             for (Player p : controller.getGameTable().getPlayers()) {
                                 out.println("-" + p.getUsername());
@@ -78,12 +106,12 @@ public class ClientHandler2 implements Runnable {
 
                 }
             }
-            if(gameController.getReady()==gameController.getGameTable().getNumPlayers()-1) {
+            if (gameController.getReady() == gameController.getGameTable().getNumPlayers() - 1) {//when the last player joins, it starts the game
                 gameController.setReady();
-                gameController.startGame();
-            }else {
+                gameController.startGame();//it sets the first player turn
+            } else {
                 gameController.setReady();
-                while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {
+                while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {//it waits for all the players to be ready to play
                     Thread.onSpinWait();
                 }
             }
@@ -91,18 +119,18 @@ public class ClientHandler2 implements Runnable {
 
             Player player = gameController.getGameTable().getPlayerByUsername(username);
 
-            while(!player.isTurn()){
+            while (!player.isTurn()) {//waits for your turn
                 Thread.onSpinWait();
             }
 
-            while(!gameController.getGameTable().isLastTurn()){//TODO fix the condition so that the last turn is handled properly, probably add a global flag or something like that
-                playTurn(username);
+            while (!gameController.getGameTable().isLastTurn()) {//it checks if it is the last turn
+                playTurn(username);//plays the whole turn
 
-                if(gameController.getGameTable().isEnded() && username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())){
+                if (gameController.getGameTable().isEnded() && username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {//the last player of the turn checks if the next turn is going to be the last
                     gameController.getGameTable().setLastTurn();
                 }
-                gameController.nextTurn();
-                while(!player.isTurn()){
+                gameController.nextTurn();//sets the turn of this player to false, the turn of the next player to true
+                while (!player.isTurn()) {
                     Thread.onSpinWait();
                 }
             }
@@ -111,13 +139,13 @@ public class ClientHandler2 implements Runnable {
             playLastTurn(username);
             gameController.nextTurn();
 
-            if(username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())){
+            if (username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {//the last player signals that he finished
                 gameController.getGameTable().setFinished();
             }
-            while(!gameController.getGameTable().isFinished()){
+            while (!gameController.getGameTable().isFinished()) {//it makes the other players wait for the last player to finish
                 Thread.onSpinWait();
             }
-            while(!player.isTurn()){
+            while (!player.isTurn()) {//it prints the final scoreboard and messages one player at a time, so they don't conflict
                 Thread.onSpinWait();
             }
             gameController.calculateFinalPoints();
@@ -129,7 +157,7 @@ public class ClientHandler2 implements Runnable {
 
             sendWinnersMessage(winners, username);
             sendLeaderboardMessage(leaderboard);
-            gameController.nextTurn();
+            gameController.nextTurn();//it lets the other players print the final messages
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -139,6 +167,12 @@ public class ClientHandler2 implements Runnable {
         }
     }
 
+    /**
+     * Plays the turn of a player, by playing a card and drawing one
+     *
+     * @param username is the username of the player
+     * @author Foini Lorenzo
+     */
     private synchronized void playTurn(String username) throws IOException {
 
         // Play card "phase"
@@ -157,6 +191,13 @@ public class ClientHandler2 implements Runnable {
         sendWaitTurnMessage();
     }
 
+    /**
+     * Plays the last turn of a player, just by playing a card
+     *
+     * @param username is the username of the player
+     * @author Foini Lorenzo
+     * @author Gallo Fabio
+     */
     private synchronized void playLastTurn(String username) throws IOException, InterruptedException {
 
         // Play card "phase"
@@ -170,13 +211,17 @@ public class ClientHandler2 implements Runnable {
         sendWaitFinishGameMessage();
     }
 
-
+    /**
+     * Method to ask client's username
+     *
+     * @author Foini Lorenzo
+     */
     public String askUsername() throws IOException {
         out.println("Insert your username:"); // Display message
         String username = in.readLine(); // Get client input
 
         // Check if the username is available or already present
-        ArrayList<String> alreadyUsedUsername = Server2.getClientUsername();
+        ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
         while (alreadyUsedUsername.contains(username)) {
             out.println("This username is taken. Please insert a new username:"); // INVALID
             username = in.readLine();
@@ -190,6 +235,13 @@ public class ClientHandler2 implements Runnable {
         return username;
     }
 
+    /**
+     * Method to initialize all the player parameters
+     *
+     * @param username players' username
+     * @author Foini Lorenzo
+     * @author Gallo Fabio
+     */
     public void initializePlayer(String username) throws IOException, EmptyDeckException, EmptyObjectiveDeckException {
         //COLOR PICKING
         out.println("Choose a color:");
@@ -282,7 +334,11 @@ public class ClientHandler2 implements Runnable {
         gameController.createNewPlayer(username, selectedColor, starterCard, hand, secretObjectiveCard);
     }
 
-
+    /**
+     * Method to ask the client which card he wants to play, its side and where to play the card
+     *
+     * @author Foini Lorenzo
+     */
     public void askPlay(String username) throws IOException {
         // Display player's area and his hand
         out.println("This is your game area:");
@@ -293,11 +349,11 @@ public class ClientHandler2 implements Runnable {
         }
 
         // Call to View's function for display hand
-        try{
+        try {
             // Get the player's hand and display it
             ArrayList<GamingCard> handToPrint = gameController.getGameTable().getPlayerByUsername(username).getHand();
             gameController.getViewTui().displayHand(handToPrint, out);
-        } catch(NoPlayerWithSuchUsernameException e){
+        } catch (NoPlayerWithSuchUsernameException e) {
             out.println(e.getMessage());
         }
 
@@ -306,7 +362,7 @@ public class ClientHandler2 implements Runnable {
         String stringPositionCardHand = in.readLine();
 
         // Check user input
-        while(!stringPositionCardHand.equals("1") && !stringPositionCardHand.equals("2") && !stringPositionCardHand.equals("3")){
+        while (!stringPositionCardHand.equals("1") && !stringPositionCardHand.equals("2") && !stringPositionCardHand.equals("3")) {
             out.println("Please insert 1, 2 or 3:");
             stringPositionCardHand = in.readLine();
         }
@@ -317,7 +373,7 @@ public class ClientHandler2 implements Runnable {
         String stringSide = in.readLine().toLowerCase(); // Get client's input
 
         // Check user input
-        while(!stringSide.equals("front") && !stringSide.equals("back")){
+        while (!stringSide.equals("front") && !stringSide.equals("back")) {
             out.println("Insert front or back:"); // INVALID
             stringSide = in.readLine().toLowerCase();
         }
@@ -336,14 +392,15 @@ public class ClientHandler2 implements Runnable {
         positionArea[1] = column;
 
         // Use controller's method for play this card
-        try{
+        try {
             // Play card
             gameController.getGameTable().getPlayerByUsername(username).playCard(cardPositionHand, positionArea, sideCardToPlay);
 
             // Show messages
             out.println("\nThe card has been played correctly.");
             out.println("This is your score after this play: " + gameController.getGameTable().getPlayerByUsername(username).getScore() + " pts.");
-        }catch(NoPlayerWithSuchUsernameException | InvalidPlayCardIndexException | InvalidPositionAreaException | InvalidPlayException e){
+        } catch (NoPlayerWithSuchUsernameException | InvalidPlayCardIndexException | InvalidPositionAreaException |
+                 InvalidPlayException e) {
             // An error has occur
             out.println("\nInvalid play." + e.getMessage());
             out.println("Now you will be asked to insert again all the information.\n");
@@ -352,6 +409,12 @@ public class ClientHandler2 implements Runnable {
             askPlay(username);
         }
     }
+
+    /**
+     * Method to ask the client from where he wants to draw his next card
+     *
+     * @author Foini Lorenzo
+     */
     public void askDraw(String username) throws IOException {
         // To display the back of the top card of resource deck
         ArrayList<Card> resourceDeck = gameController.getGameTable().getResourceDeck().getDeck();
@@ -371,23 +434,23 @@ public class ClientHandler2 implements Runnable {
         String stringChoice = in.readLine();
 
         // Check user input
-        while(!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")){
+        while (!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")) {
             out.println("Please insert 1, 2 or 3:");
             stringChoice = in.readLine();
         }
         int choice = Integer.parseInt(stringChoice); // Parse to int
 
         // Switch case based on choice
-        switch(choice){
-            case 1:{
+        switch (choice) {
+            case 1: {
                 // Draw card from resource deck
-                try{
+                try {
                     // Draw card
                     GamingCard cardToDraw = gameController.getGameTable().drawResourceCardDeck();
                     // Add card in player's hand
                     gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
 
-                } catch(EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                } catch (EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e) {
                     out.println(e.getMessage());
                     out.println("Select a different type of draw.");
 
@@ -396,14 +459,14 @@ public class ClientHandler2 implements Runnable {
                 }
                 break;
             }
-            case 2:{
+            case 2: {
                 // Draw card from gold deck
-                try{
+                try {
                     // Draw card
                     GoldCard cardToDraw = gameController.getGameTable().drawGoldCardDeck();
                     // Add card in player's hand
                     gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
-                } catch(EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                } catch (EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e) {
                     out.println(e.getMessage());
                     out.println("Select a different type of draw.");
 
@@ -412,31 +475,33 @@ public class ClientHandler2 implements Runnable {
                 }
                 break;
             }
-            case 3:{
+            case 3: {
                 int size = gameController.getGameTable().getVisibleCard().size();
-                if(size == 0){
+                if (size == 0) {
                     out.println("There are no cards in table.\nSelect a different type of draw.");
                     // Recall this function for asking again
                     askDraw(username);
-                }else if(size == 1){
+                } else if (size == 1) {
                     out.println("There is only 1 card in the table, so draw this card.");
-                    try{
+                    try {
                         // Call to method and add card to hand
                         GamingCard cardToDraw = gameController.getGameTable().drawCardFromTable(0);
                         gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
-                    } catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                    } catch (InvalidDrawFromTableException | NoPlayerWithSuchUsernameException |
+                             HandAlreadyFullException e) {
                         out.println(e.getMessage());
                         // Recall this function for asking again
                         askDraw(username);
                     }
-                }else {
+                } else {
                     out.println("Insert the card's number:");
                     int selectedPosition = Integer.parseInt(in.readLine());
-                    try{
+                    try {
                         // Call to method and add card to hand
-                        GamingCard cardToDraw = gameController.getGameTable().drawCardFromTable(selectedPosition-1);
+                        GamingCard cardToDraw = gameController.getGameTable().drawCardFromTable(selectedPosition - 1);
                         gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
-                    }catch(InvalidDrawFromTableException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e){
+                    } catch (InvalidDrawFromTableException | NoPlayerWithSuchUsernameException |
+                             HandAlreadyFullException e) {
                         out.println(e.getMessage());
                         // Recall this function for asking again
                         askDraw(username);
@@ -447,55 +512,65 @@ public class ClientHandler2 implements Runnable {
         }
     }
 
-    public void sendSelectPlayMessage(){
+
+    public void sendSelectPlayMessage() {
         out.println("It's your turn.\nNow you have to play a card from your hand.\n");
     }
-    public void sendCorrectPlayMessage(){
+
+    public void sendCorrectPlayMessage() {
         out.println("You have correctly play the card in your game area.");
         out.println("That card has been removed from your hand.");
     }
-    public void sendSelectDrawMessage(){
+
+    public void sendSelectDrawMessage() {
         out.println("\nNow you have to select from where you want to draw your next card.");
     }
-    public void sendCorrectDrawMessage(){
+
+    public void sendCorrectDrawMessage() {
         out.println("\nYou have correctly draw a new card and added it in your hands.");
     }
-    public void sendFinishTurnMessage(){
+
+    public void sendFinishTurnMessage() {
         out.println("You have correctly play your turn.");
     }
-    public void sendWaitTurnMessage(){
+
+    public void sendWaitTurnMessage() {
         out.println("\nPlease wait for your turn.\n");
     }
-    public void sendLastTurnMessage(){
+
+    public void sendLastTurnMessage() {
         out.println("A player has reached 20 points, so the last turn will now start.");
     }
-    public void sendWaitFinishGameMessage(){
+
+    public void sendWaitFinishGameMessage() {
         out.println("\nWait for others players' last turns.\nThe game will end soon");
     }
-    public void sendWinnersMessage(ArrayList<Player> winners, String username){
+
+    public void sendWinnersMessage(ArrayList<Player> winners, String username) {
         boolean hasWon = false; // true: player has won, false: player has lost.
 
         out.println("\nGAME OVER.\n");
-        if(winners.size() == 1){
+        if (winners.size() == 1) {
             out.print("THE WINNER IS ... ");
-        }else{
+        } else {
             out.print("THE WINNERS ARE ... ");
         }
 
-        for(Player winner : winners){
+        for (Player winner : winners) {
             out.print(winner.getUsername() + " ");
-            if(winner.getUsername().equals(username)){
+            if (winner.getUsername().equals(username)) {
                 hasWon = true;
             }
         }
 
         // Send message to show if the player has won or lost
-        if(hasWon){
+        if (hasWon) {
             out.println("\nCONGRATULATIONS, YOU WIN!!!");
-        }else{
+        } else {
             out.println("\nSORRY, YOU LOST.");
         }
     }
+
     public void sendLeaderboardMessage(LinkedHashMap<Player, Integer> leaderboard) {
         // Send final leaderboard message
         out.println("\nFinal scoreboard:");
@@ -512,7 +587,7 @@ public class ClientHandler2 implements Runnable {
                 out.println(position + entry.getKey().getUsername() + ", score: " + current_score);
                 lastPosition = position;
                 lastScore = current_score;
-            }else{
+            } else {
                 out.println(lastPosition + entry.getKey().getUsername() + ", score: " + current_score);
             }
             current_index++;
@@ -521,7 +596,8 @@ public class ClientHandler2 implements Runnable {
         // Send end game message
         out.println("\nTHANKS FOR PLAYING, the connection will now be reset.\n");
     }
-    public String getSuffix(int index){
+
+    public String getSuffix(int index) {
         if (index == 1) {
             return "st: ";
         } else if (index == 2) {
