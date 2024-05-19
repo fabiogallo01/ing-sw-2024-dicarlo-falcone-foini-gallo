@@ -97,10 +97,11 @@ public class ClientHandler2 implements Runnable {
 
             while(!gameController.getGameTable().isLastTurn()){//TODO fix the condition so that the last turn is handled properly, probably add a global flag or something like that
                 playTurn(username);
-                gameController.nextTurn();
+
                 if(gameController.getGameTable().isEnded() && username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())){
                     gameController.getGameTable().setLastTurn();
                 }
+                gameController.nextTurn();
                 while(!player.isTurn()){
                     Thread.onSpinWait();
                 }
@@ -110,9 +111,12 @@ public class ClientHandler2 implements Runnable {
             playLastTurn(username);
             gameController.nextTurn();
 
-            if(username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())){//TODO fix this thing, it doesn't work
-                notifyAll();
-            }else wait();
+            if(username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())){
+                gameController.getGameTable().setFinished();
+            }
+            while(!gameController.getGameTable().isFinished()){
+                Thread.onSpinWait();
+            }
 
             gameController.calculateFinalPoints();
             gameController.finalScoreboard();

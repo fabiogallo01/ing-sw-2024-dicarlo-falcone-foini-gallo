@@ -20,6 +20,7 @@ public class GameTable {
     private ArrayList<Player> players;
     private static Scoreboard scoreboard;
     private boolean lastTurn = false;
+    private boolean finished = false;
     /**
      * GameTable constructor, it builds all the decks and initializes the game
      *
@@ -1398,6 +1399,14 @@ public class GameTable {
     }
     public boolean isFull(){
         return getNumPlayers()==players.size();
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished() {
+        this.finished = true;
     }
 
     /**
