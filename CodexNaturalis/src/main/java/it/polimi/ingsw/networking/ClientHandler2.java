@@ -117,7 +117,9 @@ public class ClientHandler2 implements Runnable {
             while(!gameController.getGameTable().isFinished()){
                 Thread.onSpinWait();
             }
-
+            while(!player.isTurn()){
+                Thread.onSpinWait();
+            }
             gameController.calculateFinalPoints();
             gameController.finalScoreboard();
 
@@ -127,6 +129,7 @@ public class ClientHandler2 implements Runnable {
 
             sendWinnersMessage(winners, username);
             sendLeaderboardMessage(leaderboard);
+            gameController.nextTurn();
 
         } catch (IOException e) {
             e.printStackTrace();
