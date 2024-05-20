@@ -436,7 +436,7 @@ public class GameFrame extends JFrame {
         if(side) stringSide="front"; // side: true => front
         else stringSide="back"; // side: false => back
 
-        String path = "C:\\Users\\Lenovo\\Desktop\\Politecnico\\Materie\\3 Anno\\Ingegneria del software\\Progetto\\ing-sw-2024-dicarlo-falcone-foini-gallo\\CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
+        String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
         //String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
         try {
             originalImage = ImageIO.read(new File(path));

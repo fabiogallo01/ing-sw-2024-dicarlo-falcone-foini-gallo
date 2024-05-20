@@ -603,6 +603,10 @@ public class ClientHandlerSocket extends Thread{
      */
     private void playGui(){
         // TODO
-        Controller.getViewGui().startGui();
+        ArrayList<String> loginInfo = new ArrayList<String>();
+        //Controller.getViewGui().startGui();
+        if(Server.getCountConnectedClients() == 1){
+            loginInfo =  Controller.getViewGui().startGuiFirst();
+        }
     }
 }
