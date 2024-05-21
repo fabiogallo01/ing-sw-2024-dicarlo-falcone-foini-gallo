@@ -595,6 +595,35 @@ public class ClientHandlerSocket extends Thread{
         out.println("\nYou have been added to the game.\nPlease wait for other players.");
     }
 
+    public synchronized void askNumberPlayerGui(){
+        int num = Controller.getViewGui().displayNumberPlayer();
+        Server.setNumPlayers(num);
+        Server.setFirstClientConnected(true);
+    }
+
+    public synchronized String askUsernameGui(){
+        String username = Controller.getViewGui().displayUsername();
+
+        // Show in server new connection
+        System.out.println(username + " has connected to the game.");
+
+        // Insert username in server's list of usernames
+        Server.addClientUsername(username);
+
+        return username;
+    }
+
+    public synchronized String AskColorGui(){
+        // Display available colors
+        ArrayList<String> availableColors = Server.getController().getAvailableColors();
+        String selectedColor = Controller.getViewGui().displayColor(availableColors);
+
+        // Remove such color from available list
+        Server.getController().removeAvailableColor(selectedColor);
+
+        return selectedColor;
+    }
+
     /**
      * Method called when client decides to use GUI
      * It handles the communication between client and server
@@ -603,10 +632,14 @@ public class ClientHandlerSocket extends Thread{
      */
     private void playGui(){
         // TODO
-        ArrayList<String> loginInfo = new ArrayList<String>();
         //Controller.getViewGui().startGui();
         if(Server.getCountConnectedClients() == 1){
-            loginInfo =  Controller.getViewGui().startGuiFirst();
+            askNumberPlayerGui();
         }
+        // Ask client's username and insert such username in list of players' username
+        username = askUsernameGui();
+
+        // Ask client's color and remove such color from list of available colors
+        String color = AskColorGui();
     }
 }
