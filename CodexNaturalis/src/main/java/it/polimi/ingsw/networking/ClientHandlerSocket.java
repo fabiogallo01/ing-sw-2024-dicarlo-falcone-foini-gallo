@@ -628,7 +628,7 @@ public class ClientHandlerSocket extends Thread{
      * Method called when client decides to use GUI
      * It handles the communication between client and server
      *
-     * @author Foini Lorenzo
+     * @author Lorenzo Foini, AndreaDiC11, giacomofalcone
      */
     private void playGui(){
         // TODO
@@ -641,5 +641,7 @@ public class ClientHandlerSocket extends Thread{
 
         // Ask client's color and remove such color from list of available colors
         String color = AskColorGui();
+
+        Controller.getViewGui().playgame();
     }
 }
