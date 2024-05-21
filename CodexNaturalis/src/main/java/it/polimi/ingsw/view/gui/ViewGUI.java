@@ -45,7 +45,7 @@ public class ViewGUI extends JFrame {
         JLabel label = new JLabel("Numero di Giocatori:");
 
         // Menu a tendina per la selezione del numero di giocatori
-        Integer[] playerNumbers = {1, 2, 3, 4};
+        Integer[] playerNumbers = {2, 3, 4};
         JComboBox<Integer> comboBox = new JComboBox<>(playerNumbers);
 
         // Aggiunta dell'etichetta e del menu a tendina al pannello
@@ -69,11 +69,24 @@ public class ViewGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Recupero del numero selezionato dal menu a tendina
                 numPlayers = (Integer) comboBox.getSelectedItem();
+                frame.dispose();
+                synchronized (frame) {
+                    frame.notify();
+                }
             }
         });
 
         // Rendere visibile il frame
         frame.setVisible(true);
+
+        synchronized (frame){
+            try{
+                frame.wait();
+            } catch (InterruptedException ex){
+                ex.printStackTrace();
+            }
+        }
+
         return numPlayers;
     }
 
@@ -120,6 +133,10 @@ public class ViewGUI extends JFrame {
                     if (alreadyUsedUsername.contains(username)) {
                         throw new IllegalArgumentException("Il nome è gia presente.");
                     }
+                    frame.dispose();
+                    synchronized (frame) {
+                        frame.notify();
+                    }
                 } catch (IllegalArgumentException ex) {
                     // Gestione del caso in cui il nome sia vuoto
                     resultLabel.setText(ex.getMessage());
@@ -129,6 +146,15 @@ public class ViewGUI extends JFrame {
 
         // Rendere visibile il frame
         frame.setVisible(true);
+
+        synchronized (frame){
+            try{
+                frame.wait();
+            } catch (InterruptedException ex){
+                ex.printStackTrace();
+            }
+        }
+
         return username;
     }
 
@@ -175,6 +201,10 @@ public class ViewGUI extends JFrame {
                     if (!colors.contains(selectedColor)) {
                         throw new IllegalArgumentException("Il colore non è disponibile.");
                     }
+                    frame.dispose();
+                    synchronized (frame) {
+                        frame.notify();
+                    }
                 } catch (IllegalArgumentException ex) {
                     // Gestione del caso in cui il nome sia vuoto
                     resultLabel.setText(ex.getMessage());
@@ -184,6 +214,15 @@ public class ViewGUI extends JFrame {
 
         // Rendere visibile il frame
         frame.setVisible(true);
+
+        synchronized (frame){
+            try{
+                frame.wait();
+            } catch (InterruptedException ex){
+                ex.printStackTrace();
+            }
+        }
+
         return selectedColor;
     }
 
