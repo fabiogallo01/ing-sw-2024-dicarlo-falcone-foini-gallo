@@ -7,7 +7,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class representing GUI
@@ -25,6 +30,7 @@ public class ViewGUI extends JFrame {
     private JTextField playerNameField;
     private JComboBox<String> playerColorComboBox;
     private JComboBox<Integer> numberOfPlayersComboBox;
+
 
     public ViewGUI() {
     }
@@ -234,4 +240,110 @@ public class ViewGUI extends JFrame {
         GameFrame gameFrame = new GameFrame("CODEX NATURALIS");
         gameFrame.setVisible(true);
     }
+
+
+
+    /**
+     * Method to display the starter card and get on which side the
+     * player wants to play it.
+     *
+     * @param starterCardID used to get the file path of the card
+     * @return the chosen side
+     * @author giacomofalcone
+     */
+    public boolean displayStarterCard(int starterCardID) {
+        final boolean[] selectedSide = {false}; // Store selected side
+        final Object lock = new Object();
+
+        // Creazione del frame principale
+        JFrame frame = new JFrame("Select starter card's side");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
+        frame.setSize(600, 400);
+        frame.setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2)); // Modifica layout per visualizzare le carte in una riga
+
+        JLabel instructionLabel = new JLabel("On which side do you want to play the starter card?", SwingConstants.CENTER);
+        frame.add(instructionLabel, BorderLayout.NORTH);
+
+        String starterPathBack = "CodexNaturalis\\resources\\back\\img_" + starterCardID + ".jpeg";
+        String starterPathFront = "CodexNaturalis\\resources\\front\\img_" + starterCardID + ".jpeg";
+
+        // Displaying back side
+        try {
+            BufferedImage cardImage = ImageIO.read(new File(starterPathBack));
+            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(150, 200, Image.SCALE_SMOOTH));
+            JLabel cardLabel = new JLabel(cardIcon);
+            cardLabel.setHorizontalAlignment(JLabel.CENTER);
+            cardLabel.setVerticalAlignment(JLabel.CENTER);
+
+            JButton backButton = new JButton("Back");
+            backButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedSide[0] = false;
+                    frame.dispose(); // Close the window
+                    synchronized (lock) {
+                        lock.notify(); // Notify waiting thread
+                    }
+                }
+            });
+
+            JPanel cardPanel = new JPanel(new BorderLayout());
+            cardPanel.add(cardLabel, BorderLayout.CENTER);
+            cardPanel.add(backButton, BorderLayout.SOUTH);
+
+            panel.add(cardPanel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Displaying front side
+        try {
+            BufferedImage cardImage = ImageIO.read(new File(starterPathFront));
+            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(150, 200, Image.SCALE_SMOOTH));
+            JLabel cardLabel = new JLabel(cardIcon);
+            cardLabel.setHorizontalAlignment(JLabel.CENTER);
+            cardLabel.setVerticalAlignment(JLabel.CENTER);
+
+            JButton frontButton = new JButton("Front");
+            frontButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedSide[0] = true;
+                    frame.dispose(); // Close the window
+                    synchronized (lock) {
+                        lock.notify(); // Notify waiting thread
+                    }
+                }
+            });
+
+            JPanel cardPanel = new JPanel(new BorderLayout());
+            cardPanel.add(cardLabel, BorderLayout.CENTER);
+            cardPanel.add(frontButton, BorderLayout.SOUTH);
+
+            panel.add(cardPanel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        frame.add(panel, BorderLayout.CENTER);
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        synchronized (lock) {
+            try {
+                lock.wait(); // Wait until user selects a side
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return selectedSide[0];
+    }
+
+
+
 }
