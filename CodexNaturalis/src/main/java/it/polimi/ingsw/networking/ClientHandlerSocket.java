@@ -358,6 +358,31 @@ public class ClientHandlerSocket extends Thread{
         return card2;
     }
 
+
+    /**
+     * Method to ask which secret card to use in the game for this client
+     * GUI
+     *
+     * @author giacomofalcone
+     */
+    public synchronized ObjectiveCard askSecretObjectiveCardGui() throws EmptyObjectiveDeckException, IOException{
+        // Draw two objective cards from objective deck
+        ObjectiveCard card1 = Server.getController().getGameTable().getObjectiveDeck().drawTopCard();
+        ObjectiveCard card2 = Server.getController().getGameTable().getObjectiveDeck().drawTopCard();
+
+        // Display the two cards
+        int [] idObjective = new int[2];
+        idObjective[0] = card1.getID();
+        idObjective[1] = card2.getID();
+
+        int choiceObjective = Controller.getViewGui().displayObjectiveCards(idObjective);
+        //int indexObjective = Server.getController().getViewGui().displayObjectiveCards(idObjective);
+
+        if(choiceObjective == '0')
+            return card1;
+        return card2;
+    }
+
     /**
      * Method for asking client which card he wants to play, his side and where to play such card
      *
@@ -581,7 +606,7 @@ public class ClientHandlerSocket extends Thread{
         Server.getController().getViewTui().displayObjectiveCard(commonObjective[0], out);
         Server.getController().getViewTui().displayObjectiveCard(commonObjective[1], out);
 
-        // Ask client to select his secret objective cards from two different objective cards
+        // Ask client to select his secret objective card from two different objective cards
         out.println("Now you have to choose which secret objective card you want to use.");
         out.println("You can choose one card from the following two objective cards\n");
 
@@ -630,7 +655,7 @@ public class ClientHandlerSocket extends Thread{
      *
      * @author Lorenzo Foini, AndreaDiC11, giacomofalcone
      */
-    private void playGui() throws EmptyDeckException {
+    private void playGui() throws EmptyDeckException, EmptyObjectiveDeckException, IOException {
         // TODO
         //Controller.getViewGui().startGui();
         if(Server.getCountConnectedClients() == 1){
@@ -642,21 +667,16 @@ public class ClientHandlerSocket extends Thread{
         // Ask client's color and remove such color from list of available colors
         String color = AskColorGui();
 
+        StarterCard starterCard;
         // Show to the client his starter card
-        int idStarterCard;
         try {
-            idStarterCard = Server.getController().getGameTable().getStarterDeck().drawTopCard().getID();
+            starterCard = (StarterCard) Server.getController().getGameTable().getStarterDeck().drawTopCard();
         } catch (EmptyDeckException e) {
             throw new RuntimeException(e);
         }
         // Ask client on which side he wants to play the starter card
-        //boolean sideStarterCard = Server.getController().getViewGui().displayStarterCard(idStarterCard);
-        boolean sideStarterCard = Controller.getViewGui().displayStarterCard(idStarterCard);
+        boolean sideStarterCard = Controller.getViewGui().displayStarterCard(starterCard.getID());
         // Assign such side to starter card
-
-
-        Controller.getViewGui().playgame();
-/*
         starterCard.setSide(sideStarterCard);
 
         // Create player hand
@@ -666,35 +686,30 @@ public class ClientHandlerSocket extends Thread{
         hand.add((GoldCard) Server.getController().getGameTable().getGoldDeck().drawTopCard());
 
         //TODO
-        //da passare come parametri la mano e la starter card
+        //da passare come parametri la mano, la starter card, gli obiettivi comuni
         Controller.getViewGui().playgame();
-        //Server.getController().getViewGui().displayHandGui(hand);
-
+        /* poi deve scegliere
         // Show the two common objective cards
-        //TODO
-        out.println("\nThis are the two common objectives:\n");
         ObjectiveCard[] commonObjective = Server.getController().getGameTable().getCommonObjectives();
-        Server.getController().getViewTui().displayObjectiveCard(commonObjective[0], out);
-        Server.getController().getViewTui().displayObjectiveCard(commonObjective[1], out);
-
-        // Ask client to select his secret objective cards from two different objective cards
-        out.println("Now you have to choose which secret objective card you want to use.");
-        out.println("You can choose one card from the following two objective cards\n");
-
-        ObjectiveCard secretObjectiveCard = askSecretObjectiveCard();
+        */
+        ObjectiveCard secretObjectiveCard;
+        // Ask client to select his secret objective card from two different objective cards
+        try {
+            secretObjectiveCard = askSecretObjectiveCardGui();
+        } catch (EmptyObjectiveDeckException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // Call to controller's method for create a new player
         // It also inserts the new player in the game table
         Server.getController().createNewPlayer(username, color, starterCard, hand, secretObjectiveCard);
 
+        /*
         // Display message which says that the player has been added to the game and wait for start
         out.println("\nYou have been added to the game.\nPlease wait for other players.");
-
-
-*/
-
-
-
+        */
 
     }
+
+
 }

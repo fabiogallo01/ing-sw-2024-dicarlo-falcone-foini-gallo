@@ -273,7 +273,7 @@ public class ViewGUI extends JFrame {
         // Displaying back side
         try {
             BufferedImage cardImage = ImageIO.read(new File(starterPathBack));
-            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(150, 200, Image.SCALE_SMOOTH));
+            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(250, 200, Image.SCALE_SMOOTH));
             JLabel cardLabel = new JLabel(cardIcon);
             cardLabel.setHorizontalAlignment(JLabel.CENTER);
             cardLabel.setVerticalAlignment(JLabel.CENTER);
@@ -302,7 +302,7 @@ public class ViewGUI extends JFrame {
         // Displaying front side
         try {
             BufferedImage cardImage = ImageIO.read(new File(starterPathFront));
-            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(150, 200, Image.SCALE_SMOOTH));
+            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(250, 200, Image.SCALE_SMOOTH));
             JLabel cardLabel = new JLabel(cardIcon);
             cardLabel.setHorizontalAlignment(JLabel.CENTER);
             cardLabel.setVerticalAlignment(JLabel.CENTER);
@@ -344,6 +344,77 @@ public class ViewGUI extends JFrame {
         return selectedSide[0];
     }
 
+
+
+
+    /**
+     * Method to display two cards and get the index of the selected card.
+     *
+     * @param objectiveCardIDs array of IDs used to get the file path of the cards
+     * @return the index of the chosen card
+     * @author giacomofalcone
+     */
+    public int displayObjectiveCards(int[] objectiveCardIDs) {
+        final int[] selectedIndex = {-1}; // Store selected index
+        final Object lock = new Object();
+
+        // Creazione del frame principale
+        JFrame frame = new JFrame("Select an objective card");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
+        frame.setSize(600, 400);
+        frame.setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1, 2)); // Modifica layout per visualizzare le carte in una riga
+
+        JLabel instructionLabel = new JLabel("Choose which secret objective card you want to use", SwingConstants.CENTER);
+        frame.add(instructionLabel, BorderLayout.NORTH);
+
+        for (int i = 0; i < objectiveCardIDs.length; i++) {
+            String starterPath = "CodexNaturalis\\resources\\front\\img_" + objectiveCardIDs[i] + ".jpeg";
+
+            try {
+                BufferedImage cardImage = ImageIO.read(new File(starterPath));
+                ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(250, 200, Image.SCALE_SMOOTH));
+                JLabel cardLabel = new JLabel(cardIcon);
+                cardLabel.setHorizontalAlignment(JLabel.CENTER);
+                cardLabel.setVerticalAlignment(JLabel.CENTER);
+
+                int index = i;
+                JButton selectButton = new JButton("Select");
+                selectButton.addActionListener(e -> {
+                    selectedIndex[0] = index;
+                    frame.dispose(); // Close the window
+                    synchronized (lock) {
+                        lock.notify(); // Notify waiting thread
+                    }
+                });
+
+                JPanel cardPanel = new JPanel(new BorderLayout());
+                cardPanel.add(cardLabel, BorderLayout.CENTER);
+                cardPanel.add(selectButton, BorderLayout.SOUTH);
+
+                panel.add(cardPanel);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        frame.add(panel, BorderLayout.CENTER);
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        synchronized (lock) {
+            try {
+                lock.wait(); // Wait until user selects a card
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return selectedIndex[0];
+    }
 
 
 }
