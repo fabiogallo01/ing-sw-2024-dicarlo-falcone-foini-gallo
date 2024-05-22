@@ -70,9 +70,20 @@ public class Client2 {
         ViewGUI viewGUI = new ViewGUI();
         String response;
         while ((response = in.readLine()) != null) {
+            if (response.equals("Insert your username:")){
+                out.println(viewGUI.displayUsername());
+            }
+            if (response.equals("Enter your choice (create/join):")){
+                //out.println(viewGUI.displayChoice());
+            }
+            if (response.equals("This username is taken. Please insert a new username:")){
+                //out.println(viewGUI.displayChoice());
+            }
+
             if (response.equals("Enter number of players (2-4):")){
                 out.println(viewGUI.displayNumberPlayer());
             }
+            //TODO implement all the rest
         }
     }
 }
