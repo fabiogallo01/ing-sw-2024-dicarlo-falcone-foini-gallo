@@ -80,8 +80,7 @@ public class ClientHandler2 extends Thread {
                     out.println("Game created. Waiting for players...");
                 } else if ("join".equalsIgnoreCase(choice)) {
                     int i = 0;
-                    controllers = Server2.getControllers();//it updates the list of games that can be joined
-                    for (Controller controller : controllers) {// it checks the existent games that the player can join
+                    for (Controller controller : new ArrayList<>(controllers)) {// it checks the existent games that the player can join
                         i++;
                         if (!controller.getGameTable().isFull()) {//it prints the username of the players that are in the game
                             out.println("Game " + i + ":");
@@ -94,9 +93,9 @@ public class ClientHandler2 extends Thread {
                                 gameController = controller;
                                 gameController.getGameTable().setJoined(true);
                                 joined = initializePlayer(username);
-                                if(joined) {
+                                if (joined) {
                                     out.println("Joined a game. Waiting for players...");
-                                }else{
+                                } else {
                                     gameController.getGameTable().setJoined(false);
                                 }
                                 break;
