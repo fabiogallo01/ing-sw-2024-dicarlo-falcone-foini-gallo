@@ -9,10 +9,28 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
+
+/**
+ * Class representing client in a client-server architecture
+ * It uses socket to establish connection and show/get server's/client's messages
+ *
+ *
+ * @author Foini Lorenzo
+ * @author Fabio Gallo
+ */
 public class Client2 {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 12345;
 
+
+    /**
+     * Main method
+     * It is necessary to establish connection to the server (if possible) and play the game
+     *
+     * @param args in the position [0] it contains the UI choice: TUI or GUI (GUI as default if args is empty)
+     * @author Foini Lorenzo
+     * @author Fabio Gallo
+     */
     public static void main(String[] args) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -31,7 +49,11 @@ public class Client2 {
             e.printStackTrace();
         }
     }
-
+    /**
+     * This method is called when the client chooses to use TUI
+     *
+     * @author Foini Lorenzo
+     */
     private static void startTUI(PrintWriter out, BufferedReader in) throws IOException {
         Scanner scanner = new Scanner(System.in);
 
@@ -66,6 +88,12 @@ public class Client2 {
         }
     }
 
+    /**
+     * This method is called when the client chooses to use GUI
+     *
+     * @author Foini Lorenzo
+     * @author Fabio Gallo
+     */
     private static void startGUI(PrintWriter out, BufferedReader in) throws IOException {
         ViewGUI viewGUI = new ViewGUI();
         String response;
