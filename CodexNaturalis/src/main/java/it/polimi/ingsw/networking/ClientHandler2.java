@@ -73,11 +73,10 @@ public class ClientHandler2 extends Thread {
                     int numberOfPlayers = Integer.parseInt(in.readLine());
 
                     gameController = new Controller(numberOfPlayers);//it creates the gameTable inside the controller
-                    initializePlayer(username);//inserts all the player info
-
+                    joined = initializePlayer(username);//inserts all the player info
+                    gameController.getGameTable().setJoined(joined);
                     Server2.addController(gameController);//it adds the match to the matches that can be now joined
 
-                    joined = true;
                     out.println("Game created. Waiting for players...");
                 } else if ("join".equalsIgnoreCase(choice)) {
                     int i = 0;
@@ -93,17 +92,20 @@ public class ClientHandler2 extends Thread {
                             String ans = in.readLine();
                             if ("Y".equalsIgnoreCase(ans)) {
                                 gameController = controller;
-                                initializePlayer(username);
-                                joined = true;
-                                out.println("Joined a game. Waiting for players...");
+                                gameController.getGameTable().setJoined(true);
+                                joined = initializePlayer(username);
+                                if(joined) {
+                                    out.println("Joined a game. Waiting for players...");
+                                }else{
+                                    gameController.getGameTable().setJoined(false);
+                                }
                                 break;
                             }
                         }
                     }
                     if (!joined) {
-                        out.println("No available games to join. Please try again.");
+                        out.println("You didn't join a game. Please try again.");
                     }
-
                 }
             }
             if (gameController.getReady() == gameController.getGameTable().getNumPlayers() - 1) {//when the last player joins, it starts the game
@@ -242,7 +244,7 @@ public class ClientHandler2 extends Thread {
      * @author Foini Lorenzo
      * @author Gallo Fabio
      */
-    public void initializePlayer(String username) throws IOException, EmptyDeckException, EmptyObjectiveDeckException {
+    public boolean initializePlayer(String username) throws IOException, EmptyDeckException, EmptyObjectiveDeckException {
         //COLOR PICKING
         out.println("Choose a color:");
         for (String color : gameController.getAvailableColors()) {
@@ -332,6 +334,7 @@ public class ClientHandler2 extends Thread {
         else secretObjectiveCard = card2;
 
         gameController.createNewPlayer(username, selectedColor, starterCard, hand, secretObjectiveCard);
+        return true;
     }
 
     /**

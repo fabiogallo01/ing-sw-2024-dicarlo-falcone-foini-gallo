@@ -21,6 +21,7 @@ public class GameTable {
     private static Scoreboard scoreboard;
     private boolean lastTurn = false;
     private boolean finished = false;
+    private int joined = 0;
     /**
      * GameTable constructor, it builds all the decks and initializes the game
      *
@@ -1327,6 +1328,15 @@ public class GameTable {
         this.lastTurn = true;
     }
 
+    public int getJoined() {
+        return joined;
+    }
+
+    public void setJoined(boolean joined) {
+        if(joined) this.joined++;
+        else this.joined--;
+    }
+
     /**
      * Player getter by username
      *
@@ -1398,7 +1408,7 @@ public class GameTable {
         return resourceDeck.deckSize()==0 && goldDeck.deckSize()==0 && visibleCards.isEmpty();
     }
     public boolean isFull(){
-        return getNumPlayers()==players.size();
+        return getNumPlayers()==joined;
     }
 
     public boolean isFinished() {
