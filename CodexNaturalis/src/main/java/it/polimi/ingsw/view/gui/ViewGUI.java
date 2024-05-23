@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.networking.Server;
+import it.polimi.ingsw.networking.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,10 +38,10 @@ public class ViewGUI extends JFrame {
     public int displayNumberPlayer(){
         // Creazione del frame principale
         JFrame frame = new JFrame("Seleziona Numero di Giocatori");
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 150);
         frame.setLayout(new BorderLayout());
-
 
         // Creazione del pannello per l'input
         JPanel panel = new JPanel();
@@ -99,6 +99,7 @@ public class ViewGUI extends JFrame {
     public String displayUsername(){
         // Creazione del frame principale
         JFrame frame = new JFrame("Inserisci Nome");
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 150);
         frame.setLayout(new BorderLayout());
@@ -135,7 +136,7 @@ public class ViewGUI extends JFrame {
                 try {
                     // Recupero del testo dal campo di testo
                     username = textField.getText().trim();
-                    ArrayList<String> alreadyUsedUsername = Server.getClientUsername();
+                    ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
                     if (alreadyUsedUsername.contains(username)) {
                         throw new IllegalArgumentException("Il nome è gia presente.");
                     }
@@ -167,6 +168,7 @@ public class ViewGUI extends JFrame {
     public String displayColor( ArrayList<String> colors){
         // Creazione del frame principale
         JFrame frame = new JFrame("Seleziona Colore");
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 150);
         frame.setLayout(new BorderLayout());
@@ -233,14 +235,11 @@ public class ViewGUI extends JFrame {
     }
 
 
-
-
     public void playgame(){
         // Apri la finestra del GameFrame
         GameFrame gameFrame = new GameFrame("CODEX NATURALIS");
         gameFrame.setVisible(true);
     }
-
 
 
     /**
@@ -345,8 +344,6 @@ public class ViewGUI extends JFrame {
     }
 
 
-
-
     /**
      * Method to display two cards and get the index of the selected card.
      *
@@ -415,6 +412,4 @@ public class ViewGUI extends JFrame {
 
         return selectedIndex[0];
     }
-
-
 }
