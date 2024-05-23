@@ -64,7 +64,7 @@ public class ClientHandler2 extends Thread {
 
             //it allows the client to create or join a match
             while (!joined) {
-                out.println("Do you want to start a new game or join a game? (insert create/join):");
+                out.println("Do you want to create a new game or join a game? (insert create/join):");
                 String choice = in.readLine();
 
                 if ("create".equalsIgnoreCase(choice)) {//if it creates a match, it asks how many players should play
@@ -239,8 +239,6 @@ public class ClientHandler2 extends Thread {
             out.println("Username already in use. Please insert a new username:"); // INVALID
             username = in.readLine();
         }
-        // Show in server new connection
-        //System.out.println(username + " has connected to the game.");
 
         // Insert username in server's list of usernames
         Server2.addClientUsername(username);
@@ -427,15 +425,17 @@ public class ClientHandler2 extends Thread {
      * @author Foini Lorenzo
      */
     public void askDraw(String username) throws IOException {
-        // To display the back of the top card of resource deck
+        // Display the back of the top card of resource deck
         ArrayList<Card> resourceDeck = gameController.getGameTable().getResourceDeck().getDeck();
         GamingCard topResourceCard = (GamingCard) resourceDeck.getLast();
         gameController.getViewTui().displayTopResource(topResourceCard, out);
-        // To display the back of the top card of gold deck
+
+        // Display the back of the top card of gold deck
         ArrayList<Card> goldDeck = gameController.getGameTable().getGoldDeck().getDeck();
         GoldCard topGoldCard = (GoldCard) goldDeck.getLast();
         gameController.getViewTui().displayTopGold(topGoldCard, out);
-        // To display the 4 visible drawable cards
+
+        // Display the 4 visible drawable cards
         ArrayList<GamingCard> visibleCards = gameController.getGameTable().getVisibleCard();
         gameController.getViewTui().displayVisibleTableCard(visibleCards, out);
 
@@ -523,7 +523,6 @@ public class ClientHandler2 extends Thread {
         }
     }
 
-
     public void sendSelectPlayMessage() {
         out.println("It's your turn.\nNow you have to play a card from your hand.\n");
     }
@@ -576,7 +575,7 @@ public class ClientHandler2 extends Thread {
 
         // Send message to show if the player has won or lost
         if (hasWon) {
-            out.println("\nCONGRATULATIONS, YOU WIN!!!");
+            out.println("\nCONGRATULATIONS, YOU WON!!!");
         } else {
             out.println("\nSORRY, YOU LOST.");
         }
@@ -619,5 +618,3 @@ public class ClientHandler2 extends Thread {
         return "th: ";
     }
 }
-
-
