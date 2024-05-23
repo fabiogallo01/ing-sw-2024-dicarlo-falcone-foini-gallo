@@ -63,24 +63,25 @@ public class Client2 {
         while ((response = in.readLine()) != null) {
             System.out.println(response);//TUI
             //TODO sostituire tutti gli or con una condizione sola, creando una classe di un genere di messaggi
-            if (response.equals("Enter your choice (create/join):") ||
-                    response.equals("Enter number of players (2-4):") ||
-                    response.equals("Specify the number of players (insert 2, 3 or 4):") ||
+            if (response.equals("Do you want to start a new game or join a game? (insert create/join):") ||
+                    response.equals("Which game you want to join (insert 0 to exit):") ||
+                    response.equals("Please insert a valid number of game (insert 0 to exit):") ||
+                    response.equals("Enter number of players (insert 2/3/4):") ||
+                    response.equals("Please insert 2/3/4:") ||
                     response.equals("Insert your username:") ||
                     response.equals("Username already in use. Please insert a new username:") ||
                     response.equals("Insert your color:") ||
-                    response.equals("Invalid color. Please select a color from the list") ||
-                    response.equals("On which side you want to play the starter card (insert front or back):") ||
-                    response.equals("Insert front or back:") ||
-                    response.equals("Select your secret objective card (insert 1 or 2):") ||
-                    response.equals("Which card you want to play (insert 1, 2 or 3):") ||
-                    response.equals("Please insert 1, 2 or 3:") ||
-                    response.equals("On which side you want to play this card(insert front or back):") ||
-                    response.equals("Insert integer row value:") ||
-                    response.equals("Insert integer column value:") ||
-                    response.equals("Insert 1, 2 or 3:") ||
-                    response.equals("Insert the card's number:") ||
-                    response.equals("Do you want to join this game? (Y/N)")
+                    response.equals("Invalid color. Please select a color from the previous list:") ||
+                    response.equals("On which side you want to play the starter card (insert front/back):") ||
+                    response.equals("Insert front/back:") ||
+                    response.equals("Select your secret objective card (insert 1/2):") ||
+                    response.equals("Which card you want to play (insert 1/2/3):") ||
+                    response.equals("Please insert 1/2/3:") ||
+                    response.equals("On which side you want to play this card (insert front/back):") ||
+                    response.equals("Insert integer row value (from 0 to 80):") ||
+                    response.equals("Insert integer column value (from 0 to 80):") ||
+                    response.equals("Insert 1/2/3:") ||
+                    response.equals("Insert the card's number (insert 1/2/3/4):")
             ) {
                 String input = scanner.nextLine();//TUI
                 out.println(input);//TUI
