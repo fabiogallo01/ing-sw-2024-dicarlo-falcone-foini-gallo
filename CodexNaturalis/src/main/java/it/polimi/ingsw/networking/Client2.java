@@ -63,7 +63,7 @@ public class Client2 {
         while ((response = in.readLine()) != null) {
             System.out.println(response);//TUI
             //TODO sostituire tutti gli or con una condizione sola, creando una classe di un genere di messaggi
-            if (response.equals("Do you want to start a new game or join a game? (insert create/join):") ||
+            if (response.equals("Do you want to create a new game or join a game? (insert create/join):") ||
                     response.equals("Which game you want to join (insert 0 to exit):") ||
                     response.equals("Please insert a valid number of game (insert 0 to exit):") ||
                     response.equals("Enter number of players (insert 2/3/4):") ||
@@ -102,14 +102,15 @@ public class Client2 {
             if (response.equals("Insert your username:")){
                 out.println(viewGUI.displayUsername());
             }
-            if (response.equals("Enter your choice (create/join):")){
-                //out.println(viewGUI.displayChoice());
-            }
-            if (response.equals("This username is taken. Please insert a new username:")){
-                //out.println(viewGUI.displayChoice());
-            }
+            if(response.equals("Username already in use. Please insert a new username:")){
+                // ERROR: This case is already managed in displayUsername() but doesn't work
 
-            if (response.equals("Enter number of players (2-4):")){
+                //out.println(viewGUI.displayUsername());
+            }
+            if (response.equals("Do you want to create a new game or join a game? (insert create/join):")){
+                //out.println(viewGUI.displayChoice());
+            }
+            if (response.equals("Enter number of players (insert 2/3/4):")){
                 out.println(viewGUI.displayNumberPlayer());
             }
             //TODO implement all the rest
