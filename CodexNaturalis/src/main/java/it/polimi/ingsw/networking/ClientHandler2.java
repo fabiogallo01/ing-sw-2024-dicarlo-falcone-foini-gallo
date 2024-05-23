@@ -58,9 +58,9 @@ public class ClientHandler2 extends Thread {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-
+            boolean TUI = "TUI".equalsIgnoreCase(in.readLine());
             //insertion of the username
-            String username = askUsername();
+            String username = askUsername(TUI);
 
             //it allows the client to create or join a match
             while (!joined) {
@@ -229,21 +229,24 @@ public class ClientHandler2 extends Thread {
      *
      * @author Foini Lorenzo
      */
-    public String askUsername() throws IOException {
-        out.println("Insert your username:"); // Display message
-        String username = in.readLine(); // Get client input
+    public String askUsername(boolean TUI) throws IOException {
+        if(TUI) {
+            out.println("Insert your username:"); // Display message
+            String username = in.readLine(); // Get client input
+            username = gameController.getViewGui().displayUsername();
+            // Check if the username is available or already present
+            ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
+            while (alreadyUsedUsername.contains(username)) {
+                out.println("Username already in use. Please insert a new username:"); // INVALID
+                username = in.readLine();
+            }
 
-        // Check if the username is available or already present
-        ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
-        while (alreadyUsedUsername.contains(username)) {
-            out.println("Username already in use. Please insert a new username:"); // INVALID
-            username = in.readLine();
-        }
+            // Insert username in server's list of usernames
+            Server2.addClientUsername(username);
 
-        // Insert username in server's list of usernames
-        Server2.addClientUsername(username);
-
-        return username;
+            return username;
+        }else
+            return gameController.getViewGui().displayUsername();
     }
 
     /**
