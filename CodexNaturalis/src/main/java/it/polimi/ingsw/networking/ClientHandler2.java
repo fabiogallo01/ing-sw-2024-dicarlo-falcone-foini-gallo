@@ -64,13 +64,17 @@ public class ClientHandler2 extends Thread {
 
             //it allows the client to create or join a match
             while (!joined) {
-                out.println("Enter your choice (create/join):");
+                out.println("Do you want to start a new game or join a game? (insert create/join):");
                 String choice = in.readLine();
 
-
                 if ("create".equalsIgnoreCase(choice)) {//if it creates a match, it asks how many players should play
-                    out.println("Enter number of players (2-4):");
-                    int numberOfPlayers = Integer.parseInt(in.readLine());
+                    out.println("Enter number of players (insert 2/3/4):");
+                    String numPlayers = in.readLine();
+                    while (!numPlayers.equals("2") && !numPlayers.equals("3") && !numPlayers.equals("4")) {
+                        out.println("Please insert 2/3/4:");
+                        numPlayers = in.readLine();
+                    }
+                    int numberOfPlayers = Integer.parseInt(numPlayers);
 
                     gameController = new Controller(numberOfPlayers);//it creates the gameTable inside the controller
                     joined = initializePlayer(username);//inserts all the player info
@@ -79,31 +83,39 @@ public class ClientHandler2 extends Thread {
 
                     out.println("Game created. Waiting for players...");
                 } else if ("join".equalsIgnoreCase(choice)) {
-                    int i = 0;
+                    ArrayList<String> gameNotFull = new ArrayList<>(); // List of games that can be joined
+                    gameNotFull.add("0"); // Exit command
+                    int i = 1;
                     for (Controller controller : new ArrayList<>(controllers)) {// it checks the existent games that the player can join
-                        i++;
                         if (!controller.getGameTable().isFull()) {//it prints the username of the players that are in the game
                             out.println("Game " + i + ":");
                             for (Player p : controller.getGameTable().getPlayers()) {
                                 out.println("-" + p.getUsername());
                             }
-                            out.println("Do you want to join this game? (Y/N)");
-                            String ans = in.readLine();
-                            if ("Y".equalsIgnoreCase(ans)) {
-                                gameController = controller;
-                                gameController.getGameTable().setJoined(true);
-                                joined = initializePlayer(username);
-                                if (joined) {
-                                    out.println("Joined a game. Waiting for players...");
-                                } else {
-                                    gameController.getGameTable().setJoined(false);
-                                }
-                                break;
+                            gameNotFull.add(String.valueOf(i));
+                        }
+                        i++;
+                    }
+                    if(gameNotFull.size() > 1){
+                        out.println("Which game you want to join (insert 0 to exit):");
+                        String ans = in.readLine();
+                        while (!gameNotFull.contains(ans)) {
+                            out.println("Please insert a valid number of game (insert 0 to exit):");
+                            ans = in.readLine();
+                        }
+
+                        if (!ans.equals("0")) {
+                            gameController = controllers.get(Integer.parseInt(ans)-1);
+                            gameController.getGameTable().setJoined(true);
+                            joined = initializePlayer(username);
+                            if (joined) {
+                                out.println("Joined a game. Waiting for players...");
+                            } else {
+                                gameController.getGameTable().setJoined(false);
                             }
                         }
-                    }
-                    if (!joined) {
-                        out.println("You didn't join a game. Please try again.");
+                    }else {
+                        out.println("No game to join.");
                     }
                 }
             }
@@ -224,7 +236,7 @@ public class ClientHandler2 extends Thread {
         // Check if the username is available or already present
         ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
         while (alreadyUsedUsername.contains(username)) {
-            out.println("This username is taken. Please insert a new username:"); // INVALID
+            out.println("Username already in use. Please insert a new username:"); // INVALID
             username = in.readLine();
         }
         // Show in server new connection
@@ -254,10 +266,7 @@ public class ClientHandler2 extends Thread {
 
         // Check color selection
         while (!gameController.getAvailableColors().contains(selectedColor)) {
-            out.println("Invalid color. Please select a color from the list:"); // INVALID
-            for (String color : gameController.getAvailableColors()) {
-                out.println("-" + color);
-            }
+            out.println("Invalid color. Please select a color from the previous list:"); // INVALID
             selectedColor = in.readLine().toLowerCase();
         }
 
@@ -275,12 +284,12 @@ public class ClientHandler2 extends Thread {
         gameController.getViewTui().displayStarterCard(starterCard, out);
         // Ask client on which side he wants to play the starter card
         // Display message
-        out.println("On which side you want to play the starter card (insert front or back):");
+        out.println("On which side you want to play the starter card (insert front/back):");
         String stringSide = in.readLine().toLowerCase(); // Get client's input
 
         // Check input
         while (!stringSide.equals("front") && !stringSide.equals("back")) {
-            out.println("Insert front or back:"); // INVALID
+            out.println("Insert front/back:"); // INVALID
             stringSide = in.readLine().toLowerCase();
         }
 
@@ -323,7 +332,7 @@ public class ClientHandler2 extends Thread {
         // Ask choice to client (1 => First card, 2 => Second card)
         String stringChoice;
         do {
-            out.println("Select your secret objective card (insert 1 or 2):");
+            out.println("Select your secret objective card (insert 1/2):");
             stringChoice = in.readLine();
         } while (!stringChoice.equals("1") && !stringChoice.equals("2"));
 
@@ -360,34 +369,34 @@ public class ClientHandler2 extends Thread {
         }
 
         // Ask player which card he wants to play from his hand
-        out.println("Which card you want to play (insert 1, 2 or 3):");
+        out.println("Which card you want to play (insert 1/2/3):");
         String stringPositionCardHand = in.readLine();
 
         // Check user input
         while (!stringPositionCardHand.equals("1") && !stringPositionCardHand.equals("2") && !stringPositionCardHand.equals("3")) {
-            out.println("Please insert 1, 2 or 3:");
+            out.println("Please insert 1/2/3:");
             stringPositionCardHand = in.readLine();
         }
         int cardPositionHand = Integer.parseInt(stringPositionCardHand); // Parse to int
 
         // Ask player which side to play such card
-        out.println("On which side you want to play this card(insert front or back):");
+        out.println("On which side you want to play this card (insert front/back):");
         String stringSide = in.readLine().toLowerCase(); // Get client's input
 
         // Check user input
         while (!stringSide.equals("front") && !stringSide.equals("back")) {
-            out.println("Insert front or back:"); // INVALID
+            out.println("Insert front/back:"); // INVALID
             stringSide = in.readLine().toLowerCase();
         }
         boolean sideCardToPlay = stringSide.equals("front");
 
         // Ask where he wants to play that card in his game area
         out.println("Given your game area, now choose the position in the area where you want to play such card.");
-        out.println("Insert integer row value:");
+        out.println("Insert integer row value (from 0 to 80):");
         int row = Integer.parseInt(in.readLine());
-        out.println("Insert integer column value:");
+        out.println("Insert integer column value (from 0 to 80):");
         int column = Integer.parseInt(in.readLine());
-        // Throws exception after if position is not valid
+        // Throws exception later if position is not valid
 
         int[] positionArea = new int[2];
         positionArea[0] = row;
@@ -432,12 +441,12 @@ public class ClientHandler2 extends Thread {
 
         // Ask user's choice
         out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
-        out.println("Insert 1, 2 or 3:");
+        out.println("Insert 1/2/3:");
         String stringChoice = in.readLine();
 
         // Check user input
         while (!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")) {
-            out.println("Please insert 1, 2 or 3:");
+            out.println("Please insert 1/2/3:");
             stringChoice = in.readLine();
         }
         int choice = Integer.parseInt(stringChoice); // Parse to int
@@ -496,7 +505,7 @@ public class ClientHandler2 extends Thread {
                         askDraw(username);
                     }
                 } else {
-                    out.println("Insert the card's number:");
+                    out.println("Insert the card's number (insert 1/2/3/4):");
                     int selectedPosition = Integer.parseInt(in.readLine());
                     try {
                         // Call to method and add card to hand
