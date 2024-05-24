@@ -30,6 +30,8 @@ public class ClientHandler2 extends Thread {
     private PrintWriter out;
     private Controller gameController;
     private boolean joined = false;
+    private boolean TUI; //true => TUI, false => GUI
+    private String username;
 
     /**
      * ViewClientHandler constructor, it assigns/creates all class's parameters
@@ -58,10 +60,160 @@ public class ClientHandler2 extends Thread {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-            boolean TUI = "TUI".equalsIgnoreCase(in.readLine());
-            //insertion of the username
-            String username = askUsername(TUI);
+            TUI = "TUI".equalsIgnoreCase(in.readLine());
 
+            // Ask client his username
+            askUsername();
+
+            // Ask client if he wants to create or join a game
+            // It also call to method initializePlayer for asking other information
+            createJoinGame();
+
+            if (gameController.getReady() == gameController.getGameTable().getNumPlayers() - 1) {//when the last player joins, it starts the game
+                gameController.setReady();
+                gameController.startGame();//it sets the first player turn
+            } else {
+                gameController.setReady();
+                while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {//it waits for all the players to be ready to play
+                    Thread.onSpinWait();
+                }
+            }
+
+            // TODO: Modify the following lines for handling turns with TUI and GUI (now it works only with TUI)
+
+            out.println("Game starts now.");
+
+            Player player = gameController.getGameTable().getPlayerByUsername(username);
+
+            while (!player.isTurn()) {//waits for your turn
+                Thread.onSpinWait();
+            }
+
+            while (!gameController.getGameTable().isLastTurn()) {//it checks if it is the last turn
+                playTurn();//plays the whole turn
+
+                if (gameController.getGameTable().isEnded() && username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {//the last player of the turn checks if the next turn is going to be the last
+                    gameController.getGameTable().setLastTurn();
+                }
+                gameController.nextTurn();//sets the turn of this player to false, the turn of the next player to true
+                while (!player.isTurn()) { // Client wait for his turn
+                    Thread.onSpinWait();
+                }
+            }
+            sendLastTurnMessage();
+
+            playLastTurn();
+            gameController.nextTurn();
+
+            if (username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {//the last player signals that he finished
+                gameController.getGameTable().setFinished();
+            }
+            while (!gameController.getGameTable().isFinished()) {//it makes the other players wait for the last player to finish
+                Thread.onSpinWait();
+            }
+            while (!player.isTurn()) {//it prints the final scoreboard and messages one player at a time, so they don't conflict
+                Thread.onSpinWait();
+            }
+            gameController.calculateFinalPoints();
+            gameController.finalScoreboard();
+
+            LinkedHashMap<Player, Integer> leaderboard = gameController.getLeaderboard();
+
+            ArrayList<Player> winners = gameController.calculateWinners(leaderboard);
+
+            sendWinnersMessage(winners, username);
+            sendLeaderboardMessage(leaderboard);
+            gameController.nextTurn();//it lets the other players print the final messages
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (EmptyObjectiveDeckException | EmptyDeckException | NoPlayerWithSuchUsernameException |
+                 InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Plays the turn of a player, by playing a card and drawing one
+     *
+     * @author Foini Lorenzo
+     */
+    private synchronized void playTurn() throws IOException {
+
+        // Play card "phase"
+        // Ask active player his play and send messages
+        sendSelectPlayMessage();
+        askPlay(username);
+        sendCorrectPlayMessage();
+
+        // draw card "phase" and send messages
+        sendSelectDrawMessage();
+        askDraw(username);
+        sendCorrectDrawMessage();
+
+        // Send turn messages
+        sendFinishTurnMessage();
+        sendWaitTurnMessage();
+    }
+
+    /**
+     * Plays the last turn of a player, just by playing a card
+     *
+     * @author Foini Lorenzo
+     * @author Gallo Fabio
+     */
+    private synchronized void playLastTurn() throws IOException, InterruptedException {
+
+        // Play card "phase"
+        // Ask active player his play and send messages
+        sendSelectPlayMessage();
+        askPlay(username);
+        sendCorrectPlayMessage();
+
+        // Send turn messages
+        sendFinishTurnMessage();
+        sendWaitFinishGameMessage();
+    }
+
+    /**
+     * Method to ask client's username
+     * It assigns to the parameter username the client's username
+     *
+     * @throws IOException if connection lost
+     * @author Foini Lorenzo
+     */
+    public void askUsername() throws IOException {
+        if(TUI) {
+            out.println("Insert your username:"); // Display message
+            username = in.readLine(); // Get client input
+            //username = gameController.getViewGui().displayUsername();
+            // Check if the username is available or already present
+            ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
+            while (alreadyUsedUsername.contains(username)) {
+                out.println("Username already in use. Please insert a new username:"); // INVALID
+                username = in.readLine();
+            }
+
+            // Insert username in server's list of usernames
+            Server2.addClientUsername(username);
+        } else {
+            // Use GUI for asking client his username
+            username = gameController.getViewGui().displayUsername();
+            // Insert username in server's list of usernames
+            Server2.addClientUsername(username);
+        }
+    }
+
+    /**
+     * Method to ask client if he wants to create or join a game
+     *
+     * @throws IOException if connection lost
+     * @throws EmptyObjectiveDeckException if the objective deck is empty
+     * @throws EmptyDeckException if deck of resource card or gaming card is empty
+     * @author Foini Lorenzo
+     */
+    public void createJoinGame() throws IOException, EmptyObjectiveDeckException, EmptyDeckException {
+        if(TUI){ // Play with TUI
             //it allows the client to create or join a match
             while (!joined) {
                 out.println("Do you want to create a new game or join a game? (insert create/join):");
@@ -119,134 +271,165 @@ public class ClientHandler2 extends Thread {
                     }
                 }
             }
-            if (gameController.getReady() == gameController.getGameTable().getNumPlayers() - 1) {//when the last player joins, it starts the game
-                gameController.setReady();
-                gameController.startGame();//it sets the first player turn
-            } else {
-                gameController.setReady();
-                while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {//it waits for all the players to be ready to play
-                    Thread.onSpinWait();
+        }else{ // Play with GUI
+            while (!joined) {
+                // Count the number of game that can be joined
+                int countNotFullGame = 0;
+                for (Controller controller : new ArrayList<>(controllers)) {
+                    // Increment count if the gameTable is not full
+                    if (!controller.getGameTable().isFull()) {
+                        countNotFullGame += 1;
+                    }
+                }
+
+                // Call to viewGUI method to display window
+                // choice contains "create" or "join" based on client's choice
+                String choice = gameController.getViewGui().displayCreateJoinGame(countNotFullGame);
+
+                if ("create".equalsIgnoreCase(choice)) { // If it creates a match, it asks how many players should play
+                    // Call to viewGUI method to ask client the number of players
+                    int numberOfPlayers = gameController.getViewGui().displayNumberPlayer();
+
+                    gameController = new Controller(numberOfPlayers); // It creates the gameTable inside the controller
+                    joined = initializePlayer(username); // Inserts all the player info
+                    gameController.getGameTable().setJoined(joined);
+                    Server2.addController(gameController); // It adds the match to the matches that can be now joined
+
+                } else if ("join".equalsIgnoreCase(choice)) { // Ask to join a game
+                    // Call to viewGUI method to ask client which game he wants to join
+                    List<Controller> controllersCopy = new ArrayList<>(controllers); // Create a copy
+                    int joinGameIndex = gameController.getViewGui().displayJoinGameIndex(controllersCopy);
+
+                    gameController = controllers.get(joinGameIndex-1);
+                    gameController.getGameTable().setJoined(true);
+                    joined = initializePlayer(username);
+                    if (joined) {
+                        out.println("Joined a game. Waiting for players...");
+                    } else {
+                        gameController.getGameTable().setJoined(false);
+                    }
                 }
             }
-            out.println("Game starts now.");
-
-            Player player = gameController.getGameTable().getPlayerByUsername(username);
-
-            while (!player.isTurn()) {//waits for your turn
-                Thread.onSpinWait();
-            }
-
-            while (!gameController.getGameTable().isLastTurn()) {//it checks if it is the last turn
-                playTurn(username);//plays the whole turn
-
-                if (gameController.getGameTable().isEnded() && username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {//the last player of the turn checks if the next turn is going to be the last
-                    gameController.getGameTable().setLastTurn();
-                }
-                gameController.nextTurn();//sets the turn of this player to false, the turn of the next player to true
-                while (!player.isTurn()) {
-                    Thread.onSpinWait();
-                }
-            }
-            sendLastTurnMessage();
-
-            playLastTurn(username);
-            gameController.nextTurn();
-
-            if (username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {//the last player signals that he finished
-                gameController.getGameTable().setFinished();
-            }
-            while (!gameController.getGameTable().isFinished()) {//it makes the other players wait for the last player to finish
-                Thread.onSpinWait();
-            }
-            while (!player.isTurn()) {//it prints the final scoreboard and messages one player at a time, so they don't conflict
-                Thread.onSpinWait();
-            }
-            gameController.calculateFinalPoints();
-            gameController.finalScoreboard();
-
-            LinkedHashMap<Player, Integer> leaderboard = gameController.getLeaderboard();
-
-            ArrayList<Player> winners = gameController.calculateWinners(leaderboard);
-
-            sendWinnersMessage(winners, username);
-            sendLeaderboardMessage(leaderboard);
-            gameController.nextTurn();//it lets the other players print the final messages
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (EmptyObjectiveDeckException | EmptyDeckException | NoPlayerWithSuchUsernameException |
-                 InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 
     /**
-     * Plays the turn of a player, by playing a card and drawing one
+     * Method to ask client which color he wants to use
      *
-     * @param username is the username of the player
+     * @return the selected color
+     * @throws IOException if connection lost
      * @author Foini Lorenzo
      */
-    private synchronized void playTurn(String username) throws IOException {
+    public String askColor() throws IOException {
+        String selectedColor;
+        ArrayList<String> availableColors = gameController.getAvailableColors();
+        if(TUI){ // Client uses TUI
+            out.println("Choose a color:");
+            for (String color : availableColors) {
+                out.println("-" + color);
+            }
+            out.println("Insert your color:"); // Display message
+            selectedColor = in.readLine().toLowerCase(); // Get client's input
 
-        // Play card "phase"
-        // Ask active player his play and send messages
-        sendSelectPlayMessage();
-        askPlay(username);
-        sendCorrectPlayMessage();
+            // Check color selection in real time => Use gameController.getAvailableColors()
+            while (!gameController.getAvailableColors().contains(selectedColor)) {
+                out.println("Invalid color. Please select a color from the previous list:"); // INVALID
+                selectedColor = in.readLine().toLowerCase();
+            }
+        } else{ // Client uses GUI
+            // Call to ViewGUI function
+            selectedColor = Controller.getViewGui().displayColor(availableColors);
+        }
 
-        // draw card "phase" and send messages
-        sendSelectDrawMessage();
-        askDraw(username);
-        sendCorrectDrawMessage();
+        // Remove such color from available list
+        gameController.removeAvailableColor(selectedColor);
 
-        // Send turn messages
-        sendFinishTurnMessage();
-        sendWaitTurnMessage();
+        return selectedColor;
     }
 
     /**
-     * Plays the last turn of a player, just by playing a card
+     * Method to ask client which color he wants to use
      *
-     * @param username is the username of the player
-     * @author Foini Lorenzo
-     * @author Gallo Fabio
-     */
-    private synchronized void playLastTurn(String username) throws IOException, InterruptedException {
-
-        // Play card "phase"
-        // Ask active player his play and send messages
-        sendSelectPlayMessage();
-        askPlay(username);
-        sendCorrectPlayMessage();
-
-        // Send turn messages
-        sendFinishTurnMessage();
-        sendWaitFinishGameMessage();
-    }
-
-    /**
-     * Method to ask client's username
-     *
+     * @return the selected color
+     * @throws IOException if connection lost
      * @author Foini Lorenzo
      */
-    public String askUsername(boolean TUI) throws IOException {
-        if(TUI) {
-            out.println("Insert your username:"); // Display message
-            String username = in.readLine(); // Get client input
-            username = gameController.getViewGui().displayUsername();
-            // Check if the username is available or already present
-            ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
-            while (alreadyUsedUsername.contains(username)) {
-                out.println("Username already in use. Please insert a new username:"); // INVALID
-                username = in.readLine();
+    public boolean askStarterCard(StarterCard starterCard) throws IOException {
+        boolean sideStarterCard;
+        if(TUI){ // Client uses TUI
+            // Display starter card
+            gameController.getViewTui().displayStarterCard(starterCard, out);
+
+            // Ask client on which side he wants to play the starter card
+            out.println("On which side you want to play the starter card (insert front/back):");
+            String stringSide = in.readLine().toLowerCase(); // Get client's input
+
+            // Check input
+            while (!stringSide.equals("front") && !stringSide.equals("back")) {
+                out.println("Insert front/back:"); // INVALID
+                stringSide = in.readLine().toLowerCase();
             }
 
-            // Insert username in server's list of usernames
-            Server2.addClientUsername(username);
+            sideStarterCard = stringSide.equals("front");// true => front, false => back
+        } else { // Client uses GUI
+            // Call to ViewGUI method
+            sideStarterCard = gameController.getViewGui().displayStarterCard(starterCard.getID());
+        }
 
-            return username;
-        }else
-            return gameController.getViewGui().displayUsername();
+        return sideStarterCard;
+    }
+
+    /**
+     * Method to ask secret card he wants to use
+     * It show to client his starter card, his hand, two common objective and the two secret objective
+     *
+     * @param starterCard: client's starter card
+     * @param hand: client's hand
+     * @param commonObjective: game common objective
+     * @param secretCard1: first secret objective card
+     * @param secretCard2: second secret objective card
+     * @return the selected secret objective card
+     * @throws IOException if connection lost
+     * @author Foini Lorenzo
+     */
+    public ObjectiveCard askSecreteObjective(StarterCard starterCard, ArrayList<GamingCard> hand, ObjectiveCard[] commonObjective, ObjectiveCard secretCard1, ObjectiveCard secretCard2) throws IOException{
+        ObjectiveCard selectedSecretObjectiveCard;
+        if(TUI){ // Client uses TUI
+            // Show client's hand
+            out.println("\nThis is your hand:\n");
+            gameController.getViewTui().displayResourceCard(hand.get(0), out); // Call to ViewTUI's method
+            gameController.getViewTui().displayResourceCard(hand.get(1), out); // Call to ViewTUI's method
+            gameController.getViewTui().displayGoldCard((GoldCard) hand.get(2), out); // Call to ViewTUI's method
+
+            // Show the two common objective cards
+            out.println("\nThis are the two common objectives:\n");
+            gameController.getViewTui().displayObjectiveCard(commonObjective[0], out); // Call to ViewTUI's method
+            gameController.getViewTui().displayObjectiveCard(commonObjective[1], out); // Call to ViewTUI's method
+
+            // Ask client to select his secret objective cards from two different objective cards
+            out.println("Now you have to choose which secret objective card you want to use.");
+            out.println("You can choose one card from the following two objective cards\n");
+            // Display the two secret objective cards
+            gameController.getViewTui().displayObjectiveCard(secretCard1, out);
+            gameController.getViewTui().displayObjectiveCard(secretCard2, out);
+
+            // Ask choice to client (1 => First card, 2 => Second card)
+            String stringChoice;
+            do {
+                out.println("Select your secret objective card (insert 1/2):");
+                stringChoice = in.readLine();
+            } while (!stringChoice.equals("1") && !stringChoice.equals("2"));
+
+            if (stringChoice.equals("1")) selectedSecretObjectiveCard = secretCard1;
+            else selectedSecretObjectiveCard = secretCard2;
+
+        } else{ // Client uses GUI
+            // Call to ViewGUI method for display cards and ask secret objective card
+            //selectedSecretObjectiveCard = gameController.getViewGui().displayChooseObjectiveCard(starterCard, hand, commonObjective, secretCard1, secretCard2)
+            selectedSecretObjectiveCard = null;
+        }
+
+        return selectedSecretObjectiveCard;
     }
 
     /**
@@ -257,91 +440,39 @@ public class ClientHandler2 extends Thread {
      * @author Gallo Fabio
      */
     public boolean initializePlayer(String username) throws IOException, EmptyDeckException, EmptyObjectiveDeckException {
-        //COLOR PICKING
-        out.println("Choose a color:");
-        for (String color : gameController.getAvailableColors()) {
-            out.println("-" + color);
-        }
-        out.println("Insert your color:"); // Display message
-        String selectedColor = in.readLine().toLowerCase(); // Get client's input
+        // Ask client his color
+        String selectedColor = askColor();
 
-        // Check color selection
-        while (!gameController.getAvailableColors().contains(selectedColor)) {
-            out.println("Invalid color. Please select a color from the previous list:"); // INVALID
-            selectedColor = in.readLine().toLowerCase();
-        }
-
-        // Remove such color from available list
-        gameController.removeAvailableColor(selectedColor);
-
-
-        //STARTER CARD PLACEMENT
+        // Create the starter card
         StarterCard starterCard;
         try {
             starterCard = (StarterCard) gameController.getGameTable().getStarterDeck().drawTopCard();
         } catch (EmptyDeckException e) {
             throw new RuntimeException(e);
         }
-        gameController.getViewTui().displayStarterCard(starterCard, out);
-        // Ask client on which side he wants to play the starter card
-        // Display message
-        out.println("On which side you want to play the starter card (insert front/back):");
-        String stringSide = in.readLine().toLowerCase(); // Get client's input
 
-        // Check input
-        while (!stringSide.equals("front") && !stringSide.equals("back")) {
-            out.println("Insert front/back:"); // INVALID
-            stringSide = in.readLine().toLowerCase();
-        }
-
-        boolean sideStarterCard = stringSide.equals("front");// true => front, false => back
+        // Show to the client his starter card and ask for its placement
         // Assign such side to starter card
+        boolean sideStarterCard = askStarterCard(starterCard);
         starterCard.setSide(sideStarterCard);
 
-
-        //HAND CREATION
+        // Create client's hand
         ArrayList<GamingCard> hand = new ArrayList<>();
         hand.add((GamingCard) gameController.getGameTable().getResourceDeck().drawTopCard());
         hand.add((GamingCard) gameController.getGameTable().getResourceDeck().drawTopCard());
         hand.add((GoldCard) gameController.getGameTable().getGoldDeck().drawTopCard());
-        out.println("\nThis is your hand:\n");
-        gameController.getViewTui().displayResourceCard(hand.get(0), out); // Call to View's method
-        gameController.getViewTui().displayResourceCard(hand.get(1), out); // Call to View's method
-        gameController.getViewTui().displayGoldCard((GoldCard) hand.get(2), out); // Call to View's method
 
-
-        // Show the two common objective cards
-        out.println("\nThis are the two common objectives:\n");
+        // Get game common objective
         ObjectiveCard[] commonObjective = gameController.getGameTable().getCommonObjectives();
-        gameController.getViewTui().displayObjectiveCard(commonObjective[0], out);
-        gameController.getViewTui().displayObjectiveCard(commonObjective[1], out);
-
-
-        // Ask client to select his secret objective cards from two different objective cards
-        out.println("Now you have to choose which secret objective card you want to use.");
-        out.println("You can choose one card from the following two objective cards\n");
-
 
         // Draw two objective cards from objective deck
-        ObjectiveCard card1 = gameController.getGameTable().getObjectiveDeck().drawTopCard();
-        ObjectiveCard card2 = gameController.getGameTable().getObjectiveDeck().drawTopCard();
+        ObjectiveCard secretCard1 = gameController.getGameTable().getObjectiveDeck().drawTopCard();
+        ObjectiveCard secretCard2 = gameController.getGameTable().getObjectiveDeck().drawTopCard();
 
-        // Display the two cards
-        gameController.getViewTui().displayObjectiveCard(card1, out);
-        gameController.getViewTui().displayObjectiveCard(card2, out);
+        // Show to client his starter card, his hand, the common objective and ask for his secret objective
+        ObjectiveCard secretObjectiveCard = askSecreteObjective(starterCard, hand, commonObjective, secretCard1, secretCard2);
 
-        // Ask choice to client (1 => First card, 2 => Second card)
-        String stringChoice;
-        do {
-            out.println("Select your secret objective card (insert 1/2):");
-            stringChoice = in.readLine();
-        } while (!stringChoice.equals("1") && !stringChoice.equals("2"));
-
-        ObjectiveCard secretObjectiveCard;
-
-        if (stringChoice.equals("1")) secretObjectiveCard = card1;
-        else secretObjectiveCard = card2;
-
+        // Call to controller method for create new player with client's information
         gameController.createNewPlayer(username, selectedColor, starterCard, hand, secretObjectiveCard);
         return true;
     }
