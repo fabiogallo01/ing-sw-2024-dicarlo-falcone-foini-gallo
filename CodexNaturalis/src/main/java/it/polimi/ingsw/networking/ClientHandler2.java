@@ -425,8 +425,7 @@ public class ClientHandler2 extends Thread {
 
         } else{ // Client uses GUI
             // Call to ViewGUI method for display cards and ask secret objective card
-            //selectedSecretObjectiveCard = gameController.getViewGui().displayChooseObjectiveCard(starterCard, hand, commonObjective, secretCard1, secretCard2)
-            selectedSecretObjectiveCard = null;
+            selectedSecretObjectiveCard = gameController.getViewGui().displayChooseObjectiveCard(starterCard, hand, commonObjective, secretCard1, secretCard2);
         }
 
         return selectedSecretObjectiveCard;

@@ -76,6 +76,9 @@ public class CreateJoinFrame extends JFrame {
         createButton.addActionListener(e -> {
             choice = "create";
             this.dispose(); // Close the window
+            synchronized (lock) {
+                lock.notify(); // Notify waiting thread
+            }
         });
 
         // Second button: join a game
@@ -94,9 +97,6 @@ public class CreateJoinFrame extends JFrame {
         if(countNotFullGame == 0){
             joinButton.setText("NO GAME TO JOIN"); // Change text
             joinButton.setEnabled(false); // Disable button
-            synchronized (lock) {
-                lock.notify(); // Notify waiting thread
-            }
         }
 
         // Add buttons in the button panel
