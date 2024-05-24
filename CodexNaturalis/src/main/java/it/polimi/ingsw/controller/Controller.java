@@ -76,7 +76,7 @@ public class Controller {
      * @return ViewGui
      * @author Foini Lorenzo
      */
-    public ViewGUI getViewGui(){
+    public static ViewGUI getViewGui(){
         return viewGui;
     }
 
