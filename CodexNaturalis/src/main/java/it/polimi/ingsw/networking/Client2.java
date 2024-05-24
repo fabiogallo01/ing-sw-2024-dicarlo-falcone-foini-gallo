@@ -86,8 +86,8 @@ public class Client2 {
                     response.equals("Insert 1/2/3:") ||
                     response.equals("Insert the card's number (insert 1/2/3/4):")
             ) {
-                String input = scanner.nextLine();//TUI
-                out.println(input);//TUI
+                String input = scanner.nextLine();
+                out.println(input);
             }
         }
     }
@@ -102,10 +102,15 @@ public class Client2 {
         ViewGUI viewGUI = new ViewGUI();
         String response;
         while ((response = in.readLine()) != null) {
-            if (response.equals("Insert your username:")){
+            if (response.equals("Do you want to create a new game or join a game? (insert create/join):")){
+                // TODO: Call to ViewGUI method to display window
+            } else if (response.equals("Enter number of players (insert 2/3/4):")){
+
+            } else if(response.equals("Which game you want to join (insert 0 to exit):")){
+
+            } else if (response.equals("Insert your username:")){
                 out.println(viewGUI.displayUsername());
-            }
-            if(response.equals("Username already in use. Please insert a new username:")){
+            } else if(response.equals("Username already in use. Please insert a new username:")){
                 // ERROR: This case is already managed in displayUsername() but doesn't work
 
                 //out.println(viewGUI.displayUsername());
