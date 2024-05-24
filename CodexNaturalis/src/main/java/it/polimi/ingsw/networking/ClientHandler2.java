@@ -338,7 +338,7 @@ public class ClientHandler2 extends Thread {
             }
         } else{ // Client uses GUI
             // Call to ViewGUI function
-            selectedColor = Controller.getViewGui().displayColor(availableColors);
+            selectedColor = gameController.getViewGui().displayColor(availableColors);
         }
 
         // Remove such color from available list
