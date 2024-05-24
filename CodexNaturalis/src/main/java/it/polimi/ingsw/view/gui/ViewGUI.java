@@ -1,6 +1,9 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.model.cards.GamingCard;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.StarterCard;
 import it.polimi.ingsw.networking.*;
 
 import javax.swing.*;
@@ -39,8 +42,8 @@ public class ViewGUI extends JFrame {
         // Creazione del frame principale
         JFrame frame = new JFrame("Seleziona Numero di Giocatori");
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 150);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(500, 200);
         frame.setLayout(new BorderLayout());
 
         // Creazione del pannello per l'input
@@ -377,7 +380,7 @@ public class ViewGUI extends JFrame {
                 cardLabel.setHorizontalAlignment(JLabel.CENTER);
                 cardLabel.setVerticalAlignment(JLabel.CENTER);
 
-                int index = i;
+                int index = i+1; // i start from 0, so add 1
                 JButton selectButton = new JButton("Select");
                 selectButton.addActionListener(e -> {
                     selectedIndex[0] = index;
@@ -434,6 +437,22 @@ public class ViewGUI extends JFrame {
      */
     public int displayJoinGameIndex(java.util.List<Controller> controllers){
         JoinGameIndexFrame joinGameIndexFrame = new JoinGameIndexFrame("Game to join", controllers);
-        return joinGameIndexFrame.getChoice();
+        return joinGameIndexFrame.getSelectedIndex();
+    }
+
+    /**
+     * Method to ask the client if he wants to create or join a game
+     *
+     * @param starterCard: client's starter card
+     * @param hand: client's hand
+     * @param commonObjective: game common objective
+     * @param secretCard1: first secret objective card
+     * @param secretCard2: second secret objective card
+     * @return the selected secret objective card
+     * @author Foini Lorenzo
+     */
+    public ObjectiveCard displayChooseObjectiveCard(StarterCard starterCard, ArrayList<GamingCard> hand,ObjectiveCard[] commonObjective, ObjectiveCard secretCard1, ObjectiveCard secretCard2){
+        SecretObjectiveFrame secretObjectiveFrame = new SecretObjectiveFrame("Choose a secret card");
+        return secretObjectiveFrame.getSelectedSecretCard();
     }
 }
