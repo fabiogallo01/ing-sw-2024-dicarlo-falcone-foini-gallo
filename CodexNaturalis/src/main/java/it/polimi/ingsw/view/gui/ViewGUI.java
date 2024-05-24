@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.networking.*;
 
 import javax.swing.*;
@@ -11,8 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class representing GUI
@@ -411,5 +411,29 @@ public class ViewGUI extends JFrame {
         }
 
         return selectedIndex[0];
+    }
+
+    /**
+     * Method to ask the client if he wants to create or join a game
+     *
+     * @param countNotFullGame: how many games can be joined
+     * @return client's choice
+     * @author Foini Lorenzo
+     */
+    public String displayCreateJoinGame(int countNotFullGame){
+        CreateJoinFrame createJoinFrame = new CreateJoinFrame("Create or join a game", countNotFullGame);
+        return createJoinFrame.getChoice();
+    }
+
+    /**
+     * Method to ask the client which game he wants to join
+     *
+     * @param controllers: list of game controllers
+     * @return client's choice: an index of which game to join (It can be 1,2,...)
+     * @author Foini Lorenzo
+     */
+    public int displayJoinGameIndex(java.util.List<Controller> controllers){
+        JoinGameIndexFrame joinGameIndexFrame = new JoinGameIndexFrame("Game to join", controllers);
+        return joinGameIndexFrame.getChoice();
     }
 }
