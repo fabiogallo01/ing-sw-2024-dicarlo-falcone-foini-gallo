@@ -19,7 +19,7 @@ public class GameFrame extends JFrame {
     final int NUM_COLS = 81;
 
     /**
-     * MyFrame constructor, it calls method init() for initialization of panel
+     * GameFrame constructor, it calls method init() for initialization of frame
      *
      * @param title window's title
      * @author Foini Lorenzo
@@ -30,7 +30,7 @@ public class GameFrame extends JFrame {
     }
 
     /**
-     * This method is used for initialization of panel
+     * This method is used for initialization of frame
      *
      * @author Foini Lorenzo
      */
