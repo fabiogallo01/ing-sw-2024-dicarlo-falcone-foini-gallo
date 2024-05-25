@@ -17,7 +17,7 @@ import java.util.*;
 public class Controller {
     private final GameTable gameTable;
     private final ViewTUI viewTui;
-    private static ViewGUI viewGui;
+    private ViewGUI viewGui;
     private final ArrayList<String> availableColors = new ArrayList<>();
     private int ready = 0;
 
@@ -76,7 +76,7 @@ public class Controller {
      * @return ViewGui
      * @author Foini Lorenzo
      */
-    public static ViewGUI getViewGui(){
+    public ViewGUI getViewGui(){
         return viewGui;
     }
 

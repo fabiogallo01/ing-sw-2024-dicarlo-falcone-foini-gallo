@@ -30,7 +30,7 @@ public class ClientHandler2 extends Thread {
     private PrintWriter out;
     private Controller gameController;
     private boolean joined = false;
-    private boolean TUI; //true => TUI, false => GUI
+    //private boolean TUI; //true => TUI, false => GUI
     private String username;
 
     /**
@@ -60,7 +60,7 @@ public class ClientHandler2 extends Thread {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-            TUI = "TUI".equalsIgnoreCase(in.readLine());
+            //TUI = "TUI".equalsIgnoreCase(in.readLine());
 
             // Ask client his username
             askUsername();
@@ -183,7 +183,7 @@ public class ClientHandler2 extends Thread {
      * @author Foini Lorenzo
      */
     public void askUsername() throws IOException {
-        if(TUI) {
+        //if(TUI) {
             out.println("Insert your username:"); // Display message
             username = in.readLine(); // Get client input
             //username = gameController.getViewGui().displayUsername();
@@ -196,12 +196,12 @@ public class ClientHandler2 extends Thread {
 
             // Insert username in server's list of usernames
             Server2.addClientUsername(username);
-        } else {
+        /*} else {
             // Use GUI for asking client his username
             username = gameController.getViewGui().displayUsername();
             // Insert username in server's list of usernames
             Server2.addClientUsername(username);
-        }
+        }*/
     }
 
     /**
@@ -213,7 +213,7 @@ public class ClientHandler2 extends Thread {
      * @author Foini Lorenzo
      */
     public void createJoinGame() throws IOException, EmptyObjectiveDeckException, EmptyDeckException {
-        if(TUI){ // Play with TUI
+        //if(TUI){ // Play with TUI
             //it allows the client to create or join a match
             while (!joined) {
                 out.println("Do you want to create a new game or join a game? (insert create/join):");
@@ -271,7 +271,7 @@ public class ClientHandler2 extends Thread {
                     }
                 }
             }
-        }else{ // Play with GUI
+        /*}else{ // Play with GUI
             while (!joined) {
                 // Count the number of game that can be joined
                 int countNotFullGame = 0;
@@ -310,7 +310,7 @@ public class ClientHandler2 extends Thread {
                     }
                 }
             }
-        }
+        }*/
     }
 
     /**
@@ -323,7 +323,7 @@ public class ClientHandler2 extends Thread {
     public String askColor() throws IOException {
         String selectedColor;
         ArrayList<String> availableColors = gameController.getAvailableColors();
-        if(TUI){ // Client uses TUI
+        //if(TUI){ // Client uses TUI
             out.println("Choose a color:");
             for (String color : availableColors) {
                 out.println("-" + color);
@@ -336,10 +336,10 @@ public class ClientHandler2 extends Thread {
                 out.println("Invalid color. Please select a color from the previous list:"); // INVALID
                 selectedColor = in.readLine().toLowerCase();
             }
-        } else{ // Client uses GUI
+        /*} else{ // Client uses GUI
             // Call to ViewGUI function
             selectedColor = gameController.getViewGui().displayColor(availableColors);
-        }
+        }*/
 
         // Remove such color from available list
         gameController.removeAvailableColor(selectedColor);
@@ -356,7 +356,7 @@ public class ClientHandler2 extends Thread {
      */
     public boolean askStarterCard(StarterCard starterCard) throws IOException {
         boolean sideStarterCard;
-        if(TUI){ // Client uses TUI
+        //if(TUI){ // Client uses TUI
             // Display starter card
             gameController.getViewTui().displayStarterCard(starterCard, out);
 
@@ -371,10 +371,10 @@ public class ClientHandler2 extends Thread {
             }
 
             sideStarterCard = stringSide.equals("front");// true => front, false => back
-        } else { // Client uses GUI
+        /*} else { // Client uses GUI
             // Call to ViewGUI method
             sideStarterCard = gameController.getViewGui().displayStarterCard(starterCard.getID());
-        }
+        }*/
 
         return sideStarterCard;
     }
@@ -394,7 +394,7 @@ public class ClientHandler2 extends Thread {
      */
     public ObjectiveCard askSecreteObjective(StarterCard starterCard, ArrayList<GamingCard> hand, ObjectiveCard[] commonObjective, ObjectiveCard secretCard1, ObjectiveCard secretCard2) throws IOException{
         ObjectiveCard selectedSecretObjectiveCard;
-        if(TUI){ // Client uses TUI
+        //if(TUI){ // Client uses TUI
             // Show client's hand
             out.println("\nThis is your hand:\n");
             gameController.getViewTui().displayResourceCard(hand.get(0), out); // Call to ViewTUI's method
@@ -423,10 +423,10 @@ public class ClientHandler2 extends Thread {
             if (stringChoice.equals("1")) selectedSecretObjectiveCard = secretCard1;
             else selectedSecretObjectiveCard = secretCard2;
 
-        } else{ // Client uses GUI
+        /*} else{ // Client uses GUI
             // Call to ViewGUI method for display cards and ask secret objective card
             selectedSecretObjectiveCard = gameController.getViewGui().displayChooseObjectiveCard(starterCard, hand, commonObjective, secretCard1, secretCard2);
-        }
+        }*/
 
         return selectedSecretObjectiveCard;
     }
