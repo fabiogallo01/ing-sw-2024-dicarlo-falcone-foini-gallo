@@ -38,14 +38,11 @@ public class Client2 {
 
             try {
                 if (args[0].equalsIgnoreCase("TUI")) {
-                    out.println("TUI");
                     startTUI(out, in); // Start communication with TUI
                 } else {
-                    out.println("GUI");
                     startGUI(out, in); // Start communication with GUI
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
-                out.println("GUI");
                 startGUI(out, in); // Start GUI as default without command line parameter
             }
         } catch (IOException e) {
