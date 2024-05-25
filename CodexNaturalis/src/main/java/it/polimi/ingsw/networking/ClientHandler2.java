@@ -188,8 +188,10 @@ public class ClientHandler2 extends Thread {
             username = in.readLine(); // Get client input
             //username = gameController.getViewGui().displayUsername();
             // Check if the username is available or already present
-            ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
-            while (alreadyUsedUsername.contains(username)) {
+            //ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
+            //while (alreadyUsedUsername.contains(username)) {
+
+            while (Server2.getClientsUsername().contains(username)) {
                 out.println("Username already in use. Please insert a new username:"); // INVALID
                 username = in.readLine();
             }
