@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.*;
 import it.polimi.ingsw.view.tui.ViewTUI;
-import it.polimi.ingsw.view.gui.ViewGUI;
 
 import java.util.*;
 
@@ -17,7 +16,6 @@ import java.util.*;
 public class Controller {
     private final GameTable gameTable;
     private final ViewTUI viewTui;
-    private ViewGUI viewGui;
     private final ArrayList<String> availableColors = new ArrayList<>();
     private int ready = 0;
 
@@ -40,7 +38,6 @@ public class Controller {
         try {
             gameTable = new GameTable(numPlayers);
             viewTui = new ViewTUI();
-            viewGui = new ViewGUI();
             availableColors.add("blue");
             availableColors.add("green");
             availableColors.add("red");
@@ -68,16 +65,6 @@ public class Controller {
      */
     public ViewTUI getViewTui(){
         return viewTui;
-    }
-
-    /**
-     * ViewGUI getter
-     *
-     * @return ViewGui
-     * @author Foini Lorenzo
-     */
-    public ViewGUI getViewGui(){
-        return viewGui;
     }
 
     /**
