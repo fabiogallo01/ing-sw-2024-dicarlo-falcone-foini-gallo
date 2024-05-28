@@ -57,4 +57,13 @@ public class Server2 {
         clientsUsernames.add(clientUsername);
     }
 
+    public static int countGameNotFull(){
+        int count = 0;
+        for(Controller controller:controllers){
+            if(!controller.getGameTable().isFull()){
+                count++;
+            }
+        }
+        return count;
+    }
 }
