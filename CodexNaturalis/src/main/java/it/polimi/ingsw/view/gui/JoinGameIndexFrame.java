@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * New class for creating a new window which will be used by client
@@ -16,28 +19,28 @@ import java.util.List;
  * @author Foini Lorenzo
  */
 public class JoinGameIndexFrame extends JFrame {
-    private int selectedIndex; // contains the selected index of game to join
+    private String selectedGame; // contains the selected game to join
     private final Object lock = new Object();
 
     /**
      * CreateJoinFrame constructor, it calls method init() for initialization of the frame
      *
      * @param title window's title
-     * @param controllers: list of game controllers
+     * @param joinGamesAndPlayers: map of games and their clients' username
      * @author Foini Lorenzo
      */
-    JoinGameIndexFrame(String title, java.util.List<Controller> controllers){
+    JoinGameIndexFrame(String title, Map<String, List<String>> joinGamesAndPlayers){
         super(title);
-        init(controllers);
+        init(joinGamesAndPlayers);
     }
 
     /**
      * This method is used for initialization of frame
      *
-     * @param controllers: list of game controllers
+     * @param joinGamesAndPlayers: map of games and their clients' username
      * @author Foini Lorenzo
      */
-    private void init(java.util.List<Controller> controllers){
+    private void init(Map<String, List<String>> joinGamesAndPlayers){
         // Assign some parameters
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(400, 400);
@@ -52,34 +55,25 @@ public class JoinGameIndexFrame extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        // Iterate through controllers for getting games and players
-        ArrayList<Integer> gameNotFullIndex = new ArrayList<>(); // Contains index of game that can be joined
-        int i = 1;
-        for(Controller controller : controllers){
-            // Check if the gameTable is not full => If so, then client can join such game
-            if(!controller.getGameTable().isFull()){
-                // Add such index in the list of game that can be joined
-                gameNotFullIndex.add(i);
-
-                // Create new game label and add into main panel
-                JLabel gameLabel = new JLabel("Game "+i+":");
-                mainPanel.add(gameLabel);
-
-                // Add players
-                for(Player player: controller.getGameTable().getPlayers()){
-                    // Create new player label and add into main panel
-                    JLabel playerPanel = new JLabel(" - " + player.getUsername());
-                    mainPanel.add(playerPanel);
-                }
+        // Iterate through games for getting their clients' username
+        for (Map.Entry<String, List<String>> entry : joinGamesAndPlayers.entrySet()) {
+            // Create new game label and add into main panel
+            JLabel gameLabel = new JLabel(entry.getKey());
+            mainPanel.add(gameLabel);
+            // Add players
+            for (String username : entry.getValue()) {
+                // Create new player label and add into main panel
+                JLabel playerPanel = new JLabel(username);
+                mainPanel.add(playerPanel);
             }
-            i++;
         }
+
         // Add scroll pane
         JScrollPane scrollPane = new JScrollPane(mainPanel);
         this.add(scrollPane, BorderLayout.CENTER);
 
         // Create a panel, it contains the two buttons
-        JPanel buttonPanel = createButtonPanel(gameNotFullIndex);
+        JPanel buttonPanel = createButtonPanel(new ArrayList<>(joinGamesAndPlayers.keySet()));
 
         // Add button panel in the frame
         this.add(buttonPanel, BorderLayout.SOUTH);
@@ -99,21 +93,34 @@ public class JoinGameIndexFrame extends JFrame {
     /**
      * This method is used for create a new panel with a button for every game that can be joined
      *
-     * @param gameNotFullIndex: list of indexes of games that can be joined
+     * @param gameKeys: list of games that can be joined
      * @return JPanel with buttons
      * @author Foini Lorenzo
      */
-    public JPanel createButtonPanel(ArrayList<Integer> gameNotFullIndex){
+    public JPanel createButtonPanel(ArrayList<String> gameKeys){
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
+        // Create exit button
+        JButton backButton = new JButton("<- BACK");
+        //gameButton.setPreferredSize(new Dimension(100, 50));
+        backButton.addActionListener(e -> {
+            selectedGame = "0";
+            this.dispose(); // Close the window
+            synchronized (lock) {
+                lock.notify(); // Notify waiting thread
+            }
+        });
+        // Add button
+        buttonPanel.add(backButton);
+
         // Iterate through available indexes
-        for(int gameIndex: gameNotFullIndex){
+        for(String gameKey: gameKeys){
             // Create button
-            JButton gameButton = new JButton("JOIN GAME "+gameIndex);
+            JButton gameButton = new JButton("JOIN "+gameKey.toUpperCase());
             //gameButton.setPreferredSize(new Dimension(100, 50));
             gameButton.addActionListener(e -> {
-                selectedIndex = gameIndex;
+                selectedGame = gameKey;
                 this.dispose(); // Close the window
                 synchronized (lock) {
                     lock.notify(); // Notify waiting thread
@@ -128,12 +135,20 @@ public class JoinGameIndexFrame extends JFrame {
     }
 
     /**
-     * choice getter
+     * This method use selectedGame and extract its index
      *
-     * @return client selected index of the game to join
+     * @return client selected index of the game to join as a string
      * @author Foini Lorenzo
      */
-    public int getSelectedIndex() {
-        return selectedIndex;
+    public String getSelectedIndex() {
+        if(selectedGame.equals("0")){
+            return "0";
+        }
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(selectedGame);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return "";
     }
 }
