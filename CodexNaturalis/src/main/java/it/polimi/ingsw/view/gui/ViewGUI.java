@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.GamingCard;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.StarterCard;
@@ -16,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.util.*;
+import java.util.List;
 
 /**
  * Class representing GUI
@@ -38,7 +38,7 @@ public class ViewGUI extends JFrame {
     public ViewGUI() {
     }
 
-    public int displayNumberPlayer(){
+    public String displayNumberPlayer(){
         // Creazione del frame principale
         JFrame frame = new JFrame("Seleziona Numero di Giocatori");
         frame.setLocationRelativeTo(null);
@@ -96,7 +96,7 @@ public class ViewGUI extends JFrame {
             }
         }
 
-        return numPlayers;
+        return String.valueOf(numPlayers);
     }
 
     public String displayUsername(){
@@ -253,8 +253,8 @@ public class ViewGUI extends JFrame {
      * @return the chosen side
      * @author giacomofalcone
      */
-    public boolean displayStarterCard(int starterCardID) {
-        final boolean[] selectedSide = {false}; // Store selected side
+    public String displayStarterCard(int starterCardID) {
+        final String[] side = {""}; // Store selected side
         final Object lock = new Object();
 
         // Creazione del frame principale
@@ -269,8 +269,8 @@ public class ViewGUI extends JFrame {
         JLabel instructionLabel = new JLabel("On which side do you want to play the starter card?", SwingConstants.CENTER);
         frame.add(instructionLabel, BorderLayout.NORTH);
 
-        String starterPathBack = "CodexNaturalis\\resources\\back\\img_" + starterCardID + ".jpeg";
-        String starterPathFront = "CodexNaturalis\\resources\\front\\img_" + starterCardID + ".jpeg";
+        String starterPathBack = "CodexNaturalis\\resources\\front\\img_" + starterCardID + ".jpeg";
+        String starterPathFront = "CodexNaturalis\\resources\\back\\img_" + starterCardID + ".jpeg";
 
         // Displaying back side
         try {
@@ -280,11 +280,11 @@ public class ViewGUI extends JFrame {
             cardLabel.setHorizontalAlignment(JLabel.CENTER);
             cardLabel.setVerticalAlignment(JLabel.CENTER);
 
-            JButton backButton = new JButton("Back");
+            JButton backButton = new JButton("FRONT");
             backButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    selectedSide[0] = false;
+                    side[0] = "front";
                     frame.dispose(); // Close the window
                     synchronized (lock) {
                         lock.notify(); // Notify waiting thread
@@ -309,11 +309,11 @@ public class ViewGUI extends JFrame {
             cardLabel.setHorizontalAlignment(JLabel.CENTER);
             cardLabel.setVerticalAlignment(JLabel.CENTER);
 
-            JButton frontButton = new JButton("Front");
+            JButton frontButton = new JButton("BACK");
             frontButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    selectedSide[0] = true;
+                    side[0] = "back";
                     frame.dispose(); // Close the window
                     synchronized (lock) {
                         lock.notify(); // Notify waiting thread
@@ -343,7 +343,7 @@ public class ViewGUI extends JFrame {
             }
         }
 
-        return selectedSide[0];
+        return side[0];
     }
 
 
@@ -354,8 +354,8 @@ public class ViewGUI extends JFrame {
      * @return the index of the chosen card
      * @author giacomofalcone
      */
-    public int displayObjectiveCards(int[] objectiveCardIDs) {
-        final int[] selectedIndex = {-1}; // Store selected index
+    public String displayObjectiveCards(int[] objectiveCardIDs) {
+        final String[] selectedIndex = {""}; // Store selected index
         final Object lock = new Object();
 
         // Creazione del frame principale
@@ -383,7 +383,7 @@ public class ViewGUI extends JFrame {
                 int index = i+1; // i start from 0, so add 1
                 JButton selectButton = new JButton("Select");
                 selectButton.addActionListener(e -> {
-                    selectedIndex[0] = index;
+                    selectedIndex[0] = String.valueOf(index);
                     frame.dispose(); // Close the window
                     synchronized (lock) {
                         lock.notify(); // Notify waiting thread
@@ -431,28 +431,16 @@ public class ViewGUI extends JFrame {
     /**
      * Method to ask the client which game he wants to join
      *
-     * @param controllers: list of game controllers
+     * @param joinGamesAndPlayers: map of games and their clients' usernames
      * @return client's choice: an index of which game to join (It can be 1,2,...)
      * @author Foini Lorenzo
      */
-    public int displayJoinGameIndex(java.util.List<Controller> controllers){
-        JoinGameIndexFrame joinGameIndexFrame = new JoinGameIndexFrame("Game to join", controllers);
+    public String displayJoinGameIndex(Map<String, List<String>> joinGamesAndPlayers){
+        JoinGameIndexFrame joinGameIndexFrame = new JoinGameIndexFrame("Game to join", joinGamesAndPlayers);
         return joinGameIndexFrame.getSelectedIndex();
     }
 
-    /**
-     * Method to ask the client if he wants to create or join a game
-     *
-     * @param starterCard: client's starter card
-     * @param hand: client's hand
-     * @param commonObjective: game common objective
-     * @param secretCard1: first secret objective card
-     * @param secretCard2: second secret objective card
-     * @return the selected secret objective card
-     * @author Foini Lorenzo
-     */
-    public ObjectiveCard displayChooseObjectiveCard(StarterCard starterCard, ArrayList<GamingCard> hand,ObjectiveCard[] commonObjective, ObjectiveCard secretCard1, ObjectiveCard secretCard2){
-        SecretObjectiveFrame secretObjectiveFrame = new SecretObjectiveFrame("Choose a secret card");
-        return secretObjectiveFrame.getSelectedSecretCard();
+    public void displayWaitStartGame(boolean create){
+        WaitStartGameFrame waitStartGameFrame = new WaitStartGameFrame("Wait for the starting of the game", create);
     }
 }
