@@ -163,9 +163,9 @@ public class Client2 {
                 // Call to viewGui method
                 out.println(viewGui.displayObjectiveCards(objectiveCardIDs));
             } else if(response.equals("Game created. Waiting for players...")){
-                viewGui.dispayWaitStartGame(true);
+                viewGui.displayWaitStartGame(true);
             } else if(response.equals("Joined a game. Waiting for players...")){
-                viewGui.dispayWaitStartGame(false);
+                viewGui.displayWaitStartGame(false);
             }
             // END OF LOGIN PART
 
