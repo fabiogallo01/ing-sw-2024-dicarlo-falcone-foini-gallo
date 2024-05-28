@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.*;
 
 
 /**
@@ -21,7 +21,6 @@ import java.util.Scanner;
 public class Client2 {
     private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 12345;
-
 
     /**
      * Main method
@@ -38,11 +37,14 @@ public class Client2 {
 
             try {
                 if (args[0].equalsIgnoreCase("TUI")) {
+                    out.println("TUI");
                     startTUI(out, in); // Start communication with TUI
                 } else {
+                    out.println("GUI");
                     startGUI(out, in); // Start communication with GUI
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
+                out.println("GUI");
                 startGUI(out, in); // Start GUI as default without command line parameter
             }
         } catch (IOException e) {
@@ -96,28 +98,77 @@ public class Client2 {
      * @author Fabio Gallo
      */
     private static void startGUI(PrintWriter out, BufferedReader in) throws IOException {
-        ViewGUI viewGUI = new ViewGUI();
-        String response;
+        ViewGUI viewGui = new ViewGUI(); // Instance of GUI
+        String response; // Messages from server
+        Map<String, List<String>> joinGamesAndPlayers = new LinkedHashMap<>(); // Map of games that can be joined and their client's username
+        ArrayList<String> availableColors = new ArrayList<>(); // List of available colors
+
+
         while ((response = in.readLine()) != null) {
-            if (response.equals("Do you want to create a new game or join a game? (insert create/join):")){
-                // TODO: Call to ViewGUI method to display window
-            } else if (response.equals("Enter number of players (insert 2/3/4):")){
-
-            } else if(response.equals("Which game you want to join (insert 0 to exit):")){
-
-            } else if (response.equals("Insert your username:")){
-                out.println(viewGUI.displayUsername());
+            if(response.equals("Insert your username:")){
+                out.println(viewGui.displayUsername());
             } else if(response.equals("Username already in use. Please insert a new username:")){
-                // ERROR: This case is already managed in displayUsername() but doesn't work
+                // TODO: Create new type of windows for repeat username
+                out.println(viewGui.displayUsername());
+            } else if (response.equals("Do you want to create a new game or join a game? (insert create/join):")){
+                // Get number of games that can be joined
+                int countGameNotFull = Integer.parseInt(in.readLine());
+                out.println(viewGui.displayCreateJoinGame(countGameNotFull));
+            } else if (response.equals("Enter number of players (insert 2/3/4):")){
+                out.println(viewGui.displayNumberPlayer());
+            } else if(response.equals("Sending games and players")){
+                // Now get list of games and their players by using a while loop
+                response = in.readLine();
+                String currentGame = "";
 
-                //out.println(viewGUI.displayUsername());
+                while(!response.equals("End sending games and players")){
+                    if(response.startsWith("Game")){ // Get a new game
+                        currentGame = response;
+                        joinGamesAndPlayers.put(currentGame, new ArrayList<>());
+                    } else { // Get player for such game
+                        joinGamesAndPlayers.get(currentGame).add(response);
+                    }
+                    // Get next message from server
+                    response = in.readLine();
+                }
+            } else if(response.equals("Which game you want to join (insert 0 to exit):")){
+                out.println(viewGui.displayJoinGameIndex(joinGamesAndPlayers));
+            } else if(response.equals("Choose a color from this list:")){
+                // Now use a while loop for getting list of colors and add them in availableColors
+                response = in.readLine();
+
+                while(!response.equals("End color")){
+                    availableColors.add(response);
+                    // Get next message from server
+                    response = in.readLine();
+                }
             }
-            if (response.equals("Do you want to create a new game or join a game? (insert create/join):")){
-                //out.println(viewGUI.displayChoice());
+            else if(response.equals("Insert your color:")){
+                out.println(viewGui.displayColor(availableColors));
+            } else if(response.equals("Invalid color. Please select a color from the previous list:")){
+                // TODO: Create new window for repeat color
+                out.println(viewGui.displayColor(availableColors));
+            } else if(response.equals("On which side you want to play the starter card (insert front/back):")){
+                // Get ID of the starter card from server
+                int starterCardID = Integer.parseInt(in.readLine());
+
+                // Call to viewGui method
+                out.println(viewGui.displayStarterCard(starterCardID));
+            } else if(response.equals("Select your secret objective card (insert 1/2):")){
+                // Get IDs of the two secret objective cards from server
+                int[] objectiveCardIDs = new int[2];
+                objectiveCardIDs[0] = Integer.parseInt(in.readLine());
+                objectiveCardIDs[1] = Integer.parseInt(in.readLine());
+
+                // Call to viewGui method
+                out.println(viewGui.displayObjectiveCards(objectiveCardIDs));
+            } else if(response.equals("Game created. Waiting for players...")){
+                viewGui.dispayWaitStartGame(true);
+            } else if(response.equals("Joined a game. Waiting for players...")){
+                viewGui.dispayWaitStartGame(false);
             }
-            if (response.equals("Enter number of players (insert 2/3/4):")){
-                out.println(viewGUI.displayNumberPlayer());
-            }
+            // END OF LOGIN PART
+
             //TODO implement all the rest
         }
     }
