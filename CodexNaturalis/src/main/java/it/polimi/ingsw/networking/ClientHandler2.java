@@ -30,8 +30,8 @@ public class ClientHandler2 extends Thread {
     private PrintWriter out;
     private Controller gameController;
     private boolean joined = false;
-    //private boolean TUI; //true => TUI, false => GUI
     private String username;
+    private boolean gui; //true => GUI, false => TUI
 
     /**
      * ViewClientHandler constructor, it assigns/creates all class's parameters
@@ -60,7 +60,7 @@ public class ClientHandler2 extends Thread {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-            //TUI = "TUI".equalsIgnoreCase(in.readLine());
+            gui = "GUI".equalsIgnoreCase(in.readLine());
 
             // Ask client his username
             askUsername();
@@ -210,7 +210,12 @@ public class ClientHandler2 extends Thread {
     public void createJoinGame() throws IOException, EmptyObjectiveDeckException, EmptyDeckException {
         //it allows the client to create or join a match
         while (!joined) {
+            // Ask player choice
             out.println("Do you want to create a new game or join a game? (insert create/join):");
+            // If the client is playing with GUI, then send him the number of game that can be joined
+            if(gui){
+                out.println(Server2.countGameNotFull());
+            }
             String choice = in.readLine();
 
             if ("create".equalsIgnoreCase(choice)) {//if it creates a match, it asks how many players should play
@@ -232,15 +237,22 @@ public class ClientHandler2 extends Thread {
                 ArrayList<String> gameNotFull = new ArrayList<>(); // List of games that can be joined
                 gameNotFull.add("0"); // Exit command
                 int i = 1;
+                // If client is playing with GUI, then the handler sends some prefixed messages
+                if(gui) {
+                    out.println("Sending games and players");
+                }
                 for (Controller controller : new ArrayList<>(controllers)) {// it checks the existent games that the player can join
                     if (!controller.getGameTable().isFull()) {//it prints the username of the players that are in the game
-                        out.println("Game " + i + ":");
+                        out.println("Game " + i);
                         for (Player p : controller.getGameTable().getPlayers()) {
                             out.println("-" + p.getUsername());
                         }
                         gameNotFull.add(String.valueOf(i));
                     }
                     i++;
+                }
+                if(gui) {
+                    out.println("End sending games and players");
                 }
                 if(gameNotFull.size() > 1){
                     out.println("Which game you want to join (insert 0 to exit):");
@@ -277,10 +289,16 @@ public class ClientHandler2 extends Thread {
     public String askColor() throws IOException {
         String selectedColor;
         ArrayList<String> availableColors = gameController.getAvailableColors();
-        out.println("Choose a color:");
+        out.println("Choose a color from this list:");
         for (String color : availableColors) {
-            out.println("-" + color);
+            out.println(color);
         }
+
+        // If client is playing with GUI, then the handler send a prefixed message
+        if(gui){
+            out.println("End color");
+        }
+
         out.println("Insert your color:"); // Display message
         selectedColor = in.readLine().toLowerCase(); // Get client's input
 
@@ -304,11 +322,19 @@ public class ClientHandler2 extends Thread {
      * @author Foini Lorenzo
      */
     public boolean askStarterCard(StarterCard starterCard) throws IOException {
-        // Display starter card
-        gameController.getViewTui().displayStarterCard(starterCard, out);
+        // Check client UI
+        // If GUI => Send to client the starter card's ID
+        // If TUI => Call to viewTUI method for displaying such started card
+        if(!gui){
+            gameController.getViewTui().displayStarterCard(starterCard, out);
+        }
 
         // Ask client on which side he wants to play the starter card
         out.println("On which side you want to play the starter card (insert front/back):");
+        // Send ID of teh starter card if the client is playing with GUI
+        if(gui){
+            out.println(starterCard.getID());
+        }
         String stringSide = in.readLine().toLowerCase(); // Get client's input
 
         // Check input
@@ -334,28 +360,40 @@ public class ClientHandler2 extends Thread {
      * @author Foini Lorenzo
      */
     public ObjectiveCard askSecreteObjective(StarterCard starterCard, ArrayList<GamingCard> hand, ObjectiveCard[] commonObjective, ObjectiveCard secretCard1, ObjectiveCard secretCard2) throws IOException{
-        // Show client's hand
-        out.println("\nThis is your hand:\n");
-        gameController.getViewTui().displayResourceCard(hand.get(0), out); // Call to ViewTUI's method
-        gameController.getViewTui().displayResourceCard(hand.get(1), out); // Call to ViewTUI's method
-        gameController.getViewTui().displayGoldCard((GoldCard) hand.get(2), out); // Call to ViewTUI's method
+        // Check client UI
+        // If GUI => Send to client the starter card's ID
+        // If TUI => Call to viewTUI method for displaying such started card
+        if(!gui) {
+            // Show client's hand
+            out.println("\nThis is your hand:\n");
+            gameController.getViewTui().displayResourceCard(hand.get(0), out); // Call to ViewTUI's method
+            gameController.getViewTui().displayResourceCard(hand.get(1), out); // Call to ViewTUI's method
+            gameController.getViewTui().displayGoldCard((GoldCard) hand.get(2), out); // Call to ViewTUI's method
 
-        // Show the two common objective cards
-        out.println("\nThis are the two common objectives:\n");
-        gameController.getViewTui().displayObjectiveCard(commonObjective[0], out); // Call to ViewTUI's method
-        gameController.getViewTui().displayObjectiveCard(commonObjective[1], out); // Call to ViewTUI's method
+            // Show the two common objective cards
+            out.println("\nThis are the two common objectives:\n");
+            gameController.getViewTui().displayObjectiveCard(commonObjective[0], out); // Call to ViewTUI's method
+            gameController.getViewTui().displayObjectiveCard(commonObjective[1], out); // Call to ViewTUI's method
 
-        // Ask client to select his secret objective cards from two different objective cards
-        out.println("Now you have to choose which secret objective card you want to use.");
-        out.println("You can choose one card from the following two objective cards\n");
-        // Display the two secret objective cards
-        gameController.getViewTui().displayObjectiveCard(secretCard1, out);
-        gameController.getViewTui().displayObjectiveCard(secretCard2, out);
+            // Ask client to select his secret objective cards from two different objective cards
+            out.println("Now you have to choose which secret objective card you want to use.");
+            out.println("You can choose one card from the following two objective cards\n");
+            // Display the two secret objective cards
+            gameController.getViewTui().displayObjectiveCard(secretCard1, out);
+            gameController.getViewTui().displayObjectiveCard(secretCard2, out);
+        }
 
         // Ask choice to client (1 => First card, 2 => Second card)
         String stringChoice;
         do {
             out.println("Select your secret objective card (insert 1/2):");
+
+            // Send IDs of the two cards if the client is playing with GUI
+            if(gui){
+                out.println(secretCard1.getID());
+                out.println(secretCard2.getID());
+            }
+
             stringChoice = in.readLine();
         } while (!stringChoice.equals("1") && !stringChoice.equals("2"));
 
