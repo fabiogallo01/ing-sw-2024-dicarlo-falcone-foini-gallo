@@ -159,20 +159,35 @@ public class Client2 {
             } else if(response.equals("Select your secret objective card (insert 1/2):")){
                 // TODO: Add parameters for getting ids of starter card, hand and common objectives
 
-                // Get IDs of the two secret objective cards from server
-                int[] objectiveCardIDs = new int[2];
-                objectiveCardIDs[0] = Integer.parseInt(in.readLine());
-                objectiveCardIDs[1] = Integer.parseInt(in.readLine());
+                // Get starter card side
+                String starterCardSide = in.readLine();
+
+                // Get IDs of: starter card, hand's cards, common objectives, secret objective cards from server
+                int starterCardID = Integer.parseInt(in.readLine());
+
+                int[] handCardIDs = new int[3];
+                handCardIDs[0] = Integer.parseInt(in.readLine());
+                handCardIDs[1] = Integer.parseInt(in.readLine());
+                handCardIDs[2] = Integer.parseInt(in.readLine());
+
+                int[] commonObjectiveCardIDs = new int[2];
+                commonObjectiveCardIDs[0] = Integer.parseInt(in.readLine());
+                commonObjectiveCardIDs[1] = Integer.parseInt(in.readLine());
+
+                int[] secretObjectiveCardIDs = new int[2];
+                secretObjectiveCardIDs[0] = Integer.parseInt(in.readLine());
+                secretObjectiveCardIDs[1] = Integer.parseInt(in.readLine());
 
                 // Call to viewGui method
-                // TODO: Add parameters for getting ids of starter card, hand and common objectives
-                out.println(viewGui.displayObjectiveCards(objectiveCardIDs));
+                out.println(viewGui.displayObjectiveCards(starterCardSide, starterCardID, handCardIDs, commonObjectiveCardIDs, secretObjectiveCardIDs));
             } else if(response.equals("Game created. Waiting for players...")){
                 viewGui.displayWaitStartGame(true);
                 // END OF LOGIN PART
             } else if(response.equals("Joined a game. Waiting for players...")){
                 viewGui.displayWaitStartGame(false);
                 // END OF LOGIN PART
+            } else if(response.equals("Game starts now.")){
+                viewGui.playgame();
             }
             //TODO implement all the rest
         }
