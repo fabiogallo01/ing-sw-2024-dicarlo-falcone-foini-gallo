@@ -36,9 +36,7 @@ public class GameFrame extends JFrame {
      */
     void init(){
         this.setExtendedState(JFrame.MAXIMIZED_BOTH); // MAX dimension
-        this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
 
         // Call to function createPanelNorth() for creating new panel to be addend in the content pane
         JPanel panelNorth = createPanelNorth();
@@ -64,6 +62,9 @@ public class GameFrame extends JFrame {
         contentPane.add(scrollPaneCenter,BorderLayout.CENTER);
         contentPane.add(panelEast,BorderLayout.EAST);
         contentPane.add(panelSouth,BorderLayout.SOUTH);
+
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
     }
 
     /**

@@ -5,13 +5,13 @@ import java.awt.*;
 
 /**
  * New class for creating a new window which will be used by client
- * It represents the wait after login window.
+ * It represents the wait window after login.
  * It extends JFrame.
  *
  * @author Foini Lorenzo
  */
-
 public class WaitStartGameFrame extends JFrame {
+
     /**
      * WaitCreateGameFrame constructor, it calls method init() for initialization of frame
      *
@@ -42,7 +42,7 @@ public class WaitStartGameFrame extends JFrame {
         Font font = new Font("Arial", Font.BOLD, 15);
 
         // Create new labels
-        String firstLabel = "";
+        String firstLabel;
         if(create) firstLabel = "THE GAME HAS BEEN CREATED";
         else firstLabel = "YOU HAVE CORRECTLY JOINED THE GAME";
 

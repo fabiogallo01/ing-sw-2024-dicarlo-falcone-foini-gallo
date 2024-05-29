@@ -1,8 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.model.cards.GamingCard;
-import it.polimi.ingsw.model.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cards.StarterCard;
 import it.polimi.ingsw.networking.*;
 
 import javax.swing.*;
@@ -20,30 +17,29 @@ import java.util.List;
 /**
  * Class representing GUI
  * It has different methods which will be used in the client-server communication using GUI
- * Made using Swing
+ * Such methods use Swing
  *
  * @author Foini Lorenzo
  */
+public class ViewGUI {
 
-public class ViewGUI extends JFrame {
-
-    private static int numPlayers = 0; // Contatore statico per i client
-    private static String username;
-    private static String selectedColor;
-    private JTextField playerNameField;
-    private JComboBox<String> playerColorComboBox;
-    private JComboBox<Integer> numberOfPlayersComboBox;
-
-
-    public ViewGUI() {
-    }
+    private static int numPlayers = 0; // number of players counter
+    private static String username; // Client username
+    private static String selectedColor; // Client selected color
 
     public String displayNumberPlayer(){
+        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
+        // TODO: Move code in a new class and call it like this:
+        /*
+        // See other classes in gui package for example and better understanding
+        NumPlayersFrame numPlayersFrame = new NumPlayersFrame("Select number of players");
+        return numPlayersFrame.getNumPlayers(); // As to be returned as a string
+        */
+
         // Creazione del frame principale
         JFrame frame = new JFrame("Seleziona Numero di Giocatori");
-        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(500, 200);
+        frame.setSize(300, 100);
         frame.setLayout(new BorderLayout());
 
         // Creazione del pannello per l'input
@@ -86,6 +82,7 @@ public class ViewGUI extends JFrame {
         });
 
         // Rendere visibile il frame
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         synchronized (frame){
@@ -100,9 +97,19 @@ public class ViewGUI extends JFrame {
     }
 
     public String displayUsername(){
+        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
+        // TODO: Move code in a new class and call it like this:
+        /*
+        // See other classes in gui package for example and better understanding
+        // Add a boolean parameter repeated so:
+        // If true => first username was not valid, so show a new label which says "Sorry, that username is already used"
+        // If false => Do not show that label
+        GetUsernameFrame getUsernameFrame = new GetUsernameFrame("Insert username", repeated);
+        return getUsernameFrame.getUsername();
+        */
+
         // Creazione del frame principale
         JFrame frame = new JFrame("Inserisci Nome");
-        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 150);
         frame.setLayout(new BorderLayout());
@@ -136,25 +143,17 @@ public class ViewGUI extends JFrame {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    // Recupero del testo dal campo di testo
-                    username = textField.getText().trim();
-                    ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
-                    if (alreadyUsedUsername.contains(username)) {
-                        throw new IllegalArgumentException("Il nome è gia presente.");
-                    }
-                    frame.dispose();
-                    synchronized (frame) {
-                        frame.notify();
-                    }
-                } catch (IllegalArgumentException ex) {
-                    // Gestione del caso in cui il nome sia vuoto
-                    resultLabel.setText(ex.getMessage());
+                // Recupero del testo dal campo di testo
+                username = textField.getText().trim();
+                frame.dispose();
+                synchronized (frame) {
+                    frame.notify();
                 }
             }
         });
 
         // Rendere visibile il frame
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         synchronized (frame){
@@ -168,10 +167,20 @@ public class ViewGUI extends JFrame {
         return username;
     }
 
-    public String displayColor( ArrayList<String> colors){
+    public String displayColor(ArrayList<String> colors){
+        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
+        // TODO: Move code in a new class and call it like this:
+        /*
+        // See other classes in gui package for example and better understanding
+        // Add a boolean parameter repeated so:
+        // If true => color was not valid, so show a new label which says "Sorry, that color is already used"
+        // If false => Do not show that label
+        GetColorFrame getColorFrame = new GetColorFrame("Insert color", repeated);
+        return getColorFrame.getColor(); // where color is parameter of the class, representing client color
+        */
+
         // Creazione del frame principale
         JFrame frame = new JFrame("Seleziona Colore");
-        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 150);
         frame.setLayout(new BorderLayout());
@@ -205,25 +214,17 @@ public class ViewGUI extends JFrame {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Recupero del colore selezionato dal menu a tendina
-                try {
-                    // Recupero del testo dal campo di testo
-                    selectedColor = (String) comboBox.getSelectedItem();;
-                    if (!colors.contains(selectedColor)) {
-                        throw new IllegalArgumentException("Il colore non è disponibile.");
-                    }
-                    frame.dispose();
-                    synchronized (frame) {
-                        frame.notify();
-                    }
-                } catch (IllegalArgumentException ex) {
-                    // Gestione del caso in cui il nome sia vuoto
-                    resultLabel.setText(ex.getMessage());
+                // Recupero del testo dal campo di testo
+                selectedColor = (String) comboBox.getSelectedItem();
+                frame.dispose();
+                synchronized (frame) {
+                    frame.notify();
                 }
             }
         });
 
         // Rendere visibile il frame
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         synchronized (frame){
@@ -241,7 +242,7 @@ public class ViewGUI extends JFrame {
     public void playgame(){
         // Apri la finestra del GameFrame
         GameFrame gameFrame = new GameFrame("CODEX NATURALIS");
-        gameFrame.setVisible(true);
+        //gameFrame.setVisible(true);
     }
 
 
@@ -250,10 +251,18 @@ public class ViewGUI extends JFrame {
      * player wants to play it.
      *
      * @param starterCardID used to get the file path of the card
-     * @return the chosen side
+     * @return the chosen side as a string: "front" or "back"
      * @author giacomofalcone
      */
     public String displayStarterCard(int starterCardID) {
+        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
+        // TODO: Move code in a new class and call it like this:
+        /*
+        // See other classes in gui package for example and better understanding
+        GetStarterCardFrame getStarterCardFrame = new GetStarterCardFrame("Select starter card", starterCardID);
+        return getStarterCardFrame.getSide(); // Where side con be: "front" or "back" as string
+        */
+
         final String[] side = {""}; // Store selected side
         final Object lock = new Object();
 
@@ -355,6 +364,15 @@ public class ViewGUI extends JFrame {
      * @author giacomofalcone
      */
     public String displayObjectiveCards(int[] objectiveCardIDs) {
+        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
+        // TODO: Use class SecretObjectiveFrame, need to add parameters
+        // TODO: Display also client hand, starter card and common objectives (receive IDs as parameters)
+        /*
+        // See other classes in gui package for example and better understanding
+        SecretObjectiveFrame secretObjectiveFrame = new SecretObjectiveFrame("Select starter card", parameters);
+        return secretObjectiveFrame.getSelectedSecretCard(); // Where select con be: "1" or "2" as string
+        */
+
         final String[] selectedIndex = {""}; // Store selected index
         final Object lock = new Object();
 
@@ -381,7 +399,7 @@ public class ViewGUI extends JFrame {
                 cardLabel.setVerticalAlignment(JLabel.CENTER);
 
                 int index = i+1; // i start from 0, so add 1
-                JButton selectButton = new JButton("Select");
+                JButton selectButton = new JButton("SELECT");
                 selectButton.addActionListener(e -> {
                     selectedIndex[0] = String.valueOf(index);
                     frame.dispose(); // Close the window
@@ -424,6 +442,7 @@ public class ViewGUI extends JFrame {
      * @author Foini Lorenzo
      */
     public String displayCreateJoinGame(int countNotFullGame){
+        // TODO: Improve Frame graphics: add font, color, background, ...
         CreateJoinFrame createJoinFrame = new CreateJoinFrame("Create or join a game", countNotFullGame);
         return createJoinFrame.getChoice();
     }
@@ -436,11 +455,14 @@ public class ViewGUI extends JFrame {
      * @author Foini Lorenzo
      */
     public String displayJoinGameIndex(Map<String, List<String>> joinGamesAndPlayers){
+        // TODO: Improve Frame graphics: add font, color, background, ...
         JoinGameIndexFrame joinGameIndexFrame = new JoinGameIndexFrame("Game to join", joinGamesAndPlayers);
         return joinGameIndexFrame.getSelectedIndex();
     }
 
     public void displayWaitStartGame(boolean create){
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        // TODO: Close the window when the game started
         WaitStartGameFrame waitStartGameFrame = new WaitStartGameFrame("Wait for the starting of the game", create);
     }
 }

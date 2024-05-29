@@ -103,12 +103,13 @@ public class Client2 {
         Map<String, List<String>> joinGamesAndPlayers = new LinkedHashMap<>(); // Map of games that can be joined and their client's username
         ArrayList<String> availableColors = new ArrayList<>(); // List of available colors
 
-
+        // Now client reads messages from server and display a window
         while ((response = in.readLine()) != null) {
             if(response.equals("Insert your username:")){
+                // TODO: Add boolean parameter false, see code of ViewGui for better understanding
                 out.println(viewGui.displayUsername());
             } else if(response.equals("Username already in use. Please insert a new username:")){
-                // TODO: Create new type of windows for repeat username
+                // TODO: Add boolean parameter false, see code of ViewGui for better understanding
                 out.println(viewGui.displayUsername());
             } else if (response.equals("Do you want to create a new game or join a game? (insert create/join):")){
                 // Get number of games that can be joined
@@ -144,9 +145,10 @@ public class Client2 {
                 }
             }
             else if(response.equals("Insert your color:")){
+                // TODO: Add boolean parameter false, see code of ViewGui for better understanding
                 out.println(viewGui.displayColor(availableColors));
             } else if(response.equals("Invalid color. Please select a color from the previous list:")){
-                // TODO: Create new window for repeat color
+                // TODO: Add boolean parameter false, see code of ViewGui for better understanding
                 out.println(viewGui.displayColor(availableColors));
             } else if(response.equals("On which side you want to play the starter card (insert front/back):")){
                 // Get ID of the starter card from server
@@ -155,20 +157,23 @@ public class Client2 {
                 // Call to viewGui method
                 out.println(viewGui.displayStarterCard(starterCardID));
             } else if(response.equals("Select your secret objective card (insert 1/2):")){
+                // TODO: Add parameters for getting ids of starter card, hand and common objectives
+
                 // Get IDs of the two secret objective cards from server
                 int[] objectiveCardIDs = new int[2];
                 objectiveCardIDs[0] = Integer.parseInt(in.readLine());
                 objectiveCardIDs[1] = Integer.parseInt(in.readLine());
 
                 // Call to viewGui method
+                // TODO: Add parameters for getting ids of starter card, hand and common objectives
                 out.println(viewGui.displayObjectiveCards(objectiveCardIDs));
             } else if(response.equals("Game created. Waiting for players...")){
                 viewGui.displayWaitStartGame(true);
+                // END OF LOGIN PART
             } else if(response.equals("Joined a game. Waiting for players...")){
                 viewGui.displayWaitStartGame(false);
+                // END OF LOGIN PART
             }
-            // END OF LOGIN PART
-
             //TODO implement all the rest
         }
     }

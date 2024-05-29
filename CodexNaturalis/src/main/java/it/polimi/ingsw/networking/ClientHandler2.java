@@ -185,11 +185,8 @@ public class ClientHandler2 extends Thread {
     public void askUsername() throws IOException {
         out.println("Insert your username:"); // Display message
         username = in.readLine(); // Get client input
-        //username = gameController.getViewGui().displayUsername();
-        // Check if the username is available or already present
-        //ArrayList<String> alreadyUsedUsername = Server2.getClientsUsername();
-        //while (alreadyUsedUsername.contains(username)) {
 
+        // Check if username is already present or not
         while (Server2.getClientsUsername().contains(username)) {
             out.println("Username already in use. Please insert a new username:"); // INVALID
             username = in.readLine();

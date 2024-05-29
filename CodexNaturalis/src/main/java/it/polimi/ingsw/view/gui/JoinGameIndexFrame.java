@@ -1,8 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.model.game.Player;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -41,17 +38,16 @@ public class JoinGameIndexFrame extends JFrame {
      * @author Foini Lorenzo
      */
     private void init(Map<String, List<String>> joinGamesAndPlayers){
-        // Assign some parameters
+        // Assign some frame's parameters
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setSize(400, 400);
+        this.setSize(1000, 400);
         this.setLayout(new BorderLayout());
 
         // Create label with question
         JLabel questionsLabel = new JLabel("Which game you want to join?", SwingConstants.CENTER);
         this.add(questionsLabel, BorderLayout.NORTH);
 
-        // Create new panel
-        // It contains list of games and their players' username
+        // Create new panel: it contains list of games and their players' username
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -60,7 +56,7 @@ public class JoinGameIndexFrame extends JFrame {
             // Create new game label and add into main panel
             JLabel gameLabel = new JLabel(entry.getKey());
             mainPanel.add(gameLabel);
-            // Add players
+            // Iterate through players' usernames
             for (String username : entry.getValue()) {
                 // Create new player label and add into main panel
                 JLabel playerPanel = new JLabel(username);
@@ -102,8 +98,8 @@ public class JoinGameIndexFrame extends JFrame {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         // Create exit button
-        JButton backButton = new JButton("<- BACK");
-        //gameButton.setPreferredSize(new Dimension(100, 50));
+        JButton backButton = new JButton("<-- BACK");
+        backButton.setPreferredSize(new Dimension(150, 50));
         backButton.addActionListener(e -> {
             selectedGame = "0";
             this.dispose(); // Close the window
@@ -114,11 +110,11 @@ public class JoinGameIndexFrame extends JFrame {
         // Add button
         buttonPanel.add(backButton);
 
-        // Iterate through available indexes
+        // Iterate through available games
         for(String gameKey: gameKeys){
             // Create button
             JButton gameButton = new JButton("JOIN "+gameKey.toUpperCase());
-            //gameButton.setPreferredSize(new Dimension(100, 50));
+            gameButton.setPreferredSize(new Dimension(150, 50));
             gameButton.addActionListener(e -> {
                 selectedGame = gameKey;
                 this.dispose(); // Close the window
