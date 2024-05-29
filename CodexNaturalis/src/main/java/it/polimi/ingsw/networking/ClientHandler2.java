@@ -385,8 +385,16 @@ public class ClientHandler2 extends Thread {
         do {
             out.println("Select your secret objective card (insert 1/2):");
 
-            // Send IDs of the two cards if the client is playing with GUI
+            // Send IDs of: starter card (and his side), hand's cards, common objectives, secret objectives
             if(gui){
+                if(starterCard.getSide()) out.println("front");
+                else out.println("back");
+                out.println(starterCard.getID());
+                out.println(hand.get(0).getID());
+                out.println(hand.get(1).getID());
+                out.println(hand.get(2).getID());
+                out.println(commonObjective[0].getID());
+                out.println(commonObjective[1].getID());
                 out.println(secretCard1.getID());
                 out.println(secretCard2.getID());
             }
