@@ -1,7 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.networking.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,9 +35,9 @@ public class ViewGUI {
         */
 
         // Creazione del frame principale
-        JFrame frame = new JFrame("Seleziona Numero di Giocatori");
+        JFrame frame = new JFrame("SELECT NUMBER OF PLAYER");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(300, 100);
+        frame.setSize(400, 100);
         frame.setLayout(new BorderLayout());
 
         // Creazione del pannello per l'input
@@ -109,9 +107,9 @@ public class ViewGUI {
         */
 
         // Creazione del frame principale
-        JFrame frame = new JFrame("Inserisci Nome");
+        JFrame frame = new JFrame("INSERT YOUR USERNAME");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 150);
+        frame.setSize(400, 150);
         frame.setLayout(new BorderLayout());
 
         // Creazione del pannello per l'input
@@ -180,7 +178,7 @@ public class ViewGUI {
         */
 
         // Creazione del frame principale
-        JFrame frame = new JFrame("Seleziona Colore");
+        JFrame frame = new JFrame("SELECT YOUR COLOR");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 150);
         frame.setLayout(new BorderLayout());
@@ -240,9 +238,7 @@ public class ViewGUI {
 
 
     public void playgame(){
-        // Apri la finestra del GameFrame
         GameFrame gameFrame = new GameFrame("CODEX NATURALIS");
-        //gameFrame.setVisible(true);
     }
 
 
@@ -267,7 +263,7 @@ public class ViewGUI {
         final Object lock = new Object();
 
         // Creazione del frame principale
-        JFrame frame = new JFrame("Select starter card's side");
+        JFrame frame = new JFrame("SELECT STARTER CARD'S SIDE");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
         frame.setSize(600, 400);
         frame.setLayout(new BorderLayout());
@@ -359,79 +355,18 @@ public class ViewGUI {
     /**
      * Method to display two cards and get the index of the selected card.
      *
-     * @param objectiveCardIDs array of IDs used to get the file path of the cards
+     * @param starterCardSide side on which the starter card have been played
+     * @param starterCardID ID used to get the file path of the starter cards
+     * @param handCardIDs array of IDs used to get the file path of the hand's cards
+     * @param commonObjectiveCardIDs array of IDs used to get the file path of the common objective cards
+     * @param secretObjectiveCardIDs array of IDs used to get the file path of the secret objective cards
      * @return the index of the chosen card
      * @author giacomofalcone
      */
-    public String displayObjectiveCards(int[] objectiveCardIDs) {
-        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
-        // TODO: Use class SecretObjectiveFrame, need to add parameters
-        // TODO: Display also client hand, starter card and common objectives (receive IDs as parameters)
-        /*
-        // See other classes in gui package for example and better understanding
-        SecretObjectiveFrame secretObjectiveFrame = new SecretObjectiveFrame("Select starter card", parameters);
-        return secretObjectiveFrame.getSelectedSecretCard(); // Where select con be: "1" or "2" as string
-        */
-
-        final String[] selectedIndex = {""}; // Store selected index
-        final Object lock = new Object();
-
-        // Creazione del frame principale
-        JFrame frame = new JFrame("Select an objective card");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
-        frame.setSize(600, 400);
-        frame.setLayout(new BorderLayout());
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1, 2)); // Modifica layout per visualizzare le carte in una riga
-
-        JLabel instructionLabel = new JLabel("Choose which secret objective card you want to use", SwingConstants.CENTER);
-        frame.add(instructionLabel, BorderLayout.NORTH);
-
-        for (int i = 0; i < objectiveCardIDs.length; i++) {
-            String starterPath = "CodexNaturalis\\resources\\front\\img_" + objectiveCardIDs[i] + ".jpeg";
-
-            try {
-                BufferedImage cardImage = ImageIO.read(new File(starterPath));
-                ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(250, 200, Image.SCALE_SMOOTH));
-                JLabel cardLabel = new JLabel(cardIcon);
-                cardLabel.setHorizontalAlignment(JLabel.CENTER);
-                cardLabel.setVerticalAlignment(JLabel.CENTER);
-
-                int index = i+1; // i start from 0, so add 1
-                JButton selectButton = new JButton("SELECT");
-                selectButton.addActionListener(e -> {
-                    selectedIndex[0] = String.valueOf(index);
-                    frame.dispose(); // Close the window
-                    synchronized (lock) {
-                        lock.notify(); // Notify waiting thread
-                    }
-                });
-
-                JPanel cardPanel = new JPanel(new BorderLayout());
-                cardPanel.add(cardLabel, BorderLayout.CENTER);
-                cardPanel.add(selectButton, BorderLayout.SOUTH);
-
-                panel.add(cardPanel);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        frame.add(panel, BorderLayout.CENTER);
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        synchronized (lock) {
-            try {
-                lock.wait(); // Wait until user selects a card
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        return selectedIndex[0];
+    public String displayObjectiveCards(String starterCardSide, int starterCardID, int[] handCardIDs, int[] commonObjectiveCardIDs, int[] secretObjectiveCardIDs) {
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        SecretObjectiveFrame secretObjectiveFrame = new SecretObjectiveFrame("SELECT SECRET OBJECTIVE CARD", starterCardSide, starterCardID, handCardIDs, commonObjectiveCardIDs, secretObjectiveCardIDs);
+        return secretObjectiveFrame.getSelectedSecretCard();
     }
 
     /**
@@ -443,7 +378,7 @@ public class ViewGUI {
      */
     public String displayCreateJoinGame(int countNotFullGame){
         // TODO: Improve Frame graphics: add font, color, background, ...
-        CreateJoinFrame createJoinFrame = new CreateJoinFrame("Create or join a game", countNotFullGame);
+        CreateJoinFrame createJoinFrame = new CreateJoinFrame("CREATE OR JOIN GAME", countNotFullGame);
         return createJoinFrame.getChoice();
     }
 
@@ -456,13 +391,13 @@ public class ViewGUI {
      */
     public String displayJoinGameIndex(Map<String, List<String>> joinGamesAndPlayers){
         // TODO: Improve Frame graphics: add font, color, background, ...
-        JoinGameIndexFrame joinGameIndexFrame = new JoinGameIndexFrame("Game to join", joinGamesAndPlayers);
+        JoinGameIndexFrame joinGameIndexFrame = new JoinGameIndexFrame("SELECT GAME TO JOIN", joinGamesAndPlayers);
         return joinGameIndexFrame.getSelectedIndex();
     }
 
     public void displayWaitStartGame(boolean create){
         // TODO: Improve Frame graphics: add font, color, background, ...
         // TODO: Close the window when the game started
-        WaitStartGameFrame waitStartGameFrame = new WaitStartGameFrame("Wait for the starting of the game", create);
+        WaitStartGameFrame waitStartGameFrame = new WaitStartGameFrame("WAIT START OF THE GAME", create);
     }
 }
