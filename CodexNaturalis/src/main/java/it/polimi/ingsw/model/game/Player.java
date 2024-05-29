@@ -274,26 +274,305 @@ public class Player {
             4. One of the corners of the card covers one or more non-playable corners of the cards
                at the corners of that position.
 
-            5. For gold cards, there are no conditions necessary for them to be placed.
-               This condition is valid only when the card is played on front
+            5. For gold cards played on front, check if there are enough resources for playing that card.
         */
-        if(!playerArea.getArea()[position[0]][position[1]]){ // Condition 1
+
+        // Condition 1
+        if(!checkCondition1(position)){
             return "There is already a card in that position.";
         }
-        else if(!playerArea.getArea()[position[0]-1][position[1]] ||
-                !playerArea.getArea()[position[0]][position[1]-1] ||
-                !playerArea.getArea()[position[0]][position[1]+1] ||
-                !playerArea.getArea()[position[0]+1][position[1]]){ // Condition 2
-            // Just check if there is a card that is located on one of the four sides of the chosen position.
+
+        // Condition 2
+        if(!checkCondition2(position)){
             return "The card you want to play can't cover two corners of the same card.";
         }
-        else if(playerArea.getArea()[position[0]-1][position[1]-1] &&
-                playerArea.getArea()[position[0]-1][position[1]+1] &&
-                playerArea.getArea()[position[0]+1][position[1]-1] &&
-                playerArea.getArea()[position[0]+1][position[1]+1]){ // Condition 3
+
+        // Condition 3
+        if(!checkCondition3(position)){
             return "There are no cards in the corners of that position.";
         }
-        else if(cardToPlay instanceof GoldCard && cardToPlay.getSide()){ // Condition 5
+
+        // Condition 4
+        if(!checkCondition4(position)){
+            return "Card covers a corner which can't be covered";
+        }
+
+        // Condition 5
+        if(!checkCondition5(cardToPlay)){
+            return "There aren't enough resources to place the gold card on front.";
+        }
+
+        // All condition are valid, so the card can be played
+        return "None";
+    }
+
+    /**
+     * Check if there is a card in the given position
+     *
+     * @param position representing the position of the selected card to be played
+     * @return true => Condition is valid. return false => Condition is not valid
+     * @author Lorenzo Foini
+     */
+    private boolean checkCondition1(int[] position){
+        // true => Cell is empty
+        // false => There is a card in such position
+        return playerArea.getArea()[position[0]][position[1]];
+    }
+
+    /**
+     * Check if card played covers two corners of one or more cards
+     *
+     * @param position representing the position of the selected card to be played
+     * @return true => Condition is valid. return false => Condition is not valid
+     * @author Lorenzo Foini
+     */
+    private boolean checkCondition2(int[] position){
+        // Need to check first row, last row, first column and last column
+        if(position[0] == 0){
+            if(position[1] == 0){ // Top left corner
+                // Just check if there is a card that is located on one of the two sides of the chosen position.
+                return playerArea.getArea()[position[0]][position[1] + 1] &&
+                       playerArea.getArea()[position[0] + 1][position[1]];
+
+            } else if(position[1] == 80){ // Top right corner
+                // Just check if there is a card that is located on one of the two sides of the chosen position.
+                return playerArea.getArea()[position[0]][position[1] - 1] &&
+                       playerArea.getArea()[position[0] + 1][position[1]];
+
+            } else{ // first row
+                // Just check if there is a card that is located on one of the three sides of the chosen position.
+                return playerArea.getArea()[position[0]][position[1] - 1] &&
+                       playerArea.getArea()[position[0]][position[1] + 1] &&
+                       playerArea.getArea()[position[0] + 1][position[1]];
+
+            }
+
+        } else if(position[0] == 80){
+            if(position[1] == 0){ // bottom left corner
+                // Just check if there is a card that is located on one of the two sides of the chosen position.
+                return playerArea.getArea()[position[0]][position[1] + 1] &&
+                       playerArea.getArea()[position[0] - 1][position[1]];
+
+            } else if(position[1] == 80){ // Top right corner
+                // Just check if there is a card that is located on one of the two sides of the chosen position.
+                return playerArea.getArea()[position[0]][position[1] - 1] &&
+                       playerArea.getArea()[position[0] - 1][position[1]];
+
+            } else{ // last row
+                // Just check if there is a card that is located on one of the three sides of the chosen position.
+                return playerArea.getArea()[position[0]][position[1] - 1] &&
+                       playerArea.getArea()[position[0]][position[1] + 1] &&
+                       playerArea.getArea()[position[0] - 1][position[1]];
+            }
+
+        } else if(position[1] == 0){ // First column
+            // Just check if there is a card that is located on one of the three sides of the chosen position.
+            return playerArea.getArea()[position[0]][position[1] + 1] &&
+                   playerArea.getArea()[position[0] - 1][position[1]] &&
+                   playerArea.getArea()[position[0] + 1][position[1]];
+
+        } else if(position[1] == 80){ // Last column
+            return playerArea.getArea()[position[0]][position[1] - 1] &&
+                   playerArea.getArea()[position[0] - 1][position[1]] &&
+                   playerArea.getArea()[position[0] + 1][position[1]];
+
+        } else{ // Not first/last row/column => Check all 4 sides
+            return playerArea.getArea()[position[0]][position[1] - 1] &&
+                   playerArea.getArea()[position[0]][position[1] + 1] &&
+                   playerArea.getArea()[position[0] - 1][position[1]] &&
+                   playerArea.getArea()[position[0] + 1][position[1]];
+        }
+    }
+
+    /**
+     * Check if there is a card in one of the possible corners of a given position
+     * Need to invert condition: if playerArea.getArea()[row,column] is false,
+     *                           => There is a card and return true
+     *                           if playerArea.getArea()[row,column] is true,
+     *                           => There isn't a card and return false
+     *
+     * @param position representing the position of the selected card to be played
+     * @return true => Condition is valid. return false => Condition is not valid
+     * @author Lorenzo Foini
+     */
+    private boolean checkCondition3(int[] position){
+        // Need to check first row, last row, first column and last column
+        if(position[0] == 0){
+            if(position[1] == 0){ // Top left corner
+                // Just check if there is a card that is located in the bottom right corner of this position
+                // Need to invert condition
+                return !playerArea.getArea()[position[0] + 1][position[1] + 1];
+
+            } else if(position[1] == 80){ // Top right corner
+                // Just check if there is a card that is located in the bottom left corner of this position
+                // Need to invert condition
+                return !playerArea.getArea()[position[0] + 1][position[1] - 1];
+
+            } else{ // first row
+                // Just check if there is a card that is located in the bottom left/right corners of this position
+                // Need to invert condition
+                return !(playerArea.getArea()[position[0] + 1][position[1] - 1] &&
+                         playerArea.getArea()[position[0] + 1][position[1] + 1]);
+
+            }
+
+        } else if(position[0] == 80){
+            if(position[1] == 0){ // bottom left corner
+                // Just check if there is a card that is located in the top right corner of this position
+                // Need to invert condition
+                return !playerArea.getArea()[position[0] - 1][position[1] + 1];
+
+            } else if(position[1] == 80){ // Top right corner
+                // Just check if there is a card that is located in the top left corner of this position
+                // Need to invert condition
+                return !playerArea.getArea()[position[0] - 1][position[1] - 1];
+
+            } else{ // last row
+                // Just check if there is a card that is located in the top left/right corners of this position
+                // Need to invert condition
+                return !(playerArea.getArea()[position[0] - 1][position[1] - 1] &&
+                         playerArea.getArea()[position[0] - 1][position[1] + 1]);
+            }
+
+        } else if(position[1] == 0){ // First column
+            // Just check if there is a card that is located in the bottom/top right corners of this position
+            // Need to invert condition
+            return !(playerArea.getArea()[position[0] - 1][position[1] + 1] &&
+                     playerArea.getArea()[position[0] + 1][position[1] + 1]);
+
+        } else if(position[1] == 80){ // Last column
+            // Just check if there is a card that is located in the bottom/top left corners of this position
+            // Need to invert condition
+            return !(playerArea.getArea()[position[0] - 1][position[1] - 1] &&
+                     playerArea.getArea()[position[0] + 1][position[1] - 1]);
+
+        } else{ // Not first/last row/column
+            // Just check if there is a card that is located in one of the corners of this position
+            // Need to invert condition
+            return !(playerArea.getArea()[position[0] - 1][position[1] - 1] &&
+                     playerArea.getArea()[position[0] - 1][position[1] + 1] &&
+                     playerArea.getArea()[position[0] + 1][position[1] - 1] &&
+                     playerArea.getArea()[position[0] + 1][position[1] + 1]);
+        }
+    }
+
+    /**
+     * Check if the played card covers a corner that can't be covered
+     *
+     * @param position representing the position of the selected card to be played
+     * @return true => Condition is valid. return false => Condition is not valid
+     * @author Lorenzo Foini
+     */
+    private boolean checkCondition4(int[] position){
+        // Get the cards in the corners and check if the covered corner can be covered or not
+        // Use try-catch clauses for handling the margins of playerArea
+        // If getEmpty() is true => Corner can't be covered so return false
+        Card checkedCard;
+        int[] checkedPosition = new int[2];
+
+        // Need to check first row, last row, first column and last column
+        if(position[0] != 80){ // Not last row
+            if(position[1] != 80){ // Not last column
+                // Just check if the card in the bottom right corner has top left corner empty
+                checkedPosition[0] = position[0] + 1;
+                checkedPosition[1] = position[1] + 1;
+
+                // Check if there is a card is the checked position
+                if(!playerArea.getArea()[checkedPosition[0]][checkedPosition[1]]){
+                    checkedCard = playerArea.getCardByPosition(checkedPosition);
+                    if(checkedCard.getSide()){ // Card is played on the front
+                        if(checkedCard.getFrontCorners()[0].getEmpty()){
+                            return false; // Card in the bottom right corner has front top left corner empty
+                        }
+                    }
+                    else{ // Card is played on the back
+                        if(checkedCard.getBackCorners()[0].getEmpty()){
+                            return false; // Card in the bottom right corner has back top left corner empty
+                        }
+                    }
+                }
+            }
+
+            if(position[1] != 0){ // Not first column
+                // Just check if the card in the bottom left corner has top right corner empty
+                checkedPosition[0] = position[0] + 1;
+                checkedPosition[1] = position[1] - 1;
+
+                // Check if there is a card is the checked position
+                if(!playerArea.getArea()[checkedPosition[0]][checkedPosition[1]]){
+                    checkedCard = playerArea.getCardByPosition(checkedPosition);
+                    if(checkedCard.getSide()){ // Card is played on the front
+                        if(checkedCard.getFrontCorners()[1].getEmpty()){
+                            return false; // Card in the bottom left corner has front top right corner empty
+                        }
+                    }
+                    else{ // Card is played on the back
+                        if(checkedCard.getBackCorners()[1].getEmpty()){
+                            return false; // Card in the bottom left corner has back top right corner empty
+                        }
+                    }
+                }
+            }
+        }
+
+        if(position[0] != 0){ // Not first row
+            if(position[1] != 80){ // Not last column
+                // Just check if the card in the top right corner has bottom left corner empty
+                checkedPosition[0] = position[0] - 1;
+                checkedPosition[1] = position[1] + 1;
+
+                // Check if there is a card is the checked position
+                if(!playerArea.getArea()[checkedPosition[0]][checkedPosition[1]]){
+                    checkedCard = playerArea.getCardByPosition(checkedPosition);
+                    if(checkedCard.getSide()){ // Card is played on the front
+                        if(checkedCard.getFrontCorners()[2].getEmpty()){
+                            return false; // Card in the top right corner has front bottom left corner empty
+                        }
+                    }
+                    else{ // Card is played on the back
+                        if(checkedCard.getBackCorners()[2].getEmpty()){
+                            return false; // Card in the top right corner has back bottom left corner empty
+                        }
+                    }
+                }
+            }
+
+            if(position[1] != 0){ // Not first column
+                // Just check if the card in the top left corner has bottom right corner empty
+                checkedPosition[0] = position[0] - 1;
+                checkedPosition[1] = position[1] - 1;
+
+                // Check if there is a card is the checked position
+                if(!playerArea.getArea()[checkedPosition[0]][checkedPosition[1]]){
+                    checkedCard = playerArea.getCardByPosition(checkedPosition);
+                    if (checkedCard.getSide()) { // Card is played on the front
+                        if (checkedCard.getFrontCorners()[3].getEmpty()) {
+                            return false; // Card in the top left corner has front bottom right corner empty
+                        }
+                    } else { // Card is played on the back
+                        if (checkedCard.getBackCorners()[3].getEmpty()) {
+                            return false; // Card in the top left corner has back bottom right corner empty
+                        }
+                    }
+                }
+            }
+        }
+
+        // Condition is valid, so return true
+        return true;
+    }
+
+
+    /**
+     * Check if there are enough resources for playing a gold card on front
+     *
+     * @param cardToPlay representing the played card
+     * @return true => Condition is valid. return false => Condition is not valid
+     * @author Lorenzo Foini
+     */
+    private boolean checkCondition5(GamingCard cardToPlay){
+        // Check if the card is a gold card played on front
+        if(cardToPlay instanceof GoldCard && cardToPlay.getSide()){
             // Count resources
             int countAnimalKingdom = 0;
             int countPlantKingdom = 0;
@@ -316,70 +595,14 @@ public class Player {
                 }
             }
             // Check condition
-            if(playerArea.countKingdoms(Kingdom.ANIMALKINGDOM) < countAnimalKingdom ||
-               playerArea.countKingdoms(Kingdom.PLANTKINGDOM) < countPlantKingdom ||
-               playerArea.countKingdoms(Kingdom.FUNGIKINGDOM) < countFungiKingdom ||
-               playerArea.countKingdoms(Kingdom.INSECTKINGDOM) < countInsectKingdom){
-                return "There aren't enough resources to place the gold card.";
-            }
+            return playerArea.countKingdoms(Kingdom.ANIMALKINGDOM) >= countAnimalKingdom &&
+                   playerArea.countKingdoms(Kingdom.PLANTKINGDOM) >= countPlantKingdom &&
+                   playerArea.countKingdoms(Kingdom.FUNGIKINGDOM) >= countFungiKingdom &&
+                   playerArea.countKingdoms(Kingdom.INSECTKINGDOM) >= countInsectKingdom;
         }
 
-        // Get the 4 cards in the corner and check condition n.4
-        for (Card playedCard : playerArea.getCards()){
-            if(playedCard.getInGamePosition()[0] == (position[0]-1) &&
-               playedCard.getInGamePosition()[1] == (position[1]-1)){
-                if(playedCard.getSide()){ // Card is played on the front
-                    if(playedCard.getFrontCorners()[3].getEmpty()){
-                        return "Card covers a corner which can't be covered";
-                    }
-                }
-                else{ // Card is played on the back
-                    if(playedCard.getBackCorners()[3].getEmpty()){
-                        return "Card covers a corner which can't be covered";
-                    }
-                }
-            }
-            else if(playedCard.getInGamePosition()[0] == (position[0]-1) &&
-                    playedCard.getInGamePosition()[1] == (position[1]+1)){
-                if(playedCard.getSide()){ // Card is played on the front
-                    if(playedCard.getFrontCorners()[2].getEmpty()){
-                        return "Card covers a corner which can't be covered";
-                    }
-                }
-                else{ // Card is played on the back
-                    if(playedCard.getBackCorners()[2].getEmpty()){
-                        return "Card covers a corner which can't be covered";
-                    }
-                }
-            }
-            else if(playedCard.getInGamePosition()[0] == (position[0]+1) &&
-                    playedCard.getInGamePosition()[1] == (position[1]-1)){
-                if(playedCard.getSide()){ // Card is played on the front
-                    if(playedCard.getFrontCorners()[1].getEmpty()){
-                        return "Card covers a corner which can't be covered";
-                    }
-                }
-                else{ // Card is played on the back
-                    if(playedCard.getBackCorners()[1].getEmpty()){
-                        return "Card covers a corner which can't be covered";
-                    }
-                }
-            }
-            else if(playedCard.getInGamePosition()[0] == (position[0]+1) &&
-                    playedCard.getInGamePosition()[1] == (position[1]+1)){
-                if(playedCard.getSide()){ // Card is played on the front
-                    if(playedCard.getFrontCorners()[0].getEmpty()){
-                        return "Card covers a corner which can't be covered";
-                    }
-                }
-                else{ // Card is played on the back
-                    if(playedCard.getBackCorners()[0].getEmpty()){
-                        return "Card covers a corner which can't be covered";
-                    }
-                }
-            }
-        }
-        return "None"; // Correct position => Return "None"
+        // The played card isn't a gold card, so return true
+        return true;
     }
 
     /**
