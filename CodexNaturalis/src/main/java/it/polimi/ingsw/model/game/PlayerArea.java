@@ -67,6 +67,26 @@ public class PlayerArea{
     }
 
     /**
+     * Method for returning a card given a position
+     *
+     * @param position position of the card to be returned
+     * @return such card
+     * @author Lorenzo Foini
+     */
+    public Card getCardByPosition(int[] position){
+        Card cardByPosition = null;
+        for(Card card:cards){
+            int[] cardPosition = card.getInGamePosition();
+            if(cardPosition[0] == position[0] && cardPosition[1] == position[1]){
+                cardByPosition = card;
+                return cardByPosition;
+            }
+        }
+
+        return cardByPosition;
+    }
+
+    /**
      * Method for adding a card to list of played cards.
      * It also set the select cell where to play teh card to false
      * It is guaranteed that the position is valid
