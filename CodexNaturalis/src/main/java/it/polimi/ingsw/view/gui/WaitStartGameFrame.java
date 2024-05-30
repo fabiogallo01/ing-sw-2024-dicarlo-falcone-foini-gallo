@@ -1,7 +1,10 @@
 package it.polimi.ingsw.view.gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * New class for creating a new window which will be used by client
@@ -32,11 +35,19 @@ public class WaitStartGameFrame extends JFrame {
      *               if false => Client has joined a game
      * @author Foini Lorenzo
      */
-    void init(boolean create){
+    private WaitStartGameFrame init(boolean create){
         // Set frame parameters
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(400, 200);
         this.setLayout(new GridLayout(2, 1));
+
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            this.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Create new font for labels
         Font font = new Font("Arial", Font.BOLD, 15);
@@ -60,5 +71,7 @@ public class WaitStartGameFrame extends JFrame {
         // Set frame relative location and visibility
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+
+        return this;
     }
 }

@@ -1,7 +1,10 @@
 package it.polimi.ingsw.view.gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +45,14 @@ public class JoinGameIndexFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(1000, 400);
         this.setLayout(new BorderLayout());
+
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            this.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Create label with question
         JLabel questionsLabel = new JLabel("Which game you want to join?", SwingConstants.CENTER);

@@ -1,7 +1,10 @@
 package it.polimi.ingsw.view.gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * New class for creating a new window which will be used by client
@@ -37,6 +40,14 @@ public class CreateJoinFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
         this.setSize(500, 150);
         this.setLayout(new BorderLayout());
+
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            this.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Create label with the question
         JLabel instructionLabel = new JLabel("Do you want to create a new game or join a game?", SwingConstants.CENTER);

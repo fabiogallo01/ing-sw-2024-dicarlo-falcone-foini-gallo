@@ -38,6 +38,14 @@ public class GameFrame extends JFrame {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH); // MAX dimension
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            this.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Call to function createPanelNorth() for creating new panel to be addend in the content pane
         JPanel panelNorth = createPanelNorth();
 

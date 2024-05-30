@@ -19,7 +19,7 @@ public class SecretObjectiveFrame extends JFrame{
     private final Object lock = new Object();
     Font customFont = new Font("SansSerif", Font.BOLD, 15); // // Create a custom Font
     private final int width = 200;
-    private final int imageHeight = 150;
+    private final int imageHeight = 125;
     private final int buttonHeight = 25;
 
     /**
@@ -54,6 +54,14 @@ public class SecretObjectiveFrame extends JFrame{
         this.setSize(700, 800);
         this.setLayout(new GridLayout(4, 1));
 
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            this.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Create new panel for displaying starter card
         JPanel starterCardPanel = createStarterPanel(starterCardSide, starterCardID);
         this.add(starterCardPanel);
@@ -70,6 +78,7 @@ public class SecretObjectiveFrame extends JFrame{
         JPanel secretObjectivesPanel = createSecretObjectivePanel(secretObjectiveCardIDs);
         this.add(secretObjectivesPanel);
 
+        this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
@@ -207,9 +216,9 @@ public class SecretObjectiveFrame extends JFrame{
      */
     private ImageIcon getImage(int id, String side) {
 
-        String starterPath = "CodexNaturalis\\resources\\"+side+"\\img_" + id + ".jpeg";
+        String path = "CodexNaturalis\\resources\\"+side+"\\img_" + id + ".jpeg";
         try {
-            BufferedImage cardImage = ImageIO.read(new File(starterPath));
+            BufferedImage cardImage = ImageIO.read(new File(path));
             Image scaledImage = cardImage.getScaledInstance(width, imageHeight, Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImage);
         } catch (IOException e) {
