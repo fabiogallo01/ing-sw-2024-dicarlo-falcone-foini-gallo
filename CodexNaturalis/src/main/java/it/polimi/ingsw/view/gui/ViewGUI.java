@@ -40,6 +40,14 @@ public class ViewGUI {
         frame.setSize(400, 100);
         frame.setLayout(new BorderLayout());
 
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            frame.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Creazione del pannello per l'input
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -109,8 +117,20 @@ public class ViewGUI {
         // Creazione del frame principale
         JFrame frame = new JFrame("INSERT YOUR USERNAME");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 150);
+        frame.setSize(400, 300);
         frame.setLayout(new BorderLayout());
+
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            frame.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Create background panel and set it
+        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        frame.setContentPane(backgroundPanel);
 
         // Creazione del pannello per l'input
         JPanel panel = new JPanel();
@@ -182,6 +202,14 @@ public class ViewGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(300, 150);
         frame.setLayout(new BorderLayout());
+
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            frame.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Creazione del pannello per l'input
         JPanel panel = new JPanel();
@@ -267,6 +295,14 @@ public class ViewGUI {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
         frame.setSize(600, 400);
         frame.setLayout(new BorderLayout());
+
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            frame.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(1, 2)); // Modifica layout per visualizzare le carte in una riga
@@ -395,9 +431,9 @@ public class ViewGUI {
         return joinGameIndexFrame.getSelectedIndex();
     }
 
-    public void displayWaitStartGame(boolean create){
+    public WaitStartGameFrame displayWaitStartGame(boolean create){
         // TODO: Improve Frame graphics: add font, color, background, ...
         // TODO: Close the window when the game started
-        WaitStartGameFrame waitStartGameFrame = new WaitStartGameFrame("WAIT START OF THE GAME", create);
+        return new WaitStartGameFrame("WAIT START OF THE GAME", create);
     }
 }
