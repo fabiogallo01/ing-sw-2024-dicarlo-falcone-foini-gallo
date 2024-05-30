@@ -1,6 +1,7 @@
 package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.view.gui.ViewGUI;
+import it.polimi.ingsw.view.gui.WaitStartGameFrame;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,6 +72,7 @@ public class Client2 {
                     response.equals("Enter number of players (insert 2/3/4):") ||
                     response.equals("Please insert 2/3/4:") ||
                     response.equals("Insert your username:") ||
+                    response.equals("Invalid username. Please insert a valid username:") ||
                     response.equals("Username already in use. Please insert a new username:") ||
                     response.equals("Insert your color:") ||
                     response.equals("Invalid color. Please select a color from the previous list:") ||
@@ -100,17 +102,22 @@ public class Client2 {
     private static void startGUI(PrintWriter out, BufferedReader in) throws IOException {
         ViewGUI viewGui = new ViewGUI(); // Instance of GUI
         String response; // Messages from server
+        String username; // Client's username
         Map<String, List<String>> joinGamesAndPlayers = new LinkedHashMap<>(); // Map of games that can be joined and their client's username
         ArrayList<String> availableColors = new ArrayList<>(); // List of available colors
+        WaitStartGameFrame waitStartGame = null; // JFrame for waiting start of the game
 
         // Now client reads messages from server and display a window
         while ((response = in.readLine()) != null) {
             if(response.equals("Insert your username:")){
                 // TODO: Add boolean parameter false, see code of ViewGui for better understanding
-                out.println(viewGui.displayUsername());
-            } else if(response.equals("Username already in use. Please insert a new username:")){
+                username = viewGui.displayUsername();
+                out.println(username);
+            } else if(response.equals("Username already in use. Please insert a new username:") ||
+                      response.equals("Invalid username. Please insert a valid username:")){
                 // TODO: Add boolean parameter false, see code of ViewGui for better understanding
-                out.println(viewGui.displayUsername());
+                username = viewGui.displayUsername();
+                out.println(username);
             } else if (response.equals("Do you want to create a new game or join a game? (insert create/join):")){
                 // Get number of games that can be joined
                 int countGameNotFull = Integer.parseInt(in.readLine());
@@ -184,9 +191,19 @@ public class Client2 {
                 viewGui.displayWaitStartGame(true);
                 // END OF LOGIN PART
             } else if(response.equals("Joined a game. Waiting for players...")){
-                viewGui.displayWaitStartGame(false);
+                waitStartGame = viewGui.displayWaitStartGame(false);
                 // END OF LOGIN PART
             } else if(response.equals("Game starts now.")){
+                // Close wait start game frame
+                if (waitStartGame != null) {
+                    waitStartGame.dispose();
+                }
+
+                // Get gameTable
+                String gameTable = in.readLine();
+
+                System.out.println(gameTable);
+
                 viewGui.playgame();
             }
             //TODO implement all the rest
