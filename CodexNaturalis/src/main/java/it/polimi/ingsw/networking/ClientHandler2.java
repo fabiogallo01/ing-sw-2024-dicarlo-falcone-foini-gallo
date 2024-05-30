@@ -83,6 +83,12 @@ public class ClientHandler2 extends Thread {
 
             out.println("Game starts now.");
 
+            // Send gameTable to client is he is playing with GUI
+            if(gui){
+                // TODO: Serialise?
+                out.println(gameController.getGameTable().toString());
+            }
+
             Player player = gameController.getGameTable().getPlayerByUsername(username);
 
             while (!player.isTurn()) {//waits for your turn
@@ -186,9 +192,13 @@ public class ClientHandler2 extends Thread {
         out.println("Insert your username:"); // Display message
         username = in.readLine(); // Get client input
 
-        // Check if username is already present or not
-        while (Server2.getClientsUsername().contains(username)) {
-            out.println("Username already in use. Please insert a new username:"); // INVALID
+        // Check if username is valid: already present or empty
+        while (Server2.getClientsUsername().contains(username) || username.isEmpty()) {
+            if(username.isEmpty()) {
+                out.println("Invalid username. Please insert a valid username:");
+            }else {
+                out.println("Username already in use. Please insert a new username:"); // INVALID
+            }
             username = in.readLine();
         }
 
