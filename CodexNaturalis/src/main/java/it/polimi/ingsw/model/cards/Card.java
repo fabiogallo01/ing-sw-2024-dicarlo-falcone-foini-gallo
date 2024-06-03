@@ -6,7 +6,8 @@ package it.polimi.ingsw.model.cards;
  *
  * @author Andrea Di Carlo, Lorenzo Foini, Fabio Gallo
  */
-public abstract class Card {
+//public abstract class Card {
+public class Card {
     protected boolean side;
     protected Corner[] frontCorners;
     protected Corner[] backCorners;
