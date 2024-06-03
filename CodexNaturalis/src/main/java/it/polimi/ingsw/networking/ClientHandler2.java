@@ -3,7 +3,7 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.exception.*;
-import it.polimi.ingsw.model.game.Player;
+import it.polimi.ingsw.model.game.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
 
 /**
  * Class which handles a thread representing a client connections to the server
@@ -32,6 +34,7 @@ public class ClientHandler2 extends Thread {
     private boolean joined = false;
     private String username;
     private boolean gui; //true => GUI, false => TUI
+    Gson gson = new Gson(); // Gson for serialization
 
     /**
      * ViewClientHandler constructor, it assigns/creates all class's parameters
@@ -82,12 +85,6 @@ public class ClientHandler2 extends Thread {
             // TODO: Modify the following lines for handling turns with TUI and GUI (now it works only with TUI)
 
             out.println("Game starts now.");
-
-            // Send gameTable to client is he is playing with GUI
-            if(gui){
-                // TODO: Serialise?
-                out.println(gameController.getGameTable().toString());
-            }
 
             Player player = gameController.getGameTable().getPlayerByUsername(username);
 
@@ -486,6 +483,15 @@ public class ClientHandler2 extends Thread {
 
         // Ask player which card he wants to play from his hand
         out.println("Which card you want to play (insert 1/2/3):");
+
+        // Send gameTable to client is he is playing with GUI
+        if(gui){
+            GameTable gameTable = gameController.getGameTable();
+            Gson gson = new Gson();
+            String gameTableJson = gson.toJson(gameTable);
+            out.println(gameTableJson);
+        }
+
         String stringPositionCardHand = in.readLine();
 
         // Check user input
