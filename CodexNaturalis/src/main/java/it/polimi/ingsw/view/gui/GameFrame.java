@@ -1,11 +1,16 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.game.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * New class for creating a new window which will be used by client
@@ -17,6 +22,15 @@ import java.io.IOException;
 public class GameFrame extends JFrame {
     final int NUM_ROWS = 81;
     final int NUM_COLS = 81;
+    Player clientPlayer; // It represents the clients
+    GameTable gameTable; // It represents the gameTable of the match
+    String indexCardToPlay = "";
+    boolean enableButtonsArea = false;
+    ArrayList<JButton> gridButtons = new ArrayList<>();
+    boolean enableHandCardsButtons = false;
+    ArrayList<JButton> handCardsButtons = new ArrayList<>();
+    boolean enableDrawCardsButtons = false;
+    ArrayList<JButton> drawCardsButtons = new ArrayList<>();
 
     /**
      * GameFrame constructor, it calls method init() for initialization of frame
@@ -24,8 +38,10 @@ public class GameFrame extends JFrame {
      * @param title window's title
      * @author Foini Lorenzo
      */
-    GameFrame(String title){
+    GameFrame(String title, Player player, GameTable gameTable){
         super(title);
+        this.clientPlayer = player;
+        this.gameTable = gameTable;
         init();
     }
 
@@ -109,9 +125,10 @@ public class GameFrame extends JFrame {
 
         // Get images of the three objective cards
         // For doing so we call method getImageFromID with teh cards' IDs, width and height
-        JLabel imageCommonObjective1 = new JLabel(getImageFromID(91, true,200, 80));
-        JLabel imageCommonObjective2 = new JLabel(getImageFromID(92, true,200, 80));
-        JLabel imageSecretObjective = new JLabel(getImageFromID(93, true,200, 80));
+        ObjectiveCard[] commonObjective = gameTable.getCommonObjectives();
+        JLabel imageCommonObjective1 = new JLabel(getImageFromID(commonObjective[0].getID(), true,200, 80));
+        JLabel imageCommonObjective2 = new JLabel(getImageFromID(commonObjective[1].getID(), true,200, 80));
+        JLabel imageSecretObjective = new JLabel(getImageFromID(clientPlayer.getSecretObjective().getID(), true,200, 80));
 
         // Set image label in center
         imageCommonObjective1.setVerticalAlignment(JLabel.CENTER);
@@ -125,7 +142,7 @@ public class GameFrame extends JFrame {
         addComponent(panel, imageSecretObjective, gbc, 1, 2, 1, 1, 1, 0.7);
 
         // Set panel values
-        panel.setBackground(Color.CYAN);
+        panel.setBackground(java.awt.Color.CYAN);
         panel.setOpaque(true);
         panel.setPreferredSize(new Dimension(150, 100));
 
@@ -134,12 +151,14 @@ public class GameFrame extends JFrame {
 
     /**
      * This method is used for creating the west panel
-     * The west panel contains the cards that can be drawn from a deck or from table
+     * The west panel contains the live scoreboard and buttons for view other players' game area
      *
      * @return the panel that will be added in the content pane
      * @author Foini Lorenzo
      */
     public JPanel createPanelWest(){
+        int indexRow = 0; // Variable which represent the total number of rows added in the panel
+
         // Create new panel and use a GridBagLayout, so we can choose the size of the cells
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -153,48 +172,39 @@ public class GameFrame extends JFrame {
 
         // Add label in the panel in first row
         // This label will occupy 10% of the panel
-        addComponent(panel, scoreboard, gbc, 0, 0, 1, 1, 1, 0.1);
-
+        addComponent(panel, scoreboard, gbc, indexRow, 0, 1, 1, 1, 0.1);
+        indexRow++;
 
         // Create labels for players and their scores
-        JLabel player1 = new JLabel("- Player 1: 5 pts");
-        JLabel player2 = new JLabel("- Player 2: 3 pts");
-        JLabel player3 = new JLabel("- Player 3: 7 pts");
-        JLabel player4 = new JLabel("- Player 4: 2 pts");
-
-        // Set vertical alignment to center
-        player1.setVerticalAlignment(JLabel.CENTER);
-        player2.setVerticalAlignment(JLabel.CENTER);
-        player3.setVerticalAlignment(JLabel.CENTER);
-        player4.setVerticalAlignment(JLabel.CENTER);
-
-        // Add labels in the panel using bag constraints
-        addComponent(panel, player1, gbc, 1, 0, 1, 1, 1, 0.1);
-        addComponent(panel, player2, gbc, 2, 0, 1, 1, 1, 0.1);
-        addComponent(panel, player3, gbc, 3, 0, 1, 1, 1, 0.1);
-        addComponent(panel, player4, gbc, 4, 0, 1, 1, 1, 0.1);
-
-
-        // Create buttons to reset scroll bar and add it in the panel
-        JButton buttonResetScrollBar = new JButton("Reset scroll bar");
-        addComponent(panel, buttonResetScrollBar, gbc, 5, 0, 1, 1, 1, 0.1);
-
+        ArrayList<Player> players = gameTable.getPlayers();
+        for(Player player: players){
+            String playerUsername = player.getUsername();
+            int playerScore = player.getScore();
+            JLabel playerLabel = new JLabel("- "+ playerUsername +": "+ playerScore+ " pts");
+            playerLabel.setVerticalAlignment(JLabel.CENTER);
+            addComponent(panel, playerLabel, gbc, indexRow, 0, 1, 1, 1, 0.1);
+            indexRow++;
+        }
 
         // Create buttons to see others players' game area
-        JButton buttonPlayerArea1 = new JButton("Player 1 area");
-        JButton buttonPlayerArea2 = new JButton("Player 2 area");
-        JButton buttonPlayerArea3 = new JButton("Player 3 area");
-        JButton buttonPlayerArea4 = new JButton("Player 4 area");
+        for(Player player: players){
+            String playerUsername = player.getUsername();
+            if(!playerUsername.equals(clientPlayer.getUsername())){
+                JButton buttonPlayerArea = new JButton(playerUsername+" area");
+                // Add buttons in the panel in second row
+                // These buttons will occupy 30% of the panel
+                addComponent(panel, buttonPlayerArea, gbc, indexRow, 0, 1, 1, 1, 0.1);
+                indexRow++;
+            }
+        }
 
-        // Add buttons in the panel in second row
-        // These buttons will occupy 30% of the panel
-        addComponent(panel, buttonPlayerArea1, gbc, 6, 0, 1, 1, 1, 0.1);
-        addComponent(panel, buttonPlayerArea2, gbc, 7, 0, 1, 1, 1, 0.1);
-        addComponent(panel, buttonPlayerArea3, gbc, 8, 0, 1, 1, 1, 0.1);
-        addComponent(panel, buttonPlayerArea4, gbc, 9, 0, 1, 1, 1, 0.1);
+        // Create buttons to reset scroll bar and add it in the panel
+        // TODO: Implement listener
+        JButton buttonResetScrollBar = new JButton("Reset scroll bar");
+        addComponent(panel, buttonResetScrollBar, gbc, indexRow, 0, 1, 1, 1, 0.1);
 
         // Set panel values
-        panel.setBackground(Color.RED);
+        panel.setBackground(java.awt.Color.RED);
         panel.setOpaque(true);
         panel.setPreferredSize(new Dimension(175, 100));
 
@@ -209,28 +219,44 @@ public class GameFrame extends JFrame {
      * @author Foini Lorenzo
      */
     public JScrollPane createPanelCenter(){
+        // Get client's area
+        PlayerArea playerArea = clientPlayer.getPlayerArea();
+
         JPanel panel = new JPanel(new GridLayout(NUM_ROWS, NUM_COLS));
 
         // Add button in the grid
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
                 JButton button;
-                if(i == 39 && j == 39){
-                    // Create new button with image
-                    button = new JButton(getImageFromID(57, true,250, 100));
-                    button.setDisabledIcon(getImageFromID(57, true,250, 100));
-                } else if(i == 40 && j == 40){
-                    // Create new button with image
-                    button = new JButton(getImageFromID(82, true,250, 100));
-                    button.setDisabledIcon(getImageFromID(82, true,250, 100));
-                }else{
+
+                // Check if in position (i,j) of player's area there is a card or not
+                // If there is card => Add such card's image
+                if(playerArea.getArea()[i][j]){ // If is true => Cell is empty
                     button = new JButton("(" + i + ", " + j + ")");
+                }else{ // If is false => There is a card in such position (i,j)
+                    // Get card
+                    int[] position = new int[2];
+                    position[0] = i;
+                    position[1] = j;
+                    Card card = playerArea.getCardByPosition(position);
+
+                    // Create new button with image
+                    button = new JButton(getImageFromID(card.getID(), card.getSide(),250, 100));
+                    button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),250, 100));
                 }
-                button.setEnabled(false);
+                button.addActionListener(e -> {
+                    enableButtonsArea();
+                    enableDrawCardsButtons();
+                });
+
                 button.setPreferredSize(new Dimension(250, 100));
                 panel.add(button);
+
+                // Add the button to the list of grid buttons
+                gridButtons.add(button);
             }
         }
+        enableButtonsArea();
 
         // Create scrollbar for visualization of the game area
         JScrollPane scrollPane = new JScrollPane(panel);
@@ -250,109 +276,68 @@ public class GameFrame extends JFrame {
 
     /**
      * This method is used for creating the east panel
-     * The east panel contains the live scoreboard and buttons for view other players' game area
+     * The east panel contains the counters of the 4 resources and 3 objects
      *
      * @return the panel that will be added in the content pane
      * @author Foini Lorenzo
      */
     public JPanel createPanelEast(){
-        // Create new panel and use a GridBagLayout, so we can choose the size of the cells
+        // Create new panel for display
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
-        // Create label for resource deck top card
-        JLabel resourceDeckTopCard = new JLabel("Resource deck top card:");
-        resourceDeckTopCard.setHorizontalAlignment(JLabel.CENTER);
-        resourceDeckTopCard.setVerticalAlignment(JLabel.CENTER);
+        // Create label
+        JLabel titleLabel = new JLabel("Your resources and objects");
+        titleLabel.setHorizontalAlignment(JLabel.CENTER);
+        titleLabel.setVerticalAlignment(JLabel.CENTER);
+        // This label will occupy 10% of the panel
+        addComponent(panel, titleLabel, gbc, 0, 0, 1, 1, 1, 0.1);
 
-        // Add label in the panel in first row
-        // This label will occupy 7% of the panel
-        addComponent(panel, resourceDeckTopCard, gbc, 0, 0, 1, 1, 1, 0.07);
+        // Count number of animal kingdom
+        int counterAnimalKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.ANIMALKINGDOM);
+        JLabel animalKingdomLabel = new JLabel("- "+counterAnimalKingdom+" animal resources");
+        // This label will occupy 15% of the panel
+        addComponent(panel, animalKingdomLabel, gbc, 1, 0, 1, 1, 1, 0.15);
 
-        // Create image button for resource deck top card
-        JButton imageResourceDeckTopCard = new JButton(getImageFromID(11, false,175, 80));
-        imageResourceDeckTopCard.setEnabled(false);
-        imageResourceDeckTopCard.setDisabledIcon(getImageFromID(11, false,175, 80));
-        imageResourceDeckTopCard.setVerticalAlignment(JLabel.CENTER);
+        // Count number of fungi kingdom
+        int counterFungiKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.FUNGIKINGDOM);
+        JLabel fungiKingdomLabel = new JLabel("- "+counterFungiKingdom+" fungi resources");
+        // This label will occupy 15% of the panel
+        addComponent(panel, fungiKingdomLabel, gbc, 2, 0, 1, 1, 1, 0.15);
 
-        // Add image button in the panel in second row
-        // This image button will occupy 12% of the panel
-        addComponent(panel, imageResourceDeckTopCard, gbc, 1, 0, 1, 1, 1, 0.12);
+        // Count number of insect kingdom
+        int counterInsectKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.INSECTKINGDOM);
+        JLabel InsectKingdomLabel = new JLabel("- "+counterInsectKingdom+" insect resources");
+        // This label will occupy 15% of the panel
+        addComponent(panel, InsectKingdomLabel, gbc, 3, 0, 1, 1, 1, 0.15);
 
+        // Count number of plant kingdom
+        int counterPlantKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.PLANTKINGDOM);
+        JLabel plantKingdomLabel = new JLabel("- "+counterPlantKingdom+" plant resources");
+        // This label will occupy 15% of the panel
+        addComponent(panel, plantKingdomLabel, gbc, 4, 0, 1, 1, 1, 0.15);
 
-        // Create label for gold deck top card
-        JLabel goldDeckTopCard = new JLabel("Gold deck top card:");
-        goldDeckTopCard.setHorizontalAlignment(JLabel.CENTER);
-        goldDeckTopCard.setVerticalAlignment(JLabel.CENTER);
+        // Count number of inkwell object
+        int counterInkwellObject = clientPlayer.getPlayerArea().countObject(GameObject.INKWELL);
+        JLabel inkwellLabel = new JLabel("- "+counterInkwellObject+" inkwell objects");
+        // This label will occupy 15% of the panel
+        addComponent(panel, inkwellLabel, gbc, 5, 0, 1, 1, 1, 0.15);
 
-        // Add label in the panel in third row
-        // This label will occupy 7% of the panel
-        addComponent(panel, goldDeckTopCard, gbc, 2, 0, 1, 1, 1, 0.07);
+        // Count number of manuscript object
+        int counterManuscriptObject = clientPlayer.getPlayerArea().countObject(GameObject.MANUSCRIPT);
+        JLabel manuscriptLabel = new JLabel("- "+counterManuscriptObject+" manuscript objects");
+        // This label will occupy 15% of the panel
+        addComponent(panel, manuscriptLabel, gbc, 6, 0, 1, 1, 1, 0.15);
 
-        // Create image button for gold deck top card
-        JButton imageGoldDeckTopCard = new JButton(getImageFromID(41, false,175, 80));
-        imageGoldDeckTopCard.setEnabled(false);
-        imageGoldDeckTopCard.setDisabledIcon(getImageFromID(41, false,175, 80));
-        imageGoldDeckTopCard.setVerticalAlignment(JLabel.CENTER);
-
-        // Add image button in the panel in forth row
-        // This image button will occupy 12% of the panel
-        addComponent(panel, imageGoldDeckTopCard, gbc, 3, 0, 1, 1, 1, 0.12);
-
-
-        // Create label for visible cards in the table
-        JLabel visibleCards = new JLabel("Visible cards:");
-        visibleCards.setHorizontalAlignment(JLabel.CENTER);
-        visibleCards.setVerticalAlignment(JLabel.CENTER);
-
-        // Add label in the panel in fifth row
-        // This label will occupy 6% of the panel
-        addComponent(panel, visibleCards, gbc, 4, 0, 1, 1, 1, 0.06);
-
-        // Create image button for first visible card
-        JButton imageVisibleCard1 = new JButton(getImageFromID(23, true,175, 80));
-        imageVisibleCard1.setEnabled(false);
-        imageVisibleCard1.setDisabledIcon(getImageFromID(23, true,175, 80));
-        imageVisibleCard1.setVerticalAlignment(JLabel.CENTER);
-
-        // Add image button in the panel in sixth row
-        // This image button will occupy 14% of the panel
-        addComponent(panel, imageVisibleCard1, gbc, 5, 0, 1, 1, 1, 0.14);
-
-        // Create image button for second visible card
-        JButton imageVisibleCard2 = new JButton(getImageFromID(24, true,175, 80));
-        imageVisibleCard2.setEnabled(false);
-        imageVisibleCard2.setDisabledIcon(getImageFromID(24, true,175, 80));
-        imageVisibleCard2.setVerticalAlignment(JLabel.CENTER);
-
-        // Add image button in the panel in seventh row
-        // This image button will occupy 14% of the panel
-        addComponent(panel, imageVisibleCard2, gbc, 6, 0, 1, 1, 1, 0.14);
-
-        // Create image button for third visible card
-        JButton imageVisibleCard3 = new JButton(getImageFromID(46, true,175, 80));
-        imageVisibleCard3.setEnabled(false);
-        imageVisibleCard3.setDisabledIcon(getImageFromID(46, true,175, 80));
-        imageVisibleCard3.setVerticalAlignment(JLabel.CENTER);
-
-        // Add image button in the panel in eight row
-        // This image button will occupy 14% of the panel
-        addComponent(panel, imageVisibleCard3, gbc, 7, 0, 1, 1, 1, 0.14);
-
-        // Create image button for forth visible card
-        JButton imageVisibleCard4 = new JButton(getImageFromID(47, true,175, 80));
-        imageVisibleCard4.setEnabled(false);
-        imageVisibleCard4.setDisabledIcon(getImageFromID(47, true,175, 80));
-        imageVisibleCard4.setVerticalAlignment(JLabel.CENTER);
-
-        // Add image button in the panel in ninth row
-        // This image button will occupy 14% of the panel
-        addComponent(panel, imageVisibleCard4, gbc, 8, 0, 1, 1, 1, 0.14);
-
+        // Count number of quill object
+        int counterQuilObject = clientPlayer.getPlayerArea().countObject(GameObject.QUILL);
+        JLabel quillLabel = new JLabel("- "+counterQuilObject+" quill objects");
+        // This label will occupy 15% of the panel
+        addComponent(panel, quillLabel, gbc, 7, 0, 1, 1, 1, 0.15);
 
         // Set panel values
-        panel.setBackground(Color.YELLOW);
+        panel.setBackground(java.awt.Color.YELLOW);
         panel.setOpaque(true);
         panel.setPreferredSize(new Dimension(175, 100));
 
@@ -372,9 +357,33 @@ public class GameFrame extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
 
         // Create buttons for player's cards
-        JButton buttonCard1 = new JButton(getImageFromID(21, false,350, 120));
-        JButton buttonCard2 = new JButton(getImageFromID(23, true,350, 120));
-        JButton buttonCard3 = new JButton(getImageFromID(42, true,350, 120));
+        ArrayList<GamingCard> hand = clientPlayer.getHand();
+        JButton buttonCard1 = new JButton(getImageFromID(hand.getFirst().getID(), hand.getFirst().getSide(),350, 120));
+        buttonCard1.setDisabledIcon(getImageFromID(hand.getFirst().getID(), hand.getFirst().getSide(),350, 120));
+        buttonCard1.addActionListener(e -> {
+            buttonCard1.setIcon(getImageFromID(hand.getFirst().getID(), !hand.getFirst().getSide(), 350, 120));
+            buttonCard1.setDisabledIcon(getImageFromID(hand.getFirst().getID(), !hand.getFirst().getSide(),350, 120));
+            hand.getFirst().setSide(!hand.getFirst().getSide());
+        });
+        handCardsButtons.add(buttonCard1);
+
+        JButton buttonCard2 = new JButton(getImageFromID(hand.get(1).getID(), hand.getFirst().getSide(),350, 120));
+        buttonCard2.setDisabledIcon(getImageFromID(hand.get(1).getID(), hand.getFirst().getSide(),350, 120));
+        buttonCard2.addActionListener(e -> {
+            buttonCard2.setIcon(getImageFromID(hand.get(1).getID(), !hand.get(1).getSide(), 350, 120));
+            buttonCard2.setDisabledIcon(getImageFromID(hand.get(1).getID(), !hand.get(1).getSide(),350, 120));
+            hand.get(1).setSide(!hand.get(1).getSide());
+        });
+        handCardsButtons.add(buttonCard2);
+
+        JButton buttonCard3 = new JButton(getImageFromID(hand.getLast().getID(), hand.getFirst().getSide(),350, 120));
+        buttonCard3.setDisabledIcon(getImageFromID(hand.getLast().getID(), hand.getFirst().getSide(),350, 120));
+        buttonCard3.addActionListener(e -> {
+            buttonCard3.setIcon(getImageFromID(hand.getLast().getID(), !hand.getLast().getSide(), 350, 120));
+            buttonCard3.setDisabledIcon(getImageFromID(hand.getLast().getID(), !hand.getLast().getSide(),350, 120));
+            hand.getLast().setSide(!hand.getLast().getSide());
+        });
+        handCardsButtons.add(buttonCard3);
 
         // Add buttons in the panel in first row
         // These buttons will occupy 70% of the panel
@@ -384,8 +393,28 @@ public class GameFrame extends JFrame {
 
         // Create buttons for playing the respective card
         JButton buttonPlayCard1 = new JButton("Play card 1");
+        buttonPlayCard1.addActionListener(e -> {
+            indexCardToPlay = "0";
+            enableButtonsArea();
+            enableHandCardsButtons();
+        });
+        handCardsButtons.add(buttonPlayCard1);
+
         JButton buttonPlayCard2 = new JButton("Play card 2");
+        buttonPlayCard2.addActionListener(e -> {
+            indexCardToPlay = "1";
+            enableButtonsArea();
+            enableHandCardsButtons();
+        });
+        handCardsButtons.add(buttonPlayCard2);
+
         JButton buttonPlayCard3 = new JButton("Play card 3");
+        buttonPlayCard3.addActionListener(e -> {
+            indexCardToPlay = "2";
+            enableButtonsArea();
+            enableHandCardsButtons();
+        });
+        handCardsButtons.add(buttonPlayCard3);
 
         // Add buttons in the panel in second row
         // These buttons will occupy 30% of the panel
@@ -394,7 +423,7 @@ public class GameFrame extends JFrame {
         addComponent(panel, buttonPlayCard3, gbc, 1, 2, 1, 1, 1, 0.3);
 
         // Set panel values
-        panel.setBackground(Color.ORANGE);
+        panel.setBackground(java.awt.Color.ORANGE);
         panel.setOpaque(true);
         panel.setPreferredSize(new Dimension(150, 170));
 
@@ -446,7 +475,6 @@ public class GameFrame extends JFrame {
         else stringSide="back"; // side: false => back
 
         String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
-        //String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
         try {
             originalImage = ImageIO.read(new File(path));
         } catch (IOException e) {
@@ -458,5 +486,26 @@ public class GameFrame extends JFrame {
         imageIcon = new ImageIcon(scaledImage);
 
         return imageIcon;
+    }
+
+    private void enableButtonsArea() {
+        for (JButton button : gridButtons) {
+            button.setEnabled(enableButtonsArea);
+        }
+        enableButtonsArea = !enableButtonsArea;
+    }
+
+    private void enableHandCardsButtons() {
+        for (JButton button : handCardsButtons) {
+            button.setEnabled(enableHandCardsButtons);
+        }
+        enableHandCardsButtons = !enableHandCardsButtons;
+    }
+
+    private void enableDrawCardsButtons(){
+        for(JButton button: drawCardsButtons){
+            button.setEnabled(enableDrawCardsButtons);
+        }
+        enableDrawCardsButtons = !enableDrawCardsButtons;
     }
 }
