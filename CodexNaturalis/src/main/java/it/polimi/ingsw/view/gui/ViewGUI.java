@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.game.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -264,12 +266,6 @@ public class ViewGUI {
         return selectedColor;
     }
 
-
-    public void playgame(){
-        GameFrame gameFrame = new GameFrame("CODEX NATURALIS");
-    }
-
-
     /**
      * Method to display the starter card and get on which side the
      * player wants to play it.
@@ -435,5 +431,14 @@ public class ViewGUI {
         // TODO: Improve Frame graphics: add font, color, background, ...
         // TODO: Close the window when the game started
         return new WaitStartGameFrame("WAIT START OF THE GAME", create);
+    }
+
+    public void playgame(Player player, GameTable gameTable){
+        GameFrame gameFrame = new GameFrame("CODEX NATURALIS", player, gameTable);
+    }
+
+    public int displayDrawChoice(GameTable gameTable){
+        DrawCardFrame drawCardFrame = new DrawCardFrame("SELECT FROM WHERE YOU WANT DO DRAW", gameTable);
+        return drawCardFrame.getIndexSelectedCard();
     }
 }
