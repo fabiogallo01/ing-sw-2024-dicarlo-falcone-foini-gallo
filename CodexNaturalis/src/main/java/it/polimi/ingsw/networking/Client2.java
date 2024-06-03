@@ -1,5 +1,8 @@
 package it.polimi.ingsw.networking;
 
+import it.polimi.ingsw.model.exception.NoPlayerWithSuchUsernameException;
+import it.polimi.ingsw.model.game.*;
+import it.polimi.ingsw.view.gui.DrawCardFrame;
 import it.polimi.ingsw.view.gui.ViewGUI;
 import it.polimi.ingsw.view.gui.WaitStartGameFrame;
 
@@ -10,6 +13,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 
+import com.google.gson.Gson;
 
 /**
  * Class representing client in a client-server architecture
@@ -100,12 +104,16 @@ public class Client2 {
      * @author Fabio Gallo
      */
     private static void startGUI(PrintWriter out, BufferedReader in) throws IOException {
+        Gson gson = new Gson(); // Gson for serialization
+        GameTable gameTable = null; // Instance of gameTable
+        Player player; // Instance of player, it represents this client
         ViewGUI viewGui = new ViewGUI(); // Instance of GUI
         String response; // Messages from server
-        String username; // Client's username
+        String username = null; // Client's username
         Map<String, List<String>> joinGamesAndPlayers = new LinkedHashMap<>(); // Map of games that can be joined and their client's username
         ArrayList<String> availableColors = new ArrayList<>(); // List of available colors
         WaitStartGameFrame waitStartGame = null; // JFrame for waiting start of the game
+        String drawVisibleCardIndex = "";
 
         // Now client reads messages from server and display a window
         while ((response = in.readLine()) != null) {
@@ -194,18 +202,49 @@ public class Client2 {
                 waitStartGame = viewGui.displayWaitStartGame(false);
                 // END OF LOGIN PART
             } else if(response.equals("Game starts now.")){
+                // TODO: Create new frame for wait your turn
+            } else if(response.equals("Which card you want to play (insert 1/2/3):")){
                 // Close wait start game frame
                 if (waitStartGame != null) {
                     waitStartGame.dispose();
                 }
 
-                // Get gameTable
-                String gameTable = in.readLine();
+                // Get Json of GameTable and deserialize it
+                String gameTableJson = in.readLine();
+                gameTable = gson.fromJson(gameTableJson, GameTable.class);
 
-                System.out.println(gameTable);
+                // Get instance of player
+                try {
+                    player = gameTable.getPlayerByUsername(username);
+                } catch (NoPlayerWithSuchUsernameException e) {
+                    throw new RuntimeException(e);
+                }
 
-                viewGui.playgame();
+                // Call to viewGui method
+                viewGui.playgame(player, gameTable);
+            } else if(response.equals("Insert 1/2/3:")){
+                // Call to function for displaying draw choices
+                int index = viewGui.displayDrawChoice(gameTable);
+                switch(index){
+                    case 1:
+                    case 2:{
+                        out.println(index);
+                        break;
+                    }
+                    default:{
+                        // Client draws from visible cards in the table
+                        out.println(3);
+
+                        // Index can be 3/4/5/6, but handler except 1/2/3/4 when client draws from visible cards
+                        // => Remove two
+                        drawVisibleCardIndex = String.valueOf(index-2);
+                    }
+                }
+            } else if(response.equals("Insert the card's number (insert 1/2/3/4):")){
+                // Use string drawVisibleCardIndex created before
+                out.println(drawVisibleCardIndex);
             }
+
             //TODO implement all the rest
         }
     }
