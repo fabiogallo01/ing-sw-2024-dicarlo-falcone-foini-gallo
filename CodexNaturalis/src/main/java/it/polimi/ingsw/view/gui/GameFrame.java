@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -20,17 +21,18 @@ import java.util.ArrayList;
  * @author Falcone Giacomo, Foini Lorenzo
  */
 public class GameFrame extends JFrame {
-    final int NUM_ROWS = 81;
-    final int NUM_COLS = 81;
-    Player clientPlayer; // It represents the clients
-    GameTable gameTable; // It represents the gameTable of the match
-    String indexCardToPlay = "";
-    boolean enableButtonsArea = false;
-    ArrayList<JButton> gridButtons = new ArrayList<>();
-    boolean enableHandCardsButtons = false;
-    ArrayList<JButton> handCardsButtons = new ArrayList<>();
-    boolean enableDrawCardsButtons = false;
-    ArrayList<JButton> drawCardsButtons = new ArrayList<>();
+    private PrintWriter out;
+    private final int NUM_ROWS = 81;
+    private final int NUM_COLS = 81;
+    private Player clientPlayer; // It represents the clients
+    private GameTable gameTable; // It represents the gameTable of the match
+    private String indexCardToPlay;
+    private String sideCardToPlay;
+    private String indexRow;
+    private String indexColumn;
+    private ArrayList<JButton> gridButtons;
+    private ArrayList<JButton> handCardsImageButtons;
+    private ArrayList<JButton> handCardsSelectButtons;
 
     /**
      * GameFrame constructor, it calls method init() for initialization of frame
@@ -38,11 +40,10 @@ public class GameFrame extends JFrame {
      * @param title window's title
      * @author Foini Lorenzo
      */
-    GameFrame(String title, Player player, GameTable gameTable){
+    GameFrame(String title, PrintWriter out, Player player, GameTable gameTable){
         super(title);
-        this.clientPlayer = player;
-        this.gameTable = gameTable;
-        init();
+        this.out = out;
+        init(player, gameTable);
     }
 
     /**
@@ -50,7 +51,19 @@ public class GameFrame extends JFrame {
      *
      * @author Foini Lorenzo
      */
-    void init(){
+    void init(Player player, GameTable gameTable){
+        // Initialise parameters
+        this.clientPlayer = player;
+        this.gameTable = gameTable;
+        indexCardToPlay = "";
+        sideCardToPlay = "";
+        indexRow = "";
+        indexColumn = "";
+        gridButtons = new ArrayList<>();
+        handCardsImageButtons = new ArrayList<>();
+        handCardsSelectButtons = new ArrayList<>();
+
+
         this.setExtendedState(JFrame.MAXIMIZED_BOTH); // MAX dimension
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -244,9 +257,14 @@ public class GameFrame extends JFrame {
                     button = new JButton(getImageFromID(card.getID(), card.getSide(),250, 100));
                     button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),250, 100));
                 }
+                int finalI = i;
+                int finalJ = j;
                 button.addActionListener(e -> {
-                    enableButtonsArea();
-                    enableDrawCardsButtons();
+                    out.println(finalI);
+                    out.println(finalJ);
+                    indexRow = String.valueOf(finalI);
+                    indexColumn = String.valueOf(finalJ);
+                    enableButtons(gridButtons, false);
                 });
 
                 button.setPreferredSize(new Dimension(250, 100));
@@ -256,7 +274,7 @@ public class GameFrame extends JFrame {
                 gridButtons.add(button);
             }
         }
-        enableButtonsArea();
+        enableButtons(gridButtons, false);
 
         // Create scrollbar for visualization of the game area
         JScrollPane scrollPane = new JScrollPane(panel);
@@ -287,54 +305,54 @@ public class GameFrame extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
-        // Create label
-        JLabel titleLabel = new JLabel("Your resources and objects");
+        // Create label for resources
+        JLabel titleLabel = new JLabel("Resources and objects");
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         titleLabel.setVerticalAlignment(JLabel.CENTER);
-        // This label will occupy 10% of the panel
-        addComponent(panel, titleLabel, gbc, 0, 0, 1, 1, 1, 0.1);
+        // This label will occupy 12.5% of the panel
+        addComponent(panel, titleLabel, gbc, 0, 0, 1, 1, 1, 0.125);
 
         // Count number of animal kingdom
         int counterAnimalKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.ANIMALKINGDOM);
-        JLabel animalKingdomLabel = new JLabel("- "+counterAnimalKingdom+" animal resources");
-        // This label will occupy 15% of the panel
-        addComponent(panel, animalKingdomLabel, gbc, 1, 0, 1, 1, 1, 0.15);
+        JLabel animalKingdomLabel = new JLabel("- Animal kingdom: "+counterAnimalKingdom);
+        // This label will occupy 12.5% of the panel
+        addComponent(panel, animalKingdomLabel, gbc, 1, 0, 1, 1, 1, 0.125);
 
         // Count number of fungi kingdom
         int counterFungiKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.FUNGIKINGDOM);
-        JLabel fungiKingdomLabel = new JLabel("- "+counterFungiKingdom+" fungi resources");
-        // This label will occupy 15% of the panel
-        addComponent(panel, fungiKingdomLabel, gbc, 2, 0, 1, 1, 1, 0.15);
+        JLabel fungiKingdomLabel = new JLabel("- Fungi kingdom: "+counterFungiKingdom);
+        // This label will occupy 12.5% of the panel
+        addComponent(panel, fungiKingdomLabel, gbc, 2, 0, 1, 1, 1, 0.125);
 
         // Count number of insect kingdom
         int counterInsectKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.INSECTKINGDOM);
-        JLabel InsectKingdomLabel = new JLabel("- "+counterInsectKingdom+" insect resources");
-        // This label will occupy 15% of the panel
-        addComponent(panel, InsectKingdomLabel, gbc, 3, 0, 1, 1, 1, 0.15);
+        JLabel InsectKingdomLabel = new JLabel("- Insect kingdom: "+counterInsectKingdom);
+        // This label will occupy 12.5% of the panel
+        addComponent(panel, InsectKingdomLabel, gbc, 3, 0, 1, 1, 1, 0.125);
 
         // Count number of plant kingdom
         int counterPlantKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.PLANTKINGDOM);
-        JLabel plantKingdomLabel = new JLabel("- "+counterPlantKingdom+" plant resources");
+        JLabel plantKingdomLabel = new JLabel("- Plant kingdom: "+counterPlantKingdom);
         // This label will occupy 15% of the panel
-        addComponent(panel, plantKingdomLabel, gbc, 4, 0, 1, 1, 1, 0.15);
+        addComponent(panel, plantKingdomLabel, gbc, 4, 0, 1, 1, 1, 0.125);
 
         // Count number of inkwell object
         int counterInkwellObject = clientPlayer.getPlayerArea().countObject(GameObject.INKWELL);
-        JLabel inkwellLabel = new JLabel("- "+counterInkwellObject+" inkwell objects");
+        JLabel inkwellLabel = new JLabel("- Inkwell: "+counterInkwellObject);
         // This label will occupy 15% of the panel
-        addComponent(panel, inkwellLabel, gbc, 5, 0, 1, 1, 1, 0.15);
+        addComponent(panel, inkwellLabel, gbc, 5, 0, 1, 1, 1, 0.125);
 
         // Count number of manuscript object
         int counterManuscriptObject = clientPlayer.getPlayerArea().countObject(GameObject.MANUSCRIPT);
-        JLabel manuscriptLabel = new JLabel("- "+counterManuscriptObject+" manuscript objects");
-        // This label will occupy 15% of the panel
-        addComponent(panel, manuscriptLabel, gbc, 6, 0, 1, 1, 1, 0.15);
+        JLabel manuscriptLabel = new JLabel("- Manuscript: "+counterManuscriptObject);
+        // This label will occupy 12.5% of the panel
+        addComponent(panel, manuscriptLabel, gbc, 6, 0, 1, 1, 1, 0.125);
 
         // Count number of quill object
         int counterQuilObject = clientPlayer.getPlayerArea().countObject(GameObject.QUILL);
-        JLabel quillLabel = new JLabel("- "+counterQuilObject+" quill objects");
-        // This label will occupy 15% of the panel
-        addComponent(panel, quillLabel, gbc, 7, 0, 1, 1, 1, 0.15);
+        JLabel quillLabel = new JLabel("- Quill: "+counterQuilObject);
+        // This label will occupy 12.5% of the panel
+        addComponent(panel, quillLabel, gbc, 7, 0, 1, 1, 1, 0.125);
 
         // Set panel values
         panel.setBackground(java.awt.Color.YELLOW);
@@ -365,7 +383,7 @@ public class GameFrame extends JFrame {
             buttonCard1.setDisabledIcon(getImageFromID(hand.getFirst().getID(), !hand.getFirst().getSide(),350, 120));
             hand.getFirst().setSide(!hand.getFirst().getSide());
         });
-        handCardsButtons.add(buttonCard1);
+        handCardsImageButtons.add(buttonCard1);
 
         JButton buttonCard2 = new JButton(getImageFromID(hand.get(1).getID(), hand.getFirst().getSide(),350, 120));
         buttonCard2.setDisabledIcon(getImageFromID(hand.get(1).getID(), hand.getFirst().getSide(),350, 120));
@@ -374,7 +392,7 @@ public class GameFrame extends JFrame {
             buttonCard2.setDisabledIcon(getImageFromID(hand.get(1).getID(), !hand.get(1).getSide(),350, 120));
             hand.get(1).setSide(!hand.get(1).getSide());
         });
-        handCardsButtons.add(buttonCard2);
+        handCardsImageButtons.add(buttonCard2);
 
         JButton buttonCard3 = new JButton(getImageFromID(hand.getLast().getID(), hand.getFirst().getSide(),350, 120));
         buttonCard3.setDisabledIcon(getImageFromID(hand.getLast().getID(), hand.getFirst().getSide(),350, 120));
@@ -383,7 +401,7 @@ public class GameFrame extends JFrame {
             buttonCard3.setDisabledIcon(getImageFromID(hand.getLast().getID(), !hand.getLast().getSide(),350, 120));
             hand.getLast().setSide(!hand.getLast().getSide());
         });
-        handCardsButtons.add(buttonCard3);
+        handCardsImageButtons.add(buttonCard3);
 
         // Add buttons in the panel in first row
         // These buttons will occupy 70% of the panel
@@ -394,33 +412,57 @@ public class GameFrame extends JFrame {
         // Create buttons for playing the respective card
         JButton buttonPlayCard1 = new JButton("Play card 1");
         buttonPlayCard1.addActionListener(e -> {
+            out.println("1");
+            if(hand.getFirst().getSide()) out.println("front");
+            else out.println("back");
             indexCardToPlay = "0";
-            enableButtonsArea();
-            enableHandCardsButtons();
+            if(hand.getFirst().getSide()) sideCardToPlay = "front";
+            else sideCardToPlay = "back";
+            enableButtons(gridButtons,true);
+            enableButtons(handCardsImageButtons,false);
+            enableButtons(handCardsSelectButtons,false);
         });
-        handCardsButtons.add(buttonPlayCard1);
+        handCardsSelectButtons.add(buttonPlayCard1);
 
         JButton buttonPlayCard2 = new JButton("Play card 2");
         buttonPlayCard2.addActionListener(e -> {
+            out.println("2");
+            if(hand.get(1).getSide()) out.println("front");
+            else out.println("back");
             indexCardToPlay = "1";
-            enableButtonsArea();
-            enableHandCardsButtons();
+            if(hand.get(1).getSide()) sideCardToPlay = "front";
+            else sideCardToPlay = "back";
+            enableButtons(gridButtons,true);
+            enableButtons(handCardsImageButtons,false);
+            enableButtons(handCardsSelectButtons,false);
         });
-        handCardsButtons.add(buttonPlayCard2);
+        handCardsSelectButtons.add(buttonPlayCard2);
 
         JButton buttonPlayCard3 = new JButton("Play card 3");
         buttonPlayCard3.addActionListener(e -> {
+            out.println("3");
+            if(hand.getLast().getSide()) out.println("front");
+            else out.println("back");
             indexCardToPlay = "2";
-            enableButtonsArea();
-            enableHandCardsButtons();
+            if(hand.getLast().getSide()) sideCardToPlay = "front";
+            else sideCardToPlay = "back";
+            enableButtons(gridButtons,true);
+            enableButtons(handCardsImageButtons,false);
+            enableButtons(handCardsSelectButtons,false);
         });
-        handCardsButtons.add(buttonPlayCard3);
+        handCardsSelectButtons.add(buttonPlayCard3);
 
         // Add buttons in the panel in second row
         // These buttons will occupy 30% of the panel
         addComponent(panel, buttonPlayCard1, gbc, 1, 0, 1, 1, 1, 0.3);
         addComponent(panel, buttonPlayCard2, gbc, 1, 1, 1, 1, 1, 0.3);
         addComponent(panel, buttonPlayCard3, gbc, 1, 2, 1, 1, 1, 0.3);
+
+        // Check if is not client's turn
+        // If true => Disable select card buttons
+        if(!clientPlayer.isTurn()){
+            enableButtons(handCardsSelectButtons,false);
+        }
 
         // Set panel values
         panel.setBackground(java.awt.Color.ORANGE);
@@ -488,24 +530,31 @@ public class GameFrame extends JFrame {
         return imageIcon;
     }
 
-    private void enableButtonsArea() {
-        for (JButton button : gridButtons) {
-            button.setEnabled(enableButtonsArea);
+    private void enableButtons(ArrayList<JButton> buttons, boolean enable) {
+        for (JButton button : buttons) {
+            button.setEnabled(enable);
         }
-        enableButtonsArea = !enableButtonsArea;
     }
 
-    private void enableHandCardsButtons() {
-        for (JButton button : handCardsButtons) {
-            button.setEnabled(enableHandCardsButtons);
-        }
-        enableHandCardsButtons = !enableHandCardsButtons;
+    public ArrayList<String> returnIndexes(){
+        ArrayList<String> indexes = new ArrayList<>();
+        indexes.add(indexCardToPlay);
+        indexes.add(sideCardToPlay);
+        indexes.add(indexRow);
+        indexes.add(indexColumn);
+
+        return indexes;
     }
 
-    private void enableDrawCardsButtons(){
-        for(JButton button: drawCardsButtons){
-            button.setEnabled(enableDrawCardsButtons);
-        }
-        enableDrawCardsButtons = !enableDrawCardsButtons;
+    public void updateGameFrame(Player updatedPlayer, GameTable updatedGameTable){
+        // Remove previous components
+        this.getContentPane().removeAll();
+
+        // Update frame using method init() with updated parameters
+        init(updatedPlayer, updatedGameTable);
+
+        // Update frame
+        //this.revalidate();
+        //this.repaint();
     }
 }
