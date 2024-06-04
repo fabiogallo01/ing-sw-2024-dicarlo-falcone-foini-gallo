@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -433,8 +434,9 @@ public class ViewGUI {
         return new WaitStartGameFrame("WAIT START OF THE GAME", create);
     }
 
-    public void playgame(Player player, GameTable gameTable){
-        GameFrame gameFrame = new GameFrame("CODEX NATURALIS", player, gameTable);
+    public GameFrame playgame(PrintWriter out, Player player, GameTable gameTable){
+        GameFrame gameFrame = new GameFrame("CODEX NATURALIS", out, player, gameTable);
+        return gameFrame;
     }
 
     public int displayDrawChoice(GameTable gameTable){
