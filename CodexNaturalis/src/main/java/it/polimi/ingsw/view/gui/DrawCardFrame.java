@@ -43,7 +43,7 @@ public class DrawCardFrame extends JFrame {
     private void init(){
         // Set frame parameters
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
-        this.setSize(800, 400);
+        this.setSize(2000, 400);
         this.setLayout(new BorderLayout());
 
         // Setting custom image icon
@@ -65,6 +65,14 @@ public class DrawCardFrame extends JFrame {
 
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+
+        synchronized (lock) {
+            try {
+                lock.wait(); // Wait until user selects a card
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private JPanel createMainPanel(){
