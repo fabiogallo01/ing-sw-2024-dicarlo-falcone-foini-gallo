@@ -86,6 +86,14 @@ public class ClientHandler2 extends Thread {
 
             out.println("Game starts now.");
 
+            // Send gameTable to client is he is playing with GUI
+            if(gui){
+                GameTable gameTable = gameController.getGameTable();
+                Gson gson = new Gson();
+                String gameTableJson = gson.toJson(gameTable);
+                out.println(gameTableJson);
+            }
+
             Player player = gameController.getGameTable().getPlayerByUsername(username);
 
             while (!player.isTurn()) {//waits for your turn

@@ -3,6 +3,7 @@ package it.polimi.ingsw.networking;
 import it.polimi.ingsw.model.exception.NoPlayerWithSuchUsernameException;
 import it.polimi.ingsw.model.game.*;
 import it.polimi.ingsw.view.gui.DrawCardFrame;
+import it.polimi.ingsw.view.gui.GameFrame;
 import it.polimi.ingsw.view.gui.ViewGUI;
 import it.polimi.ingsw.view.gui.WaitStartGameFrame;
 
@@ -113,6 +114,7 @@ public class Client2 {
         Map<String, List<String>> joinGamesAndPlayers = new LinkedHashMap<>(); // Map of games that can be joined and their client's username
         ArrayList<String> availableColors = new ArrayList<>(); // List of available colors
         WaitStartGameFrame waitStartGame = null; // JFrame for waiting start of the game
+        GameFrame gameFrame = null; // JFrame with main in game view
         String drawVisibleCardIndex = "";
 
         // Now client reads messages from server and display a window
@@ -202,8 +204,6 @@ public class Client2 {
                 waitStartGame = viewGui.displayWaitStartGame(false);
                 // END OF LOGIN PART
             } else if(response.equals("Game starts now.")){
-                // TODO: Create new frame for wait your turn
-            } else if(response.equals("Which card you want to play (insert 1/2/3):")){
                 // Close wait start game frame
                 if (waitStartGame != null) {
                     waitStartGame.dispose();
@@ -221,7 +221,23 @@ public class Client2 {
                 }
 
                 // Call to viewGui method
-                viewGui.playgame(player, gameTable);
+                gameFrame = viewGui.playgame(out, player, gameTable);
+            } else if(response.equals("Which card you want to play (insert 1/2/3):")){
+                // Get Json of GameTable and deserialize it
+                String gameTableJson = in.readLine();
+                gameTable = gson.fromJson(gameTableJson, GameTable.class);
+
+                // Get instance of player
+                try {
+                    player = gameTable.getPlayerByUsername(username);
+                } catch (NoPlayerWithSuchUsernameException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // Call to gameFrame method for update the frame
+                if (gameFrame != null) {
+                    gameFrame.updateGameFrame(player, gameTable);
+                }
             } else if(response.equals("Insert 1/2/3:")){
                 // Call to function for displaying draw choices
                 int index = viewGui.displayDrawChoice(gameTable);
