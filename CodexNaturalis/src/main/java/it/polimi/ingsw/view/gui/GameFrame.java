@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.game.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +25,6 @@ public class GameFrame extends JFrame {
     private final int NUM_COLS = 81;
     private Player clientPlayer; // It represents the clients
     private GameTable gameTable; // It represents the gameTable of the match
-    private String indexCardToPlay;
-    private String sideCardToPlay;
-    private String indexRow;
-    private String indexColumn;
     private ArrayList<JButton> gridButtons;
     private ArrayList<JButton> handCardsImageButtons;
     private ArrayList<JButton> handCardsSelectButtons;
@@ -55,10 +50,6 @@ public class GameFrame extends JFrame {
         // Initialise parameters
         this.clientPlayer = player;
         this.gameTable = gameTable;
-        indexCardToPlay = "";
-        sideCardToPlay = "";
-        indexRow = "";
-        indexColumn = "";
         gridButtons = new ArrayList<>();
         handCardsImageButtons = new ArrayList<>();
         handCardsSelectButtons = new ArrayList<>();
@@ -78,11 +69,11 @@ public class GameFrame extends JFrame {
         // Call to function createPanelNorth() for creating new panel to be addend in the content pane
         JPanel panelNorth = createPanelNorth();
 
-        // Call to function createPanelWest() for creating new panel to be addend in the content pane
-        JPanel panelWest = createPanelWest();
-
         // Call to function createPanelCenter() for creating new scroll panel to be addend in the content pane
         JScrollPane scrollPaneCenter = createPanelCenter();
+
+        // Call to function createPanelWest() for creating new panel to be addend in the content pane
+        JPanel panelWest = createPanelWest(scrollPaneCenter);
 
         // Call to function createPanelEast() for creating new panel to be addend in the content pane
         JPanel panelEast = createPanelEast();
@@ -169,7 +160,7 @@ public class GameFrame extends JFrame {
      * @return the panel that will be added in the content pane
      * @author Foini Lorenzo
      */
-    public JPanel createPanelWest(){
+    public JPanel createPanelWest(JScrollPane scrollPane){
         int indexRow = 0; // Variable which represent the total number of rows added in the panel
 
         // Create new panel and use a GridBagLayout, so we can choose the size of the cells
@@ -204,6 +195,11 @@ public class GameFrame extends JFrame {
             String playerUsername = player.getUsername();
             if(!playerUsername.equals(clientPlayer.getUsername())){
                 JButton buttonPlayerArea = new JButton(playerUsername+" area");
+                // Add listener
+                buttonPlayerArea.addActionListener(e -> {
+                    new PlayerAreaFrame(playerUsername + "'s AREA", player.getPlayerArea(), NUM_ROWS, NUM_COLS);
+                });
+
                 // Add buttons in the panel in second row
                 // These buttons will occupy 30% of the panel
                 addComponent(panel, buttonPlayerArea, gbc, indexRow, 0, 1, 1, 1, 0.1);
@@ -212,9 +208,12 @@ public class GameFrame extends JFrame {
         }
 
         // Create buttons to reset scroll bar and add it in the panel
-        // TODO: Implement listener
         JButton buttonResetScrollBar = new JButton("Reset scroll bar");
         addComponent(panel, buttonResetScrollBar, gbc, indexRow, 0, 1, 1, 1, 0.1);
+        // Add listener
+        buttonResetScrollBar.addActionListener(e -> {
+            resetScrollBar(scrollPane);
+        });
 
         // Set panel values
         panel.setBackground(java.awt.Color.RED);
@@ -245,7 +244,7 @@ public class GameFrame extends JFrame {
                 // Check if in position (i,j) of player's area there is a card or not
                 // If there is card => Add such card's image
                 if(playerArea.getArea()[i][j]){ // If is true => Cell is empty
-                    button = new JButton("(" + i + ", " + j + ")");
+                    button = new JButton("( " + i + " , " + j + " )");
                 }else{ // If is false => There is a card in such position (i,j)
                     // Get card
                     int[] position = new int[2];
@@ -254,20 +253,19 @@ public class GameFrame extends JFrame {
                     Card card = playerArea.getCardByPosition(position);
 
                     // Create new button with image
-                    button = new JButton(getImageFromID(card.getID(), card.getSide(),250, 100));
-                    button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),250, 100));
+                    button = new JButton(getImageFromID(card.getID(), card.getSide(),200, 100));
+                    button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),200, 100));
                 }
                 int finalI = i;
                 int finalJ = j;
                 button.addActionListener(e -> {
                     out.println(finalI);
                     out.println(finalJ);
-                    indexRow = String.valueOf(finalI);
-                    indexColumn = String.valueOf(finalJ);
                     enableButtons(gridButtons, false);
+                    enableButtons(handCardsImageButtons,true);
                 });
 
-                button.setPreferredSize(new Dimension(250, 100));
+                button.setPreferredSize(new Dimension(200, 100));
                 panel.add(button);
 
                 // Add the button to the list of grid buttons
@@ -281,13 +279,7 @@ public class GameFrame extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        // Impost scroll bar to center: we want (40,40) to be in the center of the window
-        JViewport viewport = scrollPane.getViewport();
-        int viewWidth = viewport.getViewSize().width;
-        int viewHeight = viewport.getViewSize().height;
-        int offsetX = (viewWidth - viewport.getWidth()) / 2 - 600; // Offset for put (40,40) at center
-        int offsetY = (viewHeight - viewport.getHeight()) / 2 - 250; // Offset for put (40,40) at center
-        viewport.setViewPosition(new Point(offsetX, offsetY));
+        resetScrollBar(scrollPane);
 
         return scrollPane;
     }
@@ -374,89 +366,41 @@ public class GameFrame extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
-        // Create buttons for player's cards
+        // Create buttons for player's cards and the respective buttons
+        int indexColumn = 0;
         ArrayList<GamingCard> hand = clientPlayer.getHand();
-        JButton buttonCard1 = new JButton(getImageFromID(hand.getFirst().getID(), hand.getFirst().getSide(),350, 120));
-        buttonCard1.setDisabledIcon(getImageFromID(hand.getFirst().getID(), hand.getFirst().getSide(),350, 120));
-        buttonCard1.addActionListener(e -> {
-            buttonCard1.setIcon(getImageFromID(hand.getFirst().getID(), !hand.getFirst().getSide(), 350, 120));
-            buttonCard1.setDisabledIcon(getImageFromID(hand.getFirst().getID(), !hand.getFirst().getSide(),350, 120));
-            hand.getFirst().setSide(!hand.getFirst().getSide());
-        });
-        handCardsImageButtons.add(buttonCard1);
+        for(GamingCard card : hand){
+            JButton buttonCard = new JButton(getImageFromID(card.getID(), card.getSide(),350, 120));
+            buttonCard.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),350, 120));
+            buttonCard.addActionListener(e -> {
+                buttonCard.setIcon(getImageFromID(card.getID(), !card.getSide(), 350, 120));
+                buttonCard.setDisabledIcon(getImageFromID(card.getID(), !card.getSide(),350, 120));
+                card.setSide(!card.getSide());
+            });
+            handCardsImageButtons.add(buttonCard);
 
-        JButton buttonCard2 = new JButton(getImageFromID(hand.get(1).getID(), hand.getFirst().getSide(),350, 120));
-        buttonCard2.setDisabledIcon(getImageFromID(hand.get(1).getID(), hand.getFirst().getSide(),350, 120));
-        buttonCard2.addActionListener(e -> {
-            buttonCard2.setIcon(getImageFromID(hand.get(1).getID(), !hand.get(1).getSide(), 350, 120));
-            buttonCard2.setDisabledIcon(getImageFromID(hand.get(1).getID(), !hand.get(1).getSide(),350, 120));
-            hand.get(1).setSide(!hand.get(1).getSide());
-        });
-        handCardsImageButtons.add(buttonCard2);
+            // Add button in the panel in first row
+            // The button will occupy 70% of the panel's height
+            addComponent(panel, buttonCard, gbc, 0, indexColumn, 1, 1, 1, 0.7);
+            indexColumn++;
 
-        JButton buttonCard3 = new JButton(getImageFromID(hand.getLast().getID(), hand.getFirst().getSide(),350, 120));
-        buttonCard3.setDisabledIcon(getImageFromID(hand.getLast().getID(), hand.getFirst().getSide(),350, 120));
-        buttonCard3.addActionListener(e -> {
-            buttonCard3.setIcon(getImageFromID(hand.getLast().getID(), !hand.getLast().getSide(), 350, 120));
-            buttonCard3.setDisabledIcon(getImageFromID(hand.getLast().getID(), !hand.getLast().getSide(),350, 120));
-            hand.getLast().setSide(!hand.getLast().getSide());
-        });
-        handCardsImageButtons.add(buttonCard3);
+            // Create button for playing this card
+            int indexCard = indexColumn;
+            JButton buttonPlayCard = new JButton("Play card "+indexCard);
+            buttonPlayCard.addActionListener(e -> {
+                out.println(indexCard);
+                if(card.getSide()) out.println("front");
+                else out.println("back");
+                enableButtons(gridButtons,true);
+                enableButtons(handCardsImageButtons,false);
+                enableButtons(handCardsSelectButtons,false);
+            });
+            handCardsSelectButtons.add(buttonPlayCard);
 
-        // Add buttons in the panel in first row
-        // These buttons will occupy 70% of the panel
-        addComponent(panel, buttonCard1, gbc, 0, 0, 1, 1, 1, 0.7);
-        addComponent(panel, buttonCard2, gbc, 0, 1, 1, 1, 1, 0.7);
-        addComponent(panel, buttonCard3, gbc, 0, 2, 1, 1, 1, 0.7);
-
-        // Create buttons for playing the respective card
-        JButton buttonPlayCard1 = new JButton("Play card 1");
-        buttonPlayCard1.addActionListener(e -> {
-            out.println("1");
-            if(hand.getFirst().getSide()) out.println("front");
-            else out.println("back");
-            indexCardToPlay = "0";
-            if(hand.getFirst().getSide()) sideCardToPlay = "front";
-            else sideCardToPlay = "back";
-            enableButtons(gridButtons,true);
-            enableButtons(handCardsImageButtons,false);
-            enableButtons(handCardsSelectButtons,false);
-        });
-        handCardsSelectButtons.add(buttonPlayCard1);
-
-        JButton buttonPlayCard2 = new JButton("Play card 2");
-        buttonPlayCard2.addActionListener(e -> {
-            out.println("2");
-            if(hand.get(1).getSide()) out.println("front");
-            else out.println("back");
-            indexCardToPlay = "1";
-            if(hand.get(1).getSide()) sideCardToPlay = "front";
-            else sideCardToPlay = "back";
-            enableButtons(gridButtons,true);
-            enableButtons(handCardsImageButtons,false);
-            enableButtons(handCardsSelectButtons,false);
-        });
-        handCardsSelectButtons.add(buttonPlayCard2);
-
-        JButton buttonPlayCard3 = new JButton("Play card 3");
-        buttonPlayCard3.addActionListener(e -> {
-            out.println("3");
-            if(hand.getLast().getSide()) out.println("front");
-            else out.println("back");
-            indexCardToPlay = "2";
-            if(hand.getLast().getSide()) sideCardToPlay = "front";
-            else sideCardToPlay = "back";
-            enableButtons(gridButtons,true);
-            enableButtons(handCardsImageButtons,false);
-            enableButtons(handCardsSelectButtons,false);
-        });
-        handCardsSelectButtons.add(buttonPlayCard3);
-
-        // Add buttons in the panel in second row
-        // These buttons will occupy 30% of the panel
-        addComponent(panel, buttonPlayCard1, gbc, 1, 0, 1, 1, 1, 0.3);
-        addComponent(panel, buttonPlayCard2, gbc, 1, 1, 1, 1, 1, 0.3);
-        addComponent(panel, buttonPlayCard3, gbc, 1, 2, 1, 1, 1, 0.3);
+            // Add buttons in the panel in second row
+            // These buttons will occupy 30% of the panel
+            addComponent(panel, buttonPlayCard, gbc, 1, indexColumn-1, 1, 1, 1, 0.3);
+        }
 
         // Check if is not client's turn
         // If true => Disable select card buttons
@@ -470,6 +414,16 @@ public class GameFrame extends JFrame {
         panel.setPreferredSize(new Dimension(150, 170));
 
         return panel;
+    }
+
+    private void resetScrollBar(JScrollPane scrollPane) {
+        // Impost scroll bar to center: we want (40,40) to be in the center of the window
+        JViewport viewport = scrollPane.getViewport();
+        int viewWidth = viewport.getViewSize().width;
+        int viewHeight = viewport.getViewSize().height;
+        int offsetX = (viewWidth - viewport.getWidth()) / 2 - 600; // Offset for put (40,40) at center
+        int offsetY = (viewHeight - viewport.getHeight()) / 2 - 250; // Offset for put (40,40) at center
+        viewport.setViewPosition(new Point(offsetX, offsetY));
     }
 
     /**
@@ -534,16 +488,6 @@ public class GameFrame extends JFrame {
         for (JButton button : buttons) {
             button.setEnabled(enable);
         }
-    }
-
-    public ArrayList<String> returnIndexes(){
-        ArrayList<String> indexes = new ArrayList<>();
-        indexes.add(indexCardToPlay);
-        indexes.add(sideCardToPlay);
-        indexes.add(indexRow);
-        indexes.add(indexColumn);
-
-        return indexes;
     }
 
     public void updateGameFrame(Player updatedPlayer, GameTable updatedGameTable){
