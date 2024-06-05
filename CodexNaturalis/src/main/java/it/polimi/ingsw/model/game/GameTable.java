@@ -357,7 +357,7 @@ public class GameTable {
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.QUILL, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
-                new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
 
