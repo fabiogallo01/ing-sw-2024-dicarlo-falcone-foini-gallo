@@ -256,6 +256,8 @@ public class Client2 {
                         drawVisibleCardIndex = String.valueOf(index-2);
                     }
                 }
+            } else if(response.startsWith("\nInvalid play.")){
+                // TODO: Create new window which display to the client his error
             } else if(response.equals("Insert the card's number (insert 1/2/3/4):")){
                 // Use string drawVisibleCardIndex created before
                 out.println(drawVisibleCardIndex);
