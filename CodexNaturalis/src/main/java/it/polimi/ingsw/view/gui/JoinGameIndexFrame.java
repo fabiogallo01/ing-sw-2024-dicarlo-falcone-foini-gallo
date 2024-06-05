@@ -75,15 +75,16 @@ public class JoinGameIndexFrame extends JFrame {
             }
         }
 
-        // Add scroll pane
-        JScrollPane scrollPane = new JScrollPane(mainPanel);
-        this.add(scrollPane, BorderLayout.CENTER);
+        // Add scroll pane and add it into the frame
+        JScrollPane scrollPaneGames = new JScrollPane(mainPanel);
+        this.add(scrollPaneGames, BorderLayout.CENTER);
 
         // Create a panel, it contains the two buttons
         JPanel buttonPanel = createButtonPanel(new ArrayList<>(joinGamesAndPlayers.keySet()));
 
-        // Add button panel in the frame
-        this.add(buttonPanel, BorderLayout.SOUTH);
+        // Add scroll pane and add it into the frame
+        JScrollPane scrollPaneButtons = new JScrollPane(buttonPanel);
+        this.add(scrollPaneButtons, BorderLayout.SOUTH);
 
         this.setLocationRelativeTo(null);
         this.setVisible(true);
