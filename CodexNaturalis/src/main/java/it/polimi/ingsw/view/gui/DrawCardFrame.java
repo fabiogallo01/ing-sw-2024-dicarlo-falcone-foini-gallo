@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.cards.GamingCard;
 import it.polimi.ingsw.model.game.GameTable;
 
 import javax.imageio.ImageIO;
@@ -18,7 +19,7 @@ import java.io.IOException;
  */
 public class DrawCardFrame extends JFrame {
     private final Object lock = new Object();
-    private final int width = 200;
+    private final int width = 225;
     private final GameTable gameTable; // It represents the gameTable of the match
     private int indexSelectedCard;
 
@@ -43,7 +44,7 @@ public class DrawCardFrame extends JFrame {
     private void init(){
         // Set frame parameters
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
-        this.setSize(2000, 400);
+        this.setSize(1500, 300);
         this.setLayout(new BorderLayout());
 
         // Setting custom image icon
@@ -76,51 +77,42 @@ public class DrawCardFrame extends JFrame {
     }
 
     private JPanel createMainPanel(){
-        // Create new panel
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(2,6));
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        int indexColumn = 0;
 
-        // GET IMAGES AND ADD THEM IN THE PANEL:
+        // GET IMAGES AND BUTTONS, if they exist
+        // THEN ADD THEM IN THE PANEL
         // For doing so, call to function and pass it the image
+
         // Resource deck top card
-        addImageLabel(mainPanel, gameTable.getResourceDeck().getDeck().getLast().getID(), false);
+        if(!gameTable.getResourceDeck().getDeck().isEmpty()){
+            // Resource deck is not empty => Add image and button
+            addImageLabel(mainPanel, gameTable.getResourceDeck().getDeck().getLast().getID(), false, gbc, indexColumn);
+            addButton(mainPanel, "RESOURCE DECK TOP CARD", 1, gbc, indexColumn);
+            indexColumn++;
+        }
 
         // Gold deck top card
-        addImageLabel(mainPanel, gameTable.getGoldDeck().getDeck().getLast().getID(), false);
+        if(!gameTable.getGoldDeck().getDeck().isEmpty()){
+            // Gold deck is not empty => Add image and button
+            addImageLabel(mainPanel, gameTable.getGoldDeck().getDeck().getLast().getID(),false, gbc, indexColumn);
+            addButton(mainPanel, "GOLD DECK TOP CARD", 2, gbc, indexColumn);
+            indexColumn++;
+        }
 
-        // First visible card
-        addImageLabel(mainPanel, gameTable.getVisibleCard().getFirst().getID(), true);
-
-        // Second visible card
-        addImageLabel(mainPanel, gameTable.getVisibleCard().get(1).getID(), true);
-
-        // Third visible card
-        addImageLabel(mainPanel, gameTable.getVisibleCard().get(2).getID(), true);
-
-        // Fourth visible card
-        addImageLabel(mainPanel, gameTable.getVisibleCard().getLast().getID(), true);
-
-
-        // CREATE BUTTONS WITH LISTENERS
-        // For doing so, call to function and pass it the name of the button and what value to return
-        // Resource deck top card
-        addButton(mainPanel, "RESOURCE DECK TOP CARD", 1);
-
-        // Gold deck top card
-        addButton(mainPanel, "GOLD DECK TOP CARD", 2);
-
-        // First visible card
-        addButton(mainPanel, "VISIBLE CARD 1", 3);
-
-        // Second visible card
-        addButton(mainPanel, "VISIBLE CARD 2", 4);
-
-        // Third visible card
-        addButton(mainPanel, "VISIBLE CARD 3", 5);
-
-        // Fourth visible card
-        addButton(mainPanel, "VISIBLE CARD 4", 6);
-
+        // For loop for visible cards
+        int indexCard = 1; // Variable representing the number of the card
+        int indexVisible = 3; // Variable representing the returned value
+        for(GamingCard card: gameTable.getVisibleCard()){
+            // Add image and button for this card
+            addImageLabel(mainPanel, card.getID(), true, gbc, indexColumn);
+            addButton(mainPanel, "VISIBLE CARD "+indexCard, indexVisible, gbc, indexColumn);
+            indexColumn++;
+            indexCard++;
+            indexVisible++;
+        }
 
         return mainPanel;
     }
@@ -130,16 +122,20 @@ public class DrawCardFrame extends JFrame {
      *
      * @param panel: Panel to which to add the component.
      * @param cardId: ID of the card to add
-     * @param side: boolean representing the side of the card:
-     *              true => front, false => back
+     * @param side: Side of the card to add
+     * @param gbc: grid bag constraint
+     * @param column: Insert image in such column of the grid bag
      * @author Foini Lorenzo
      */
-    private void addImageLabel(JPanel panel, int cardId, boolean side){
-        int imageHeight = 125;
+    private void addImageLabel(JPanel panel, int cardId, boolean side, GridBagConstraints gbc, int column){
+        int imageHeight = 120;
         // Get image of the resource deck top card
-        JLabel imageLabel = new JLabel(getImageFromID(cardId, side ,width, imageHeight));
+        JLabel imageLabel = new JLabel(getImageFromID(cardId, side, width, imageHeight));
         imageLabel.setVerticalAlignment(JLabel.CENTER);
-        panel.add(imageLabel);
+
+        // Add image in the panel in first row
+        // This image will occupy 50% of the panel's height
+        addComponent(panel, imageLabel, gbc, 0, column, 1, 1, 1, 0.5);
     }
 
     /**
@@ -148,10 +144,12 @@ public class DrawCardFrame extends JFrame {
      * @param panel: Panel to which to add the component.
      * @param text: text of the button
      * @param returnedValue: value to assign to variable indexSelectedCard
+     * @param gbc: grid bag constraint
+     * @param column: Insert image in such column of the grid bag
      * @author Foini Lorenzo
      */
-    private void addButton(JPanel panel, String text, int returnedValue){
-        int buttonHeight = 25;
+    private void addButton(JPanel panel, String text, int returnedValue, GridBagConstraints gbc, int column){
+        int buttonHeight = 150;
         JButton selectButton = new JButton(text);
         selectButton.setPreferredSize(new Dimension(width, buttonHeight));
         selectButton.addActionListener(e -> {
@@ -161,7 +159,10 @@ public class DrawCardFrame extends JFrame {
                 lock.notify(); // Notify waiting thread
             }
         });
-        panel.add(selectButton);
+
+        // Add button in the panel in second row
+        // This button will occupy 50% of the panel's height
+        addComponent(panel, selectButton, gbc, 1, column, 1, 1, 1, 0.5);
     }
 
     /**
@@ -195,6 +196,31 @@ public class DrawCardFrame extends JFrame {
         imageIcon = new ImageIcon(scaledImage);
 
         return imageIcon;
+    }
+
+    /**
+     * This method is used for adding in the given JPanel a component with given constraints
+     *
+     * @param panel: Panel to which to add the component.
+     * @param comp: The component to add to the panel.
+     * @param gbc: Layout specifications for positioning and sizing the component.
+     * @param row: Row to place the component in the layout.
+     * @param col: Column to place the component in the layout.
+     * @param width: Horizontal cells the component should occupy in the layout.
+     * @param height: Vertical cells the component should occupy in the layout.
+     * @param weightx: Horizontal expansion priority of the component in the layout.
+     * @param weighty: Vertical expansion priority of the component in the layout.
+     * @author Falcone Giacomo
+     */
+    private void addComponent(JPanel panel, Component comp, GridBagConstraints gbc,
+                              int row, int col, int width, int height, double weightx, double weighty) {
+        gbc.gridx = col;
+        gbc.gridy = row;
+        gbc.gridwidth = width;
+        gbc.gridheight = height;
+        gbc.weightx = weightx;
+        gbc.weighty = weighty;
+        panel.add(comp, gbc);
     }
 
     /**
