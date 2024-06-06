@@ -434,13 +434,13 @@ public class ViewGUI {
         return new WaitStartGameFrame("WAIT START OF THE GAME", create);
     }
 
-    public GameFrame playgame(PrintWriter out, Player player, GameTable gameTable){
-        GameFrame gameFrame = new GameFrame("CODEX NATURALIS", out, player, gameTable);
+    public GameFrame playGame(PrintWriter out, Player player, GameTable gameTable, String invalidPlay, String mistakePlay){
+        GameFrame gameFrame = new GameFrame("CODEX NATURALIS", out, player, gameTable, invalidPlay, mistakePlay);
         return gameFrame;
     }
 
-    public int displayDrawChoice(GameTable gameTable){
-        DrawCardFrame drawCardFrame = new DrawCardFrame("SELECT FROM WHERE YOU WANT DO DRAW", gameTable);
+    public int displayDrawChoice(GameTable gameTable, boolean turn){
+        DrawCardFrame drawCardFrame = new DrawCardFrame("SELECT FROM WHERE YOU WANT DO DRAW", gameTable, turn);
         return drawCardFrame.getIndexSelectedCard();
     }
 }
