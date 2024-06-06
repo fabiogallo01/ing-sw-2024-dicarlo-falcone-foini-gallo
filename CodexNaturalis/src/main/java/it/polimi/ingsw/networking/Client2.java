@@ -2,7 +2,6 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.exception.NoPlayerWithSuchUsernameException;
 import it.polimi.ingsw.model.game.*;
-import it.polimi.ingsw.view.gui.DrawCardFrame;
 import it.polimi.ingsw.view.gui.GameFrame;
 import it.polimi.ingsw.view.gui.ViewGUI;
 import it.polimi.ingsw.view.gui.WaitStartGameFrame;
@@ -106,7 +105,7 @@ public class Client2 {
      */
     private static void startGUI(PrintWriter out, BufferedReader in) throws IOException {
         Gson gson = new Gson(); // Gson for serialization
-        GameTable gameTable = null; // Instance of gameTable
+        GameTable gameTable; // Instance of gameTable
         Player player; // Instance of player, it represents this client
         ViewGUI viewGui = new ViewGUI(); // Instance of GUI
         String response; // Messages from server
@@ -116,6 +115,8 @@ public class Client2 {
         WaitStartGameFrame waitStartGame = null; // JFrame for waiting start of the game
         GameFrame gameFrame = null; // JFrame with main in game view
         String drawVisibleCardIndex = "";
+        String invalidPlay = "";
+        String mistakePlay = "";
 
         // Now client reads messages from server and display a window
         while ((response = in.readLine()) != null) {
@@ -209,38 +210,38 @@ public class Client2 {
                     waitStartGame.dispose();
                 }
 
-                // Get Json of GameTable and deserialize it
-                String gameTableJson = in.readLine();
-                gameTable = gson.fromJson(gameTableJson, GameTable.class);
-
-                // Get instance of player
-                try {
-                    player = gameTable.getPlayerByUsername(username);
-                } catch (NoPlayerWithSuchUsernameException e) {
-                    throw new RuntimeException(e);
-                }
+                // Get gui and player instances
+                gameTable = getGui(in,gson);
+                player = getPlayer(gameTable, username);
 
                 // Call to viewGui method
-                gameFrame = viewGui.playgame(out, player, gameTable);
+                gameFrame = viewGui.playGame(out, player, gameTable, invalidPlay, mistakePlay);
             } else if(response.equals("Which card you want to play (insert 1/2/3):")){
-                // Get Json of GameTable and deserialize it
-                String gameTableJson = in.readLine();
-                gameTable = gson.fromJson(gameTableJson, GameTable.class);
-
-                // Get instance of player
-                try {
-                    player = gameTable.getPlayerByUsername(username);
-                } catch (NoPlayerWithSuchUsernameException e) {
-                    throw new RuntimeException(e);
-                }
+                // Get gui and player instances
+                gameTable = getGui(in,gson);
+                player = getPlayer(gameTable, username);
 
                 // Call to gameFrame method for update the frame
                 if (gameFrame != null) {
-                    gameFrame.updateGameFrame(player, gameTable);
+                    gameFrame.updateGameFrame(player, gameTable, invalidPlay, mistakePlay);
                 }
+            } else if(response.startsWith("Invalid play.")){
+                // Get mistake
+                invalidPlay = in.readLine();
+                mistakePlay = in.readLine();
             } else if(response.equals("Insert 1/2/3:")){
+                // Update GUI
+                // Get gui and player instances
+                gameTable = getGui(in,gson);
+                player = getPlayer(gameTable, username);
+
+                // Call to gameFrame method for update the frame
+                if (gameFrame != null) {
+                    gameFrame.updateGameFrame(player, gameTable, invalidPlay, mistakePlay);
+                }
+
                 // Call to function for displaying draw choices
-                int index = viewGui.displayDrawChoice(gameTable);
+                int index = viewGui.displayDrawChoice(gameTable, true);
                 switch(index){
                     case 1:
                     case 2:{
@@ -256,14 +257,40 @@ public class Client2 {
                         drawVisibleCardIndex = String.valueOf(index-2);
                     }
                 }
-            } else if(response.startsWith("\nInvalid play.")){
-                // TODO: Create new window which display to the client his error
             } else if(response.equals("Insert the card's number (insert 1/2/3/4):")){
                 // Use string drawVisibleCardIndex created before
                 out.println(drawVisibleCardIndex);
+            } else if(response.equals("You have correctly play your turn.")){
+                // Get gui and player instances
+                gameTable = getGui(in,gson);
+                player = getPlayer(gameTable, username);
+                player.setTurn(false);
+
+                // Call to gameFrame method for update the frame
+                if (gameFrame != null) {
+                    gameFrame.updateGameFrame(player, gameTable, invalidPlay, mistakePlay);
+                }
             }
 
             //TODO implement all the rest
         }
+    }
+
+    private static GameTable getGui(BufferedReader in, Gson gson) throws IOException {
+        // Get Json of GameTable and deserialize it
+        String gameTableJson = in.readLine();
+        return gson.fromJson(gameTableJson, GameTable.class);
+    }
+
+    private static Player getPlayer(GameTable gameTable, String username){
+        // Get instance of player
+        Player player;
+        try {
+            player = gameTable.getPlayerByUsername(username);
+        } catch (NoPlayerWithSuchUsernameException e) {
+            throw new RuntimeException(e);
+        }
+
+        return player;
     }
 }
