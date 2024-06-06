@@ -88,10 +88,7 @@ public class ClientHandler2 extends Thread {
 
             // Send gameTable to client is he is playing with GUI
             if(gui){
-                GameTable gameTable = gameController.getGameTable();
-                Gson gson = new Gson();
-                String gameTableJson = gson.toJson(gameTable);
-                out.println(gameTableJson);
+                updateGui();
             }
 
             Player player = gameController.getGameTable().getPlayerByUsername(username);
@@ -494,10 +491,7 @@ public class ClientHandler2 extends Thread {
 
         // Send gameTable to client is he is playing with GUI
         if(gui){
-            GameTable gameTable = gameController.getGameTable();
-            Gson gson = new Gson();
-            String gameTableJson = gson.toJson(gameTable);
-            out.println(gameTableJson);
+            updateGui();
         }
 
         String stringPositionCardHand = in.readLine();
@@ -543,7 +537,7 @@ public class ClientHandler2 extends Thread {
         } catch (NoPlayerWithSuchUsernameException | InvalidPlayCardIndexException | InvalidPositionAreaException |
                  InvalidPlayException e) {
             // An error has occur
-            out.println("\nInvalid play." + e.getMessage());
+            out.println("\nInvalid play.\n" + e.getMessage());
             out.println("Now you will be asked to insert again all the information.\n");
 
             // Recall this function for ask again all the information
@@ -574,6 +568,12 @@ public class ClientHandler2 extends Thread {
         // Ask user's choice
         out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
         out.println("Insert 1/2/3:");
+
+        // Send update message to GUI
+        if(gui){
+            updateGui();
+        }
+
         String stringChoice = in.readLine();
 
         // Check user input
@@ -674,6 +674,7 @@ public class ClientHandler2 extends Thread {
 
     public void sendFinishTurnMessage() {
         out.println("You have correctly play your turn.");
+        if(gui) updateGui();
     }
 
     public void sendWaitTurnMessage() {
@@ -748,5 +749,12 @@ public class ClientHandler2 extends Thread {
             return "rd: ";
         }
         return "th: ";
+    }
+
+    private void updateGui(){
+        GameTable gameTable = gameController.getGameTable();
+        Gson gson = new Gson();
+        String gameTableJson = gson.toJson(gameTable);
+        out.println(gameTableJson);
     }
 }
