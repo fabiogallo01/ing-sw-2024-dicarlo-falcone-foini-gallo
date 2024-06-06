@@ -22,17 +22,21 @@ public class DrawCardFrame extends JFrame {
     private final int width = 225;
     private final GameTable gameTable; // It represents the gameTable of the match
     private int indexSelectedCard;
+    private final boolean turn;
 
     /**
      * DrawCardFrame constructor, it calls method init() for initialization of frame
      *
      * @param title window's title
      * @param gameTable game table
+     * @param turn: If true => It's player's turn
+     *              If false => IT's not player's turn
      * @author Foini Lorenzo
      */
-    DrawCardFrame(String title, GameTable gameTable){
+    DrawCardFrame(String title, GameTable gameTable, boolean turn){
         super(title);
         this.gameTable = gameTable;
+        this.turn = turn;
         init();
     }
 
@@ -56,9 +60,12 @@ public class DrawCardFrame extends JFrame {
         }
 
         // Create label with question and add it in the frame
-        JLabel label = new JLabel("Select which card you want to draw");
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(label, BorderLayout.NORTH);
+        JLabel informationLabel;
+        if(turn) informationLabel = new JLabel("Select which card you want to draw");
+        else informationLabel = new JLabel("These cards represent: top card of resource and gold deck, visible cards in table");
+
+        informationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.add(informationLabel, BorderLayout.NORTH);
 
         // Call to function for create main panel
         JPanel mainPanel = createMainPanel();
@@ -67,11 +74,14 @@ public class DrawCardFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
-        synchronized (lock) {
-            try {
-                lock.wait(); // Wait until user selects a card
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+        // If it's player's turn, then wait until he selects a card to draw
+        if(turn){
+            synchronized (lock) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -90,7 +100,9 @@ public class DrawCardFrame extends JFrame {
         if(!gameTable.getResourceDeck().getDeck().isEmpty()){
             // Resource deck is not empty => Add image and button
             addImageLabel(mainPanel, gameTable.getResourceDeck().getDeck().getLast().getID(), false, gbc, indexColumn);
-            addButton(mainPanel, "RESOURCE DECK TOP CARD", 1, gbc, indexColumn);
+            if(turn){
+                addButton(mainPanel, "RESOURCE DECK TOP CARD", 1, gbc, indexColumn);
+            }
             indexColumn++;
         }
 
@@ -98,7 +110,9 @@ public class DrawCardFrame extends JFrame {
         if(!gameTable.getGoldDeck().getDeck().isEmpty()){
             // Gold deck is not empty => Add image and button
             addImageLabel(mainPanel, gameTable.getGoldDeck().getDeck().getLast().getID(),false, gbc, indexColumn);
-            addButton(mainPanel, "GOLD DECK TOP CARD", 2, gbc, indexColumn);
+            if(turn){
+                addButton(mainPanel, "GOLD DECK TOP CARD", 2, gbc, indexColumn);
+            }
             indexColumn++;
         }
 
@@ -108,7 +122,9 @@ public class DrawCardFrame extends JFrame {
         for(GamingCard card: gameTable.getVisibleCard()){
             // Add image and button for this card
             addImageLabel(mainPanel, card.getID(), true, gbc, indexColumn);
-            addButton(mainPanel, "VISIBLE CARD "+indexCard, indexVisible, gbc, indexColumn);
+            if(turn){
+                addButton(mainPanel, "VISIBLE CARD "+indexCard, indexVisible, gbc, indexColumn);
+            }
             indexColumn++;
             indexCard++;
             indexVisible++;
