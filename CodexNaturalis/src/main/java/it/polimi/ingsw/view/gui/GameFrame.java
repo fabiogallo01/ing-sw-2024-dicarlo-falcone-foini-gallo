@@ -28,6 +28,9 @@ public class GameFrame extends JFrame {
     private ArrayList<JButton> gridButtons;
     private ArrayList<JButton> handCardsImageButtons;
     private ArrayList<JButton> handCardsSelectButtons;
+    private JLabel errorLabel;
+    private String invalidPlay;
+    private String mistakePlay;
 
     /**
      * GameFrame constructor, it calls method init() for initialization of frame
@@ -35,9 +38,11 @@ public class GameFrame extends JFrame {
      * @param title window's title
      * @author Foini Lorenzo
      */
-    GameFrame(String title, PrintWriter out, Player player, GameTable gameTable){
+    GameFrame(String title, PrintWriter out, Player player, GameTable gameTable, String invalidPlay, String mistakePlay){
         super(title);
         this.out = out;
+        this.invalidPlay = invalidPlay;
+        this.mistakePlay = mistakePlay;
         init(player, gameTable);
     }
 
@@ -145,6 +150,40 @@ public class GameFrame extends JFrame {
         addComponent(panel, imageCommonObjective2, gbc, 1, 1, 1, 1, 1, 0.7);
         addComponent(panel, imageSecretObjective, gbc, 1, 2, 1, 1, 1, 0.7);
 
+        // Create label which indicates if it is client's turn
+        JLabel turnLabel;
+        if(clientPlayer.isTurn()){
+            turnLabel = new JLabel("IT'S YOUR TURN, PLEASE PLAY THE GAME");
+            enableButtons(handCardsSelectButtons,false);
+        } else{
+            turnLabel = new JLabel("IT'S NOT YOUR TURN, PLEASE WAIT");
+        }
+        // Set horizontal and vertical alignment to center
+        turnLabel.setHorizontalAlignment(JLabel.CENTER);
+        turnLabel.setVerticalAlignment(JLabel.CENTER);
+        // Add turn label in the panel in first row and fourth column
+        // These labels will occupy 30% of the panel
+        addComponent(panel, turnLabel, gbc, 0, 3, 1, 1, 1, 0.3);
+
+        // Assign error label: it contains player's error when he does an invalid play
+        if(invalidPlay.isEmpty() && mistakePlay.isEmpty()) errorLabel = new JLabel("NO ERROR WHILE PLAYING");
+        else{
+            // errorLabel is now a multi-lines text, so use HTML for creating such label
+            // Need also to set text-align
+            String multiLineText = "<html><div style='text-align: center;'>"+invalidPlay+"<br>"+mistakePlay+"</div></html>";
+            errorLabel = new JLabel(multiLineText);
+        }
+        // Set horizontal and vertical alignment to center
+        errorLabel.setHorizontalAlignment(JLabel.CENTER);
+        errorLabel.setVerticalAlignment(JLabel.CENTER);
+        // Add turn label in the panel in second row and fourth column
+        // These labels will occupy 70% of the panel
+        addComponent(panel, errorLabel, gbc, 1, 3, 1, 1, 1, 0.7);
+
+        if(!clientPlayer.isTurn()){
+            enableButtons(handCardsSelectButtons,false);
+        }
+
         // Set panel values
         panel.setBackground(java.awt.Color.CYAN);
         panel.setOpaque(true);
@@ -209,11 +248,21 @@ public class GameFrame extends JFrame {
 
         // Create buttons to reset scroll bar and add it in the panel
         JButton buttonResetScrollBar = new JButton("Reset scroll bar");
-        addComponent(panel, buttonResetScrollBar, gbc, indexRow, 0, 1, 1, 1, 0.1);
         // Add listener
         buttonResetScrollBar.addActionListener(e -> {
             resetScrollBar(scrollPane);
         });
+        addComponent(panel, buttonResetScrollBar, gbc, indexRow, 0, 1, 1, 1, 0.1);
+        indexRow++;
+
+        // Create button for looking at the deck and visible cards
+        JButton drawButton = new JButton("Draw");
+        drawButton.addActionListener(e -> {
+            new DrawCardFrame("AFTER THE PLAY, YOU CAN DRAW ONE OF THESE CARDS", gameTable, false);
+        });
+        // Add draw button in the panel in second row and fourth column
+        // These labels will occupy 10% of the panel
+        addComponent(panel, drawButton, gbc, indexRow, 0, 1, 1, 1, 0.1);
 
         // Set panel values
         panel.setBackground(java.awt.Color.RED);
@@ -402,9 +451,9 @@ public class GameFrame extends JFrame {
             addComponent(panel, buttonPlayCard, gbc, 1, indexColumn-1, 1, 1, 1, 0.3);
         }
 
-        // Check if is not client's turn
+        // Check if is not client's turn or if the player has already played a card
         // If true => Disable select card buttons
-        if(!clientPlayer.isTurn()){
+        if(!clientPlayer.isTurn() || hand.size()!=3){
             enableButtons(handCardsSelectButtons,false);
         }
 
@@ -490,7 +539,11 @@ public class GameFrame extends JFrame {
         }
     }
 
-    public void updateGameFrame(Player updatedPlayer, GameTable updatedGameTable){
+    public void updateGameFrame(Player updatedPlayer, GameTable updatedGameTable, String invalidPlay, String mistakePlay){
+        // Update string for error while playing
+        this.invalidPlay = invalidPlay;
+        this.mistakePlay = mistakePlay;
+
         // Remove previous components
         this.getContentPane().removeAll();
 
