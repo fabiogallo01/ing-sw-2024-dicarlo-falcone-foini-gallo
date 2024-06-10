@@ -328,7 +328,13 @@ public class GameFrame extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        resetScrollBar(scrollPane);
+        // Set scroll bar to center: we want (40,40) to be in the center of the window
+        JViewport viewport = scrollPane.getViewport();
+        int viewWidth = viewport.getViewSize().width;
+        int viewHeight = viewport.getViewSize().height;
+        int offsetX = (viewWidth - viewport.getWidth()) / 2 - 600; // Offset for put (40,40) at center
+        int offsetY = (viewHeight - viewport.getHeight()) / 2 - 250; // Offset for put (40,40) at center
+        viewport.setViewPosition(new Point(offsetX, offsetY));
 
         return scrollPane;
     }
@@ -470,8 +476,8 @@ public class GameFrame extends JFrame {
         JViewport viewport = scrollPane.getViewport();
         int viewWidth = viewport.getViewSize().width;
         int viewHeight = viewport.getViewSize().height;
-        int offsetX = (viewWidth - viewport.getWidth()) / 2 - 600; // Offset for put (40,40) at center
-        int offsetY = (viewHeight - viewport.getHeight()) / 2 - 250; // Offset for put (40,40) at center
+        int offsetX = (viewWidth - viewport.getWidth()) / 2; // Offset for put (40,40) at center
+        int offsetY = (viewHeight - viewport.getHeight()) / 2; // Offset for put (40,40) at center
         viewport.setViewPosition(new Point(offsetX, offsetY));
     }
 
