@@ -117,6 +117,8 @@ public class Client2 {
         String drawVisibleCardIndex = "";
         String invalidPlay = "";
         String mistakePlay = "";
+        String winnerMessage = "";
+        boolean hasWon = false;
 
         // Now client reads messages from server and display a window
         while ((response = in.readLine()) != null) {
@@ -175,8 +177,6 @@ public class Client2 {
                 // Call to viewGui method
                 out.println(viewGui.displayStarterCard(starterCardID));
             } else if(response.equals("Select your secret objective card (insert 1/2):")){
-                // TODO: Add parameters for getting ids of starter card, hand and common objectives
-
                 // Get starter card side
                 String starterCardSide = in.readLine();
 
@@ -197,14 +197,18 @@ public class Client2 {
                 secretObjectiveCardIDs[1] = Integer.parseInt(in.readLine());
 
                 // Call to viewGui method
-                out.println(viewGui.displayObjectiveCards(starterCardSide, starterCardID, handCardIDs, commonObjectiveCardIDs, secretObjectiveCardIDs));
+                out.println(viewGui.displayObjectiveCards(starterCardSide, starterCardID, handCardIDs,
+                            commonObjectiveCardIDs, secretObjectiveCardIDs));
             } else if(response.equals("Game created. Waiting for players...")){
                 viewGui.displayWaitStartGame(true);
-                // END OF LOGIN PART
             } else if(response.equals("Joined a game. Waiting for players...")){
                 waitStartGame = viewGui.displayWaitStartGame(false);
+
                 // END OF LOGIN PART
+
             } else if(response.equals("Game starts now.")){
+                // START OF GAME PHASE: PLAY CARDS AND DRAWS
+
                 // Close wait start game frame
                 if (waitStartGame != null) {
                     waitStartGame.dispose();
@@ -270,9 +274,28 @@ public class Client2 {
                 if (gameFrame != null) {
                     gameFrame.updateGameFrame(player, gameTable, invalidPlay, mistakePlay);
                 }
-            }
 
-            //TODO implement all the rest
+                // END OF GAME PHASE
+
+            } else if(response.contains("THE WINNER")){
+                // START OF POST-GAME PHASE
+                winnerMessage = response;
+                System.out.println(winnerMessage);
+            } else if(response.equals("CONGRATULATIONS, YOU WON!!!")){
+                hasWon = true;
+            } else if(response.equals("SORRY, YOU LOST.")){
+                hasWon = false;
+            } else if(response.equals("Final scoreboard:")){
+                ArrayList<String> finalScoreboard = new ArrayList<>();
+                // Get messages from server with the final scoreboard as a string
+                // Add each message in the list
+                while(response.equals("Final scoreboard:") || response.contains("1st") ||
+                      response.contains("2nd") || response.contains("3rd") || response.contains("4th")){
+                    finalScoreboard.add(response);
+                    response = in.readLine();
+                }
+                viewGui.displayPostGame(winnerMessage, hasWon, finalScoreboard);
+            }
         }
     }
 

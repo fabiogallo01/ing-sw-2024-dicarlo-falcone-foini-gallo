@@ -708,24 +708,24 @@ public class ClientHandler2 extends Thread {
             out.print("THE WINNERS ARE ... ");
         }
 
-        for (Player winner : winners) {
-            out.print(winner.getUsername() + " ");
-            if (winner.getUsername().equals(username)) {
-                hasWon = true;
-            }
+        for(int i = 0; i < winners.size(); i++){
+            String winnerUsername = winners.get(i).getUsername();
+            if(i == winners.size()-1) out.println(winnerUsername+"\n");
+            else out.print(winnerUsername + ", ");
+            if(winnerUsername.equals(username)) hasWon = true;
         }
 
         // Send message to show if the player has won or lost
         if (hasWon) {
-            out.println("\nCONGRATULATIONS, YOU WON!!!");
+            out.println("CONGRATULATIONS, YOU WON!!!\n");
         } else {
-            out.println("\nSORRY, YOU LOST.");
+            out.println("SORRY, YOU LOST.\n");
         }
     }
 
     public void sendLeaderboardMessage(LinkedHashMap<Player, Integer> leaderboard) {
         // Send final leaderboard message
-        out.println("\nFinal scoreboard:");
+        out.println("Final scoreboard:");
 
         // If a player has a different score respect to the last one, then "update" his final position.
         int current_index = 1;

@@ -128,4 +128,8 @@ public class ViewGUI {
         DrawCardFrame drawCardFrame = new DrawCardFrame("SELECT FROM WHERE YOU WANT DO DRAW", gameTable, turn);
         return drawCardFrame.getIndexSelectedCard();
     }
+
+    public void displayPostGame(String winnerMessage, boolean hasWon, ArrayList<String> finalScoreboard){
+        new PostGameFrame("END GAME", winnerMessage, hasWon, finalScoreboard);
+    }
 }
