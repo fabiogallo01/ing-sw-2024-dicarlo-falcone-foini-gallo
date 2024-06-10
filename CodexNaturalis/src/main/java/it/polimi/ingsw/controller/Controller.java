@@ -18,6 +18,7 @@ public class Controller {
     private final ViewTUI viewTui;
     private final ArrayList<String> availableColors = new ArrayList<>();
     private int ready = 0;
+    private boolean calculateFinalPoints = true;
 
 
     public int getReady() {
@@ -129,20 +130,24 @@ public class Controller {
      * @author Fabio Gallo
      */
     public void calculateFinalPoints(){
-        //calculate objective points and sum them to their actual points
-        ArrayList<Player> players = gameTable.getPlayers();
-        Player player;
-        for(int i=0; i<gameTable.getNumPlayers(); i++) {
-            // Get player
-            player = players.get(i);
-            // Get score
-            int points = player.getScore();
-            points += player.calculateObjectivePoints(gameTable.getCommonObjectives());
-            try {
-                player.setScore(points);
-            } catch (NegativeScoreException e) {
-                throw new RuntimeException(e);
+        // Calculate the final points if the respective parameter is true, otherwise not calculate final points
+        if(calculateFinalPoints){
+            //calculate objective points and sum them to their actual points
+            ArrayList<Player> players = gameTable.getPlayers();
+            Player player;
+            for(int i=0; i<gameTable.getNumPlayers(); i++) {
+                // Get player
+                player = players.get(i);
+                // Get score
+                int points = player.getScore();
+                points += player.calculateObjectivePoints(gameTable.getCommonObjectives());
+                try {
+                    player.setScore(points);
+                } catch (NegativeScoreException e) {
+                    throw new RuntimeException(e);
+                }
             }
+            calculateFinalPoints = false;
         }
     }
 
