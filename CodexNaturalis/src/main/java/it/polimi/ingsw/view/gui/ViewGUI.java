@@ -24,247 +24,35 @@ import java.util.List;
  */
 public class ViewGUI {
 
-    private static int numPlayers = 0; // number of players counter
-    private static String username; // Client username
-    private static String selectedColor; // Client selected color
-
     public String displayNumberPlayer(){
-        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
-        // TODO: Move code in a new class and call it like this:
-        /*
+        // TODO: Improve Frame graphics: add font, color, background, ...
         // See other classes in gui package for example and better understanding
-        NumPlayersFrame numPlayersFrame = new NumPlayersFrame("Select number of players");
-        return numPlayersFrame.getNumPlayers(); // As to be returned as a string
-        */
-
-        // Creazione del frame principale
-        JFrame frame = new JFrame("SELECT NUMBER OF PLAYER");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(400, 100);
-        frame.setLayout(new BorderLayout());
-
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
-            frame.setIconImage(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Creazione del pannello per l'input
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
-
-        // Etichetta per il menu a tendina
-        JLabel label = new JLabel("Numero di Giocatori:");
-
-        // Menu a tendina per la selezione del numero di giocatori
-        Integer[] playerNumbers = {2, 3, 4};
-        JComboBox<Integer> comboBox = new JComboBox<>(playerNumbers);
-
-        // Aggiunta dell'etichetta e del menu a tendina al pannello
-        panel.add(label);
-        panel.add(comboBox);
-
-        // Creazione del pulsante per inviare l'input
-        JButton button = new JButton("Invia");
-
-        // Aggiunta del pannello e del pulsante al frame
-        frame.add(panel, BorderLayout.CENTER);
-        frame.add(button, BorderLayout.SOUTH);
-
-        // Creazione di un'etichetta per mostrare il numero di giocatori
-        JLabel resultLabel = new JLabel("", SwingConstants.CENTER);
-        frame.add(resultLabel, BorderLayout.NORTH);
-
-        // Aggiunta di un listener al pulsante per gestire l'evento di clic
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Recupero del numero selezionato dal menu a tendina
-                numPlayers = (Integer) comboBox.getSelectedItem();
-                frame.dispose();
-                synchronized (frame) {
-                    frame.notify();
-                }
-            }
-        });
-
-        // Rendere visibile il frame
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        synchronized (frame){
-            try{
-                frame.wait();
-            } catch (InterruptedException ex){
-                ex.printStackTrace();
-            }
-        }
-
-        return String.valueOf(numPlayers);
+        NumPlayersFrame numPlayersFrame = new NumPlayersFrame("SELECT NUMBER OF PLAYERS");
+        return numPlayersFrame.getSelectedNumPlayers();
     }
 
     public String displayUsername(){
-        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
-        // TODO: Move code in a new class and call it like this:
-        /*
-        // See other classes in gui package for example and better understanding
-        // Add a boolean parameter repeated so:
-        // If true => first username was not valid, so show a new label which says "Sorry, that username is already used"
-        // If false => Do not show that label
-        GetUsernameFrame getUsernameFrame = new GetUsernameFrame("Insert username", repeated);
-        return getUsernameFrame.getUsername();
-        */
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        AskUsernameFrame askUsernameFrame = new AskUsernameFrame("INSERT USERNAME");
+        return askUsernameFrame.getUsername();
+    }
 
-        // Creazione del frame principale
-        JFrame frame = new JFrame("INSERT YOUR USERNAME");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-        frame.setLayout(new BorderLayout());
-
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
-            frame.setIconImage(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
-        frame.setContentPane(backgroundPanel);
-
-        // Creazione del pannello per l'input
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
-
-        // Etichetta per il campo di testo
-        JLabel label = new JLabel("Nome:");
-
-        // Campo di testo per l'inserimento del nome
-        JTextField textField = new JTextField(15);
-
-        // Aggiunta dell'etichetta e del campo di testo al pannello
-        panel.add(label);
-        panel.add(textField);
-
-        // Creazione del pulsante per inviare l'input
-        JButton button = new JButton("Invia");
-
-        // Aggiunta del pannello e del pulsante al frame
-        frame.add(panel, BorderLayout.CENTER);
-        frame.add(button, BorderLayout.SOUTH);
-
-        // Creazione di un'etichetta per mostrare il nome inserito
-        JLabel resultLabel = new JLabel("", SwingConstants.CENTER);
-        frame.add(resultLabel, BorderLayout.NORTH);
-
-        // Aggiunta di un listener al pulsante per gestire l'evento di clic
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Recupero del testo dal campo di testo
-                username = textField.getText().trim();
-                frame.dispose();
-                synchronized (frame) {
-                    frame.notify();
-                }
-            }
-        });
-
-        // Rendere visibile il frame
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        synchronized (frame){
-            try{
-                frame.wait();
-            } catch (InterruptedException ex){
-                ex.printStackTrace();
-            }
-        }
-
-        return username;
+    public String displayRepeatedUsername(String previousUsername){
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        AskUsernameFrame askValidUsernameFrame = new AskUsernameFrame("INSERT VALID USERNAME", previousUsername);
+        return askValidUsernameFrame.getUsername();
     }
 
     public String displayColor(ArrayList<String> colors){
-        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
-        // TODO: Move code in a new class and call it like this:
-        /*
-        // See other classes in gui package for example and better understanding
-        // Add a boolean parameter repeated so:
-        // If true => color was not valid, so show a new label which says "Sorry, that color is already used"
-        // If false => Do not show that label
-        GetColorFrame getColorFrame = new GetColorFrame("Insert color", repeated);
-        return getColorFrame.getColor(); // where color is parameter of the class, representing client color
-        */
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        AskColorFrame getColorFrame = new AskColorFrame("INSERT COLOR", colors);
+        return getColorFrame.getSelectedColor();
+    }
 
-        // Creazione del frame principale
-        JFrame frame = new JFrame("SELECT YOUR COLOR");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 150);
-        frame.setLayout(new BorderLayout());
-
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
-            frame.setIconImage(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Creazione del pannello per l'input
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
-
-        // Etichetta per il menu a tendina
-        JLabel label = new JLabel("Scegli un Colore:");
-
-        // Menu a tendina per la selezione del colore
-        JComboBox<String> comboBox = new JComboBox<>(colors.toArray(new String[0]));
-
-        // Aggiunta dell'etichetta e del menu a tendina al pannello
-        panel.add(label);
-        panel.add(comboBox);
-
-        // Creazione del pulsante per inviare l'input
-        JButton button = new JButton("Invia");
-
-        // Aggiunta del pannello e del pulsante al frame
-        frame.add(panel, BorderLayout.CENTER);
-        frame.add(button, BorderLayout.SOUTH);
-
-        // Creazione di un'etichetta per mostrare il colore selezionato
-        JLabel resultLabel = new JLabel("", SwingConstants.CENTER);
-        frame.add(resultLabel, BorderLayout.NORTH);
-
-        // Aggiunta di un listener al pulsante per gestire l'evento di clic
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Recupero del testo dal campo di testo
-                selectedColor = (String) comboBox.getSelectedItem();
-                frame.dispose();
-                synchronized (frame) {
-                    frame.notify();
-                }
-            }
-        });
-
-        // Rendere visibile il frame
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        synchronized (frame){
-            try{
-                frame.wait();
-            } catch (InterruptedException ex){
-                ex.printStackTrace();
-            }
-        }
-
-        return selectedColor;
+    public String displayInvalidColor(ArrayList<String> colors, String previousColor){
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        AskColorFrame getValidColorFrame = new AskColorFrame("INSERT VALID COLOR", colors, previousColor);
+        return getValidColorFrame.getSelectedColor();
     }
 
     /**
@@ -276,112 +64,9 @@ public class ViewGUI {
      * @author giacomofalcone
      */
     public String displayStarterCard(int starterCardID) {
-        // TODO: Write code in English and improve Frame graphics: add font, color, background, ...
-        // TODO: Move code in a new class and call it like this:
-        /*
-        // See other classes in gui package for example and better understanding
-        GetStarterCardFrame getStarterCardFrame = new GetStarterCardFrame("Select starter card", starterCardID);
-        return getStarterCardFrame.getSide(); // Where side con be: "front" or "back" as string
-        */
-
-        final String[] side = {""}; // Store selected side
-        final Object lock = new Object();
-
-        // Creazione del frame principale
-        JFrame frame = new JFrame("SELECT STARTER CARD'S SIDE");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
-        frame.setSize(600, 400);
-        frame.setLayout(new BorderLayout());
-
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
-            frame.setIconImage(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1, 2)); // Modifica layout per visualizzare le carte in una riga
-
-        JLabel instructionLabel = new JLabel("On which side do you want to play the starter card?", SwingConstants.CENTER);
-        frame.add(instructionLabel, BorderLayout.NORTH);
-
-        String starterPathBack = "CodexNaturalis\\resources\\front\\img_" + starterCardID + ".jpeg";
-        String starterPathFront = "CodexNaturalis\\resources\\back\\img_" + starterCardID + ".jpeg";
-
-        // Displaying back side
-        try {
-            BufferedImage cardImage = ImageIO.read(new File(starterPathBack));
-            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(250, 200, Image.SCALE_SMOOTH));
-            JLabel cardLabel = new JLabel(cardIcon);
-            cardLabel.setHorizontalAlignment(JLabel.CENTER);
-            cardLabel.setVerticalAlignment(JLabel.CENTER);
-
-            JButton backButton = new JButton("FRONT");
-            backButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    side[0] = "front";
-                    frame.dispose(); // Close the window
-                    synchronized (lock) {
-                        lock.notify(); // Notify waiting thread
-                    }
-                }
-            });
-
-            JPanel cardPanel = new JPanel(new BorderLayout());
-            cardPanel.add(cardLabel, BorderLayout.CENTER);
-            cardPanel.add(backButton, BorderLayout.SOUTH);
-
-            panel.add(cardPanel);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Displaying front side
-        try {
-            BufferedImage cardImage = ImageIO.read(new File(starterPathFront));
-            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(250, 200, Image.SCALE_SMOOTH));
-            JLabel cardLabel = new JLabel(cardIcon);
-            cardLabel.setHorizontalAlignment(JLabel.CENTER);
-            cardLabel.setVerticalAlignment(JLabel.CENTER);
-
-            JButton frontButton = new JButton("BACK");
-            frontButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    side[0] = "back";
-                    frame.dispose(); // Close the window
-                    synchronized (lock) {
-                        lock.notify(); // Notify waiting thread
-                    }
-                }
-            });
-
-            JPanel cardPanel = new JPanel(new BorderLayout());
-            cardPanel.add(cardLabel, BorderLayout.CENTER);
-            cardPanel.add(frontButton, BorderLayout.SOUTH);
-
-            panel.add(cardPanel);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        frame.add(panel, BorderLayout.CENTER);
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        synchronized (lock) {
-            try {
-                lock.wait(); // Wait until user selects a side
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        return side[0];
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        StarterCardFrame getStarterCardFrame = new StarterCardFrame("SELECT STARTER CARD'S SIDE", starterCardID);
+        return getStarterCardFrame.getSelectedSide();
     }
 
 

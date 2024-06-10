@@ -121,13 +121,13 @@ public class Client2 {
         // Now client reads messages from server and display a window
         while ((response = in.readLine()) != null) {
             if(response.equals("Insert your username:")){
-                // TODO: Add boolean parameter false, see code of ViewGui for better understanding
                 username = viewGui.displayUsername();
                 out.println(username);
             } else if(response.equals("Username already in use. Please insert a new username:") ||
                       response.equals("Invalid username. Please insert a valid username:")){
-                // TODO: Add boolean parameter false, see code of ViewGui for better understanding
-                username = viewGui.displayUsername();
+                // Get client's previous selected username
+                String previousUsername = in.readLine();
+                username = viewGui.displayRepeatedUsername(previousUsername);
                 out.println(username);
             } else if (response.equals("Do you want to create a new game or join a game? (insert create/join):")){
                 // Get number of games that can be joined
@@ -163,11 +163,11 @@ public class Client2 {
                 }
             }
             else if(response.equals("Insert your color:")){
-                // TODO: Add boolean parameter false, see code of ViewGui for better understanding
                 out.println(viewGui.displayColor(availableColors));
             } else if(response.equals("Invalid color. Please select a color from the previous list:")){
-                // TODO: Add boolean parameter false, see code of ViewGui for better understanding
-                out.println(viewGui.displayColor(availableColors));
+                // Get client's previous selected username
+                String previousColor = in.readLine();
+                out.println(viewGui.displayInvalidColor(availableColors, previousColor));
             } else if(response.equals("On which side you want to play the starter card (insert front/back):")){
                 // Get ID of the starter card from server
                 int starterCardID = Integer.parseInt(in.readLine());

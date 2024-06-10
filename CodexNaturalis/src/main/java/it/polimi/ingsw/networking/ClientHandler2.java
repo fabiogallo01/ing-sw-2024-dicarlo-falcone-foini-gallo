@@ -197,10 +197,15 @@ public class ClientHandler2 extends Thread {
         // Check if username is valid: already present or empty
         while (Server2.getClientsUsername().contains(username) || username.isEmpty()) {
             if(username.isEmpty()) {
-                out.println("Invalid username. Please insert a valid username:");
+                out.println("Invalid username. Please insert a valid username:"); // EMPTY
             }else {
                 out.println("Username already in use. Please insert a new username:"); // INVALID
             }
+            // If client is playing with GUI, then send the previous username
+            if(gui){
+                out.println(username); // Previous invalid username
+            }
+
             username = in.readLine();
         }
 
@@ -314,6 +319,10 @@ public class ClientHandler2 extends Thread {
         // Check color selection in real time => Use gameController.getAvailableColors()
         while (!gameController.getAvailableColors().contains(selectedColor)) {
             out.println("Invalid color. Please select a color from the previous list:"); // INVALID
+            // If clint is playing with GUI, then send the previous selected color
+            if(gui){
+                out.println(selectedColor); // Client's previous selected color
+            }
             selectedColor = in.readLine().toLowerCase();
         }
 
