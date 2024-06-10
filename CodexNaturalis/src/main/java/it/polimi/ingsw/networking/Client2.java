@@ -280,7 +280,6 @@ public class Client2 {
             } else if(response.contains("THE WINNER")){
                 // START OF POST-GAME PHASE
                 winnerMessage = response;
-                System.out.println(winnerMessage);
             } else if(response.equals("CONGRATULATIONS, YOU WON!!!")){
                 hasWon = true;
             } else if(response.equals("SORRY, YOU LOST.")){
