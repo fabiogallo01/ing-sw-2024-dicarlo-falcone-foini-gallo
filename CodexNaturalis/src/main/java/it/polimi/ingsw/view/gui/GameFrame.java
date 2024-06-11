@@ -38,12 +38,12 @@ public class GameFrame extends JFrame {
      * @param title window's title
      * @author Foini Lorenzo
      */
-    GameFrame(String title, PrintWriter out, Player player, GameTable gameTable, String invalidPlay, String mistakePlay){
+    GameFrame(String title, PrintWriter out, Player player, GameTable gameTable, ArrayList<Integer> counterResources, String invalidPlay, String mistakePlay){
         super(title);
         this.out = out;
         this.invalidPlay = invalidPlay;
         this.mistakePlay = mistakePlay;
-        init(player, gameTable);
+        init(player, gameTable, counterResources);
     }
 
     /**
@@ -51,7 +51,7 @@ public class GameFrame extends JFrame {
      *
      * @author Foini Lorenzo
      */
-    void init(Player player, GameTable gameTable){
+    void init(Player player, GameTable gameTable, ArrayList<Integer> counterResources){
         // Initialise parameters
         this.clientPlayer = player;
         this.gameTable = gameTable;
@@ -81,7 +81,7 @@ public class GameFrame extends JFrame {
         JPanel panelWest = createPanelWest(scrollPaneCenter);
 
         // Call to function createPanelEast() for creating new panel to be addend in the content pane
-        JPanel panelEast = createPanelEast();
+        JPanel panelEast = createPanelEast(counterResources);
 
         // Call to function createPanelSouth() for creating new panel to be addend in the content pane
         JPanel panelSouth = createPanelSouth();
@@ -346,7 +346,7 @@ public class GameFrame extends JFrame {
      * @return the panel that will be added in the content pane
      * @author Foini Lorenzo
      */
-    public JPanel createPanelEast(){
+    public JPanel createPanelEast(ArrayList<Integer> counterResources){
         // Create new panel for display
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -360,26 +360,22 @@ public class GameFrame extends JFrame {
         addComponent(panel, titleLabel, gbc, 0, 0, 1, 1, 1, 0.125);
 
         // Count number of animal kingdom
-        int counterAnimalKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.ANIMALKINGDOM);
-        JLabel animalKingdomLabel = new JLabel("- Animal kingdom: "+counterAnimalKingdom);
+        JLabel animalKingdomLabel = new JLabel("- Animal kingdom: "+counterResources.getFirst());
         // This label will occupy 12.5% of the panel
         addComponent(panel, animalKingdomLabel, gbc, 1, 0, 1, 1, 1, 0.125);
 
         // Count number of fungi kingdom
-        int counterFungiKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.FUNGIKINGDOM);
-        JLabel fungiKingdomLabel = new JLabel("- Fungi kingdom: "+counterFungiKingdom);
+        JLabel fungiKingdomLabel = new JLabel("- Fungi kingdom: "+counterResources.get(1));
         // This label will occupy 12.5% of the panel
         addComponent(panel, fungiKingdomLabel, gbc, 2, 0, 1, 1, 1, 0.125);
 
         // Count number of insect kingdom
-        int counterInsectKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.INSECTKINGDOM);
-        JLabel InsectKingdomLabel = new JLabel("- Insect kingdom: "+counterInsectKingdom);
+        JLabel InsectKingdomLabel = new JLabel("- Insect kingdom: "+counterResources.get(2));
         // This label will occupy 12.5% of the panel
         addComponent(panel, InsectKingdomLabel, gbc, 3, 0, 1, 1, 1, 0.125);
 
         // Count number of plant kingdom
-        int counterPlantKingdom = clientPlayer.getPlayerArea().countKingdoms(Kingdom.PLANTKINGDOM);
-        JLabel plantKingdomLabel = new JLabel("- Plant kingdom: "+counterPlantKingdom);
+        JLabel plantKingdomLabel = new JLabel("- Plant kingdom: "+counterResources.getLast());
         // This label will occupy 15% of the panel
         addComponent(panel, plantKingdomLabel, gbc, 4, 0, 1, 1, 1, 0.125);
 
@@ -396,8 +392,8 @@ public class GameFrame extends JFrame {
         addComponent(panel, manuscriptLabel, gbc, 6, 0, 1, 1, 1, 0.125);
 
         // Count number of quill object
-        int counterQuilObject = clientPlayer.getPlayerArea().countObject(GameObject.QUILL);
-        JLabel quillLabel = new JLabel("- Quill: "+counterQuilObject);
+        int counterQuillObject = clientPlayer.getPlayerArea().countObject(GameObject.QUILL);
+        JLabel quillLabel = new JLabel("- Quill: "+counterQuillObject);
         // This label will occupy 12.5% of the panel
         addComponent(panel, quillLabel, gbc, 7, 0, 1, 1, 1, 0.125);
 
@@ -545,7 +541,7 @@ public class GameFrame extends JFrame {
         }
     }
 
-    public void updateGameFrame(Player updatedPlayer, GameTable updatedGameTable, String invalidPlay, String mistakePlay){
+    public void updateGameFrame(Player updatedPlayer, GameTable updatedGameTable, ArrayList<Integer> counterResources, String invalidPlay, String mistakePlay){
         // Update string for error while playing
         this.invalidPlay = invalidPlay;
         this.mistakePlay = mistakePlay;
@@ -554,7 +550,7 @@ public class GameFrame extends JFrame {
         this.getContentPane().removeAll();
 
         // Update frame using method init() with updated parameters
-        init(updatedPlayer, updatedGameTable);
+        init(updatedPlayer, updatedGameTable, counterResources);
 
         // Update frame
         //this.revalidate();

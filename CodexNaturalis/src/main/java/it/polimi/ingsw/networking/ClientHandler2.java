@@ -82,8 +82,6 @@ public class ClientHandler2 extends Thread {
                 }
             }
 
-            // TODO: Modify the following lines for handling turns with TUI and GUI (now it works only with TUI)
-
             out.println("Game starts now.");
 
             // Send gameTable to client is he is playing with GUI
@@ -762,8 +760,22 @@ public class ClientHandler2 extends Thread {
 
     private void updateGui(){
         GameTable gameTable = gameController.getGameTable();
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
         String gameTableJson = gson.toJson(gameTable);
         out.println(gameTableJson);
+
+        sendCounterResources();
+    }
+
+    private void sendCounterResources(){
+        try {
+            PlayerArea playerArea = gameController.getGameTable().getPlayerByUsername(username).getPlayerArea();
+            out.println(playerArea.countKingdoms(Kingdom.ANIMALKINGDOM));
+            out.println(playerArea.countKingdoms(Kingdom.FUNGIKINGDOM));
+            out.println(playerArea.countKingdoms(Kingdom.INSECTKINGDOM));
+            out.println(playerArea.countKingdoms(Kingdom.PLANTKINGDOM));
+        } catch(NoPlayerWithSuchUsernameException e) {
+            e.printStackTrace();
+        }
     }
 }

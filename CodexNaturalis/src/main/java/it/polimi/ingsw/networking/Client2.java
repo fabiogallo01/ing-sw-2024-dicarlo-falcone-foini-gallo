@@ -2,9 +2,7 @@ package it.polimi.ingsw.networking;
 
 import it.polimi.ingsw.model.exception.NoPlayerWithSuchUsernameException;
 import it.polimi.ingsw.model.game.*;
-import it.polimi.ingsw.view.gui.GameFrame;
-import it.polimi.ingsw.view.gui.ViewGUI;
-import it.polimi.ingsw.view.gui.WaitStartGameFrame;
+import it.polimi.ingsw.view.gui.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -69,7 +67,7 @@ public class Client2 {
         String response;
         while ((response = in.readLine()) != null) {
             System.out.println(response);//TUI
-            //TODO sostituire tutti gli or con una condizione sola, creando una classe di un genere di messaggi
+            // TODO: Change all of the or clauses in a single condition by creating a new class for type of message
             if (response.equals("Do you want to create a new game or join a game? (insert create/join):") ||
                     response.equals("Which game you want to join (insert 0 to exit):") ||
                     response.equals("Please insert a valid number of game (insert 0 to exit):") ||
@@ -107,12 +105,14 @@ public class Client2 {
         Gson gson = new Gson(); // Gson for serialization
         GameTable gameTable; // Instance of gameTable
         Player player; // Instance of player, it represents this client
+        ArrayList<Integer> counterResources;
         ViewGUI viewGui = new ViewGUI(); // Instance of GUI
         String response; // Messages from server
         String username = null; // Client's username
         Map<String, List<String>> joinGamesAndPlayers = new LinkedHashMap<>(); // Map of games that can be joined and their client's username
         ArrayList<String> availableColors = new ArrayList<>(); // List of available colors
         WaitStartGameFrame waitStartGame = null; // JFrame for waiting start of the game
+        WaitEndGameFrame waitEndGame = null; // JFrame for waiting end of the game
         GameFrame gameFrame = null; // JFrame with main in game view
         String drawVisibleCardIndex = "";
         String invalidPlay = "";
@@ -200,7 +200,7 @@ public class Client2 {
                 out.println(viewGui.displayObjectiveCards(starterCardSide, starterCardID, handCardIDs,
                             commonObjectiveCardIDs, secretObjectiveCardIDs));
             } else if(response.equals("Game created. Waiting for players...")){
-                viewGui.displayWaitStartGame(true);
+                waitStartGame = viewGui.displayWaitStartGame(true);
             } else if(response.equals("Joined a game. Waiting for players...")){
                 waitStartGame = viewGui.displayWaitStartGame(false);
 
@@ -217,17 +217,19 @@ public class Client2 {
                 // Get gui and player instances
                 gameTable = getGui(in,gson);
                 player = getPlayer(gameTable, username);
+                counterResources = getCounterResources(in);
 
                 // Call to viewGui method
-                gameFrame = viewGui.playGame(out, player, gameTable, invalidPlay, mistakePlay);
+                gameFrame = viewGui.playGame(out, player, gameTable, counterResources, invalidPlay, mistakePlay);
             } else if(response.equals("Which card you want to play (insert 1/2/3):")){
                 // Get gui and player instances
                 gameTable = getGui(in,gson);
                 player = getPlayer(gameTable, username);
+                counterResources = getCounterResources(in);
 
                 // Call to gameFrame method for update the frame
                 if (gameFrame != null) {
-                    gameFrame.updateGameFrame(player, gameTable, invalidPlay, mistakePlay);
+                    gameFrame.updateGameFrame(player, gameTable, counterResources, invalidPlay, mistakePlay);
                 }
             } else if(response.startsWith("Invalid play.")){
                 // Get mistake
@@ -238,10 +240,11 @@ public class Client2 {
                 // Get gui and player instances
                 gameTable = getGui(in,gson);
                 player = getPlayer(gameTable, username);
+                counterResources = getCounterResources(in);
 
                 // Call to gameFrame method for update the frame
                 if (gameFrame != null) {
-                    gameFrame.updateGameFrame(player, gameTable, invalidPlay, mistakePlay);
+                    gameFrame.updateGameFrame(player, gameTable, counterResources, invalidPlay, mistakePlay);
                 }
 
                 // Call to function for displaying draw choices
@@ -269,15 +272,23 @@ public class Client2 {
                 gameTable = getGui(in,gson);
                 player = getPlayer(gameTable, username);
                 player.setTurn(false);
+                counterResources = getCounterResources(in);
 
                 // Call to gameFrame method for update the frame
                 if (gameFrame != null) {
-                    gameFrame.updateGameFrame(player, gameTable, invalidPlay, mistakePlay);
+                    gameFrame.updateGameFrame(player, gameTable, counterResources, invalidPlay, mistakePlay);
                 }
+            } else if(response.equals("Wait for others players' last turns.")){
+                waitEndGame = viewGui.displayWaitEndGame();
 
                 // END OF GAME PHASE
 
             } else if(response.contains("THE WINNER")){
+                // Close wait end game frame
+                if (waitEndGame != null) {
+                    waitEndGame.dispose();
+                }
+
                 // START OF POST-GAME PHASE
                 winnerMessage = response;
             } else if(response.equals("CONGRATULATIONS, YOU WON!!!")){
@@ -314,5 +325,15 @@ public class Client2 {
         }
 
         return player;
+    }
+
+    private static ArrayList<Integer> getCounterResources(BufferedReader in) throws IOException{
+        ArrayList<Integer> counterResources = new ArrayList<>();
+        counterResources.add(Integer.parseInt(in.readLine())); // Animal kingdom counter
+        counterResources.add(Integer.parseInt(in.readLine())); // Fungi kingdom counter
+        counterResources.add(Integer.parseInt(in.readLine())); // Insect kingdom counter
+        counterResources.add(Integer.parseInt(in.readLine())); // Plant kingdom counter
+
+        return counterResources;
     }
 }
