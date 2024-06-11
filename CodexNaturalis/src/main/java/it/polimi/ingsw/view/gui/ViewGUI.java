@@ -2,18 +2,8 @@ package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.model.game.*;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import java.util.*;
-import java.util.List;
 
 /**
  * Class representing GUI
@@ -119,14 +109,19 @@ public class ViewGUI {
         return new WaitStartGameFrame("WAIT START OF THE GAME", create);
     }
 
-    public GameFrame playGame(PrintWriter out, Player player, GameTable gameTable, String invalidPlay, String mistakePlay){
-        GameFrame gameFrame = new GameFrame("CODEX NATURALIS", out, player, gameTable, invalidPlay, mistakePlay);
-        return gameFrame;
+    public GameFrame playGame(PrintWriter out, Player player, GameTable gameTable, ArrayList<Integer> counterResources, String invalidPlay, String mistakePlay){
+        return new GameFrame("CODEX NATURALIS", out, player, gameTable, counterResources, invalidPlay, mistakePlay);
     }
 
     public int displayDrawChoice(GameTable gameTable, boolean turn){
         DrawCardFrame drawCardFrame = new DrawCardFrame("SELECT FROM WHERE YOU WANT DO DRAW", gameTable, turn);
         return drawCardFrame.getIndexSelectedCard();
+    }
+
+    public WaitEndGameFrame displayWaitEndGame(){
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        // TODO: Close the window when the game started
+        return new WaitEndGameFrame("WAIT END OF THE GAME");
     }
 
     public void displayPostGame(String winnerMessage, boolean hasWon, ArrayList<String> finalScoreboard){
