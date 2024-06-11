@@ -37,7 +37,7 @@ public class CreateJoinFrame extends JFrame {
      */
     private void init(int countNotFullGame){
         // Set parameters
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(500, 150);
         this.setLayout(new BorderLayout());
 

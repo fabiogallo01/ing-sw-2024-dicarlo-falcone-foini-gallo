@@ -50,7 +50,7 @@ public class SecretObjectiveFrame extends JFrame{
      */
     private void init(String starterCardSide, int starterCardID, int[] handCardIDs, int[] commonObjectiveCardIDs, int[] secretObjectiveCardIDs){
         // Set frame parameters
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(700, 800);
         this.setLayout(new GridLayout(4, 1));
 

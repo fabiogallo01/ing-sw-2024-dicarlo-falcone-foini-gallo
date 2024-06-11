@@ -37,7 +37,7 @@ public class WaitStartGameFrame extends JFrame {
      */
     private WaitStartGameFrame init(boolean create){
         // Set frame parameters
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 200);
         this.setLayout(new GridLayout(2, 1));
 

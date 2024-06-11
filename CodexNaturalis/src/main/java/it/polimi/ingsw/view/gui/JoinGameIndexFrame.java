@@ -42,7 +42,7 @@ public class JoinGameIndexFrame extends JFrame {
      */
     private void init(Map<String, List<String>> joinGamesAndPlayers){
         // Assign some frame's parameters
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1000, 400);
         this.setLayout(new BorderLayout());
 
