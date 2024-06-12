@@ -34,7 +34,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
@@ -42,7 +42,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -50,7 +50,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -58,7 +58,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -66,7 +66,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.INKWELL, Kingdom.NONE),
@@ -74,7 +74,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
@@ -82,7 +82,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -90,7 +90,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 1, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
@@ -98,7 +98,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 1, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -106,7 +106,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.FUNGIKINGDOM, 1, frontCorners, 0));
 
         //PLANT
         frontCorners = new Corner[]{
@@ -115,7 +115,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
@@ -123,7 +123,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -131,7 +131,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -139,7 +139,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -147,7 +147,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.QUILL, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
@@ -155,7 +155,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.INKWELL, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
@@ -163,7 +163,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -171,7 +171,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 1, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -179,7 +179,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 1, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -187,7 +187,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.PLANTKINGDOM, 1, frontCorners, 0));
 
         //ANIMAL
         frontCorners = new Corner[]{
@@ -196,7 +196,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -204,7 +204,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
@@ -212,7 +212,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -220,7 +220,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -228,7 +228,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.INKWELL, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
@@ -236,7 +236,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.QUILL, Kingdom.NONE),
@@ -244,7 +244,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -252,7 +252,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 1, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -260,7 +260,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 1, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -268,7 +268,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.ANIMALKINGDOM, 1, frontCorners, 0));
 
         //INSECT
         frontCorners = new Corner[]{
@@ -277,7 +277,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -285,7 +285,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
@@ -293,7 +293,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -301,7 +301,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -309,7 +309,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
@@ -317,7 +317,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
@@ -325,7 +325,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.INKWELL, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 0, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
@@ -333,7 +333,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 1, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -341,7 +341,7 @@ public class ResourceDeckTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 1, frontCorners, 0));
 
         frontCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -349,7 +349,7 @@ public class ResourceDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 1, frontCorners));
+        resourceCards.add(new GamingCard(false, Kingdom.INSECTKINGDOM, 1, frontCorners, 0));
 
         deck = new GamingDeck(resourceCards);
     }

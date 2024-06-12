@@ -42,7 +42,7 @@ public class StarterDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
         kingdoms = new Kingdom[]{Kingdom.INSECTKINGDOM};
-        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms));
+        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms,0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
@@ -57,7 +57,7 @@ public class StarterDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
         kingdoms = new Kingdom[]{Kingdom.FUNGIKINGDOM};
-        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms));
+        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms,0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -72,7 +72,7 @@ public class StarterDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
         };
         kingdoms = new Kingdom[]{Kingdom.PLANTKINGDOM, Kingdom.FUNGIKINGDOM};
-        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms));
+        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms,0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -87,7 +87,7 @@ public class StarterDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM)
         };
         kingdoms = new Kingdom[]{Kingdom.ANIMALKINGDOM, Kingdom.INSECTKINGDOM};
-        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms));
+        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms,0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -102,7 +102,7 @@ public class StarterDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM)
         };
         kingdoms = new Kingdom[]{Kingdom.ANIMALKINGDOM, Kingdom.INSECTKINGDOM, Kingdom.PLANTKINGDOM};
-        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms));
+        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms,0));
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -117,7 +117,7 @@ public class StarterDeckTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
         kingdoms = new Kingdom[]{Kingdom.PLANTKINGDOM, Kingdom.ANIMALKINGDOM, Kingdom.FUNGIKINGDOM};
-        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms));
+        starterCards.add(new StarterCard(false, frontCorners, backCorners, kingdoms,0));
 
         deck = new GamingDeck(starterCards);
     }

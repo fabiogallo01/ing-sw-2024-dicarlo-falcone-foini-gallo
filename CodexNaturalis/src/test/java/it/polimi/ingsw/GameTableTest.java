@@ -144,7 +144,7 @@ public class GameTableTest {
      */
     @Test(expected = InvalidDrawFromTableException.class)
     public void testDrawWithInvalidPositionTooLow() throws InvalidDrawFromTableException {
-        gameTable.drawCardFromTable(0);  // Position is too low, should throw exception
+        gameTable.drawCardFromTable(-1);  // Position is too low, should throw exception
     }
 
 
@@ -156,7 +156,7 @@ public class GameTableTest {
      */
     @Test(expected = InvalidDrawFromTableException.class)
     public void testDrawWithInvalidPositionTooHigh() throws InvalidDrawFromTableException {
-        gameTable.drawCardFromTable(gameTable.getVisibleCard().size() + 1);  // Position is too high, should throw exception
+        gameTable.drawCardFromTable(gameTable.getVisibleCard().size());  // Position is too high, should throw exception
     }
 
 
