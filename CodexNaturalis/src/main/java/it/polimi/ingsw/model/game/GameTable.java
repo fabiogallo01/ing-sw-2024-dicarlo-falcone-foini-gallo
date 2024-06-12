@@ -1365,13 +1365,14 @@ public class GameTable {
     }
 
     /**
-     * Adds a player to the game
+     * Adds a player to the game and set score
      *
      * @param player to be added
      * @author Fabio Gallo
      */
     public void addPlayer(Player player) {
         players.add(player);
+        scoreboard.setScore(player, 0);
     }
 
     /**
@@ -1392,6 +1393,10 @@ public class GameTable {
      */
     public void setScoreboard(Scoreboard scoreboard) {
         GameTable.scoreboard = scoreboard;
+    }
+
+    public void assignScore(Player player, int score){
+        scoreboard.setScore(player, score);
     }
 
     /**

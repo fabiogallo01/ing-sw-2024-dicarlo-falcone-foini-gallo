@@ -121,7 +121,6 @@ public class Controller {
         // Create new player and add it into gameTable and scoreboard
         Player player = new Player(username, 0, playerArea, colorEnum, secretObjectiveCard, starterCard, hand);
         gameTable.addPlayer(player);
-        GameTable.getScoreboard().setScore(player, 0);
     }
 
     /**
@@ -158,7 +157,7 @@ public class Controller {
      */
     public void finalScoreboard(){
         for(Player player : gameTable.getPlayers()) {
-            GameTable.getScoreboard().setScore(player, player.getScore());
+            gameTable.assignScore(player, player.getScore());
         }
     }
 
@@ -169,7 +168,7 @@ public class Controller {
      * @author Lorenzo Foini, Fabio Gallo
      */
     public LinkedHashMap<Player, Integer> getLeaderboard(){
-        HashMap<Player,Integer> scoreboard =  GameTable.getScoreboard().getScores();
+        HashMap<Player,Integer> scoreboard = createLeaderboard();
 
         // Create a list with map entries
         List<Map.Entry<Player, Integer>> orderedList = new LinkedList<>(scoreboard.entrySet());
@@ -188,6 +187,14 @@ public class Controller {
         }
 
         return orderedHash;
+    }
+
+    private HashMap<Player,Integer> createLeaderboard(){
+        HashMap<Player,Integer> scoreboard = new HashMap<>();
+        for(Player player : gameTable.getPlayers()) {
+            scoreboard.put(player, player.getScore());
+        }
+        return scoreboard;
     }
 
     /**

@@ -536,7 +536,9 @@ public class ClientHandler2 extends Thread {
         // Use controller's method for play this card
         try {
             // Play card
-            gameController.getGameTable().getPlayerByUsername(username).playCard(cardPositionHand, positionArea, sideCardToPlay);
+            Player player = gameController.getGameTable().getPlayerByUsername(username);
+            player.playCard(cardPositionHand, positionArea, sideCardToPlay);
+            gameController.getGameTable().assignScore(player, player.getScore());
 
             // Show messages
             out.println("\nThe card has been played correctly.");

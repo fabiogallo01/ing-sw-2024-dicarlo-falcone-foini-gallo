@@ -234,9 +234,6 @@ public class Player {
                     // Some resource cards assign one point
                     score += cardToPlay.getPoints();
                 }
-
-                // Assign such score in the scoreboard
-                GameTable.getScoreboard().setScore(this, score);
             }
         }
     }
