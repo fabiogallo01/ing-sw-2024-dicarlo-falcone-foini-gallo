@@ -92,6 +92,9 @@ public class Client2 {
                 String input = scanner.nextLine();
                 out.println(input);
             }
+            if(response.equals("Game crashed.")){
+                break;
+            }
         }
     }
 

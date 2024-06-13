@@ -78,6 +78,11 @@ public class ClientHandler2 extends Thread {
             } else {
                 gameController.setReady();
                 while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {//it waits for all the players to be ready to play
+                    if(gameController.isCrashed()){
+                        out.println("Game crashed.");
+                        return;
+                        
+                    }
                     Thread.onSpinWait();
                 }
             }
@@ -92,6 +97,11 @@ public class ClientHandler2 extends Thread {
             Player player = gameController.getGameTable().getPlayerByUsername(username);
 
             while (!player.isTurn()) {//waits for your turn
+                if(gameController.isCrashed()){
+                    out.println("Game crashed.");
+                    return;
+                    
+                }
                 Thread.onSpinWait();
             }
 
@@ -103,6 +113,11 @@ public class ClientHandler2 extends Thread {
                 }
                 gameController.nextTurn();//sets the turn of this player to false, the turn of the next player to true
                 while (!player.isTurn()) { // Client wait for his turn
+                    if(gameController.isCrashed()){
+                        out.println("Game crashed.");
+                        return;
+                        
+                    }
                     Thread.onSpinWait();
                 }
             }
@@ -115,9 +130,19 @@ public class ClientHandler2 extends Thread {
                 gameController.getGameTable().setFinished();
             }
             while (!gameController.getGameTable().isFinished()) {//it makes the other players wait for the last player to finish
+                if(gameController.isCrashed()){
+                    out.println("Game crashed.");
+                    return;
+                    
+                }
                 Thread.onSpinWait();
             }
             while (!player.isTurn()) {//it prints the final scoreboard and messages one player at a time, so they don't conflict
+                if(gameController.isCrashed()){
+                    out.println("Game crashed.");
+                    return;
+                    
+                }
                 Thread.onSpinWait();
             }
             gameController.calculateFinalPoints();
@@ -132,7 +157,8 @@ public class ClientHandler2 extends Thread {
             gameController.nextTurn();//it lets the other players print the final messages
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error: "+ username + " crashed.");
+            gameController.setCrashed();
         } catch (EmptyObjectiveDeckException | EmptyDeckException | NoPlayerWithSuchUsernameException |
                  InterruptedException e) {
             throw new RuntimeException(e);

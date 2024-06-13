@@ -19,7 +19,15 @@ public class Controller {
     private final ArrayList<String> availableColors = new ArrayList<>();
     private int ready = 0;
     private boolean calculateFinalPoints = true;
+    private boolean crashed = false;
 
+    public boolean isCrashed() {
+        return crashed;
+    }
+
+    public void setCrashed() {
+        crashed = true;
+    }
 
     public int getReady() {
         return ready;

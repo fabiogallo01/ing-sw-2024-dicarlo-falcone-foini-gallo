@@ -204,7 +204,7 @@ public class PlayerTest {
             player.playCard(3, new int[]{42, 40}, true);
             fail("All went good.");
         } catch (InvalidPlayException e) {
-            assertEquals("You can't play this card in this position. Mistake: There is already a card in that position.", e.getMessage());
+            assertEquals("You can't play this card in this position.\nMistake: There is already a card in that position.", e.getMessage());
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -217,7 +217,7 @@ public class PlayerTest {
             player.playCard(3, new int[]{60, 60}, true);
             fail("All went good.");
         } catch (InvalidPlayException e) {
-            assertEquals("You can't play this card in this position. Mistake: There are no cards in the corners of that position.", e.getMessage());
+            assertEquals("You can't play this card in this position.\nMistake: There are no cards in the corners of that position.", e.getMessage());
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -230,7 +230,7 @@ public class PlayerTest {
             player.playCard(3, new int[]{36, 41}, true);
             fail("All went good.");
         } catch (InvalidPlayException e) {
-            assertEquals("You can't play this card in this position. Mistake: The card you want to play can't cover two corners of the same card.", e.getMessage()); //DA SISTEMARE IN PLAYER
+            assertEquals("You can't play this card in this position.\nMistake: The card you want to play can't cover two corners of the same card.", e.getMessage()); //DA SISTEMARE IN PLAYER
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -243,8 +243,8 @@ public class PlayerTest {
             player.playCard(1, new int[]{36, 42}, true);
             fail("All went good.");
         } catch (InvalidPlayException e) {
-            assertEquals("You can't play this card in this position. Mistake: There aren't enough resources to place the gold card.", e.getMessage());
-            //assertEquals("You can't play this card in this position. Mistake: Card covers a corner which can't be covered", e.getMessage());
+            assertEquals("You can't play this card in this position.\nMistake: There aren't enough resources to place the gold card on front.", e.getMessage());
+            //assertEquals("You can't play this card in this position.\nMistake: Card covers a corner which can't be covered", e.getMessage());
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -257,7 +257,7 @@ public class PlayerTest {
             player.playCard(3, new int[]{40, 38}, true);
             fail("All went good.");
         } catch (InvalidPlayException e) {
-            assertEquals("You can't play this card in this position. Mistake: Card covers a corner which can't be covered", e.getMessage());
+            assertEquals("You can't play this card in this position.\nMistake: Card covers a corner which can't be covered.", e.getMessage());
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
