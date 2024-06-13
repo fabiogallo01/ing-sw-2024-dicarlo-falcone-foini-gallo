@@ -308,6 +308,9 @@ public class Client2 {
                     response = in.readLine();
                 }
                 viewGui.displayPostGame(winnerMessage, hasWon, finalScoreboard);
+            }else if(response.equals("Game crashed.")){
+                //TODO: close all the windows and just shows a window that says "Game crashed."
+                break;
             }
         }
     }
