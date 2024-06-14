@@ -28,6 +28,14 @@ public class PlayerAreaFrame extends JFrame {
         this.setSize(1000, 500);
         this.setLayout(new BorderLayout());
 
+        // Setting custom image icon
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            this.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Create new panel
         JPanel panel = new JPanel(new GridLayout(numRows,numCols));
 
