@@ -120,11 +120,15 @@ public class ViewGUI {
 
     public WaitEndGameFrame displayWaitEndGame(){
         // TODO: Improve Frame graphics: add font, color, background, ...
-        // TODO: Close the window when the game started
         return new WaitEndGameFrame("WAIT END OF THE GAME");
     }
 
     public void displayPostGame(String winnerMessage, boolean hasWon, ArrayList<String> finalScoreboard){
         new PostGameFrame("END GAME", winnerMessage, hasWon, finalScoreboard);
+    }
+
+    public void displayGameCrashed(){
+        // TODO: Improve Frame graphics: add font, color, background, ...
+        new GameCrashedFrame("GAME CRASHED");
     }
 }
