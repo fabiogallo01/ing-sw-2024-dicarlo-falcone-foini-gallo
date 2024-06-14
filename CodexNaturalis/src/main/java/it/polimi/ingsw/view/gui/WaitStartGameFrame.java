@@ -35,7 +35,7 @@ public class WaitStartGameFrame extends JFrame {
      *               if false => Client has joined a game
      * @author Foini Lorenzo
      */
-    private WaitStartGameFrame init(boolean create){
+    private void init(boolean create){
         // Set frame parameters
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 200);
@@ -71,7 +71,5 @@ public class WaitStartGameFrame extends JFrame {
         // Set frame relative location and visibility
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-
-        return this;
     }
 }

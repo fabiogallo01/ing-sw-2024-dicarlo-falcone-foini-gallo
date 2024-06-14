@@ -31,7 +31,7 @@ public class WaitEndGameFrame extends JFrame {
      *
      * @author Foini Lorenzo
      */
-    private WaitEndGameFrame init(){
+    private void init(){
         // Set frame parameters
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(600, 200);
@@ -63,7 +63,5 @@ public class WaitEndGameFrame extends JFrame {
         // Set frame relative location and visibility
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-
-        return this;
     }
 }
