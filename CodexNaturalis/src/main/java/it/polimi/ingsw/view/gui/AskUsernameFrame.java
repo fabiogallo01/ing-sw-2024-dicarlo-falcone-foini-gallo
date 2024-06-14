@@ -70,6 +70,11 @@ public class AskUsernameFrame extends JFrame {
         BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
         this.setContentPane(backgroundPanel);
 
+        // Create a transparent panel for labels and button
+        JPanel transparentPanel = new JPanel();
+        transparentPanel.setOpaque(false);
+        transparentPanel.setLayout(new BorderLayout());
+
         // If repeated is true => Show label which says that previousUsername is already used
         if(repeated){
             JLabel repeatedLabel;
@@ -82,12 +87,13 @@ public class AskUsernameFrame extends JFrame {
             }
             repeatedLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-            // Add label in the frame
-            this.add(repeatedLabel, BorderLayout.NORTH);
+            // Add label in the transparent panel
+            transparentPanel.add(repeatedLabel, BorderLayout.NORTH);
         }
 
         // Create main panel for input
         JPanel panel = new JPanel();
+        panel.setOpaque(false);
         panel.setLayout(new FlowLayout());
 
 
@@ -103,7 +109,7 @@ public class AskUsernameFrame extends JFrame {
 
         // Create button for sending input and close this frame
         JButton confirmButton = new JButton("CONFIRM");
-        // Add listener when client click on "CONFIRM" => Set frame's parameter
+        // Add listener when client clicks on "CONFIRM" => Set frame's parameter
         confirmButton.addActionListener(e -> {
             username = textField.getText().trim();
             this.dispose(); // Close the window
@@ -112,9 +118,12 @@ public class AskUsernameFrame extends JFrame {
             }
         });
 
-        // Add panel and button in the frame
-        this.add(panel, BorderLayout.CENTER);
-        this.add(confirmButton, BorderLayout.SOUTH);
+        // Add input panel and button to the transparent panel
+        transparentPanel.add(panel, BorderLayout.CENTER);
+        transparentPanel.add(confirmButton, BorderLayout.SOUTH);
+
+        // Add transparent panel to the frame
+        this.add(transparentPanel, BorderLayout.CENTER);
 
         // Set frame's location and visibility
         this.setLocationRelativeTo(null);
