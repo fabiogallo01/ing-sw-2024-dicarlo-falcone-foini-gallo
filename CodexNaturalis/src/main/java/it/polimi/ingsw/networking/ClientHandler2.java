@@ -754,21 +754,24 @@ public class ClientHandler2 extends Thread {
         out.println("Final scoreboard:");
 
         // If a player has a different score respect to the last one, then "update" his final position.
-        int current_index = 1;
+        int currentIndex = 1;
         int lastScore = -1; // Keep track of last score
+        int lastNumObjectivesSatisfied = -1; // Keep track of last number of objectives satisfied
         String lastPosition = ""; // Keep track of last position
 
         for (Map.Entry<Player, Integer> entry : leaderboard.entrySet()) {
-            int current_score = entry.getValue(); // Get player's score
-            if (current_score != lastScore) {
-                String position = current_index + getSuffix(current_index); // "Update" final position
-                out.println(position + entry.getKey().getUsername() + ", score: " + current_score);
+            int currentScore = entry.getValue(); // Get player's score
+            int currentNumObjectiveSatisfied = entry.getKey().getNumObjectivesSatisfied(); // Get player's number of objectives satisfied
+            if (currentScore != lastScore || currentNumObjectiveSatisfied != lastNumObjectivesSatisfied) {
+                String position = currentIndex + getSuffix(currentIndex); // "Update" final position
+                out.println(position + entry.getKey().getUsername() + ", score: " + currentScore + ", number of objectives satisfied: " + currentNumObjectiveSatisfied);
                 lastPosition = position;
-                lastScore = current_score;
+                lastScore = currentScore;
+                lastNumObjectivesSatisfied = currentNumObjectiveSatisfied;
             } else {
-                out.println(lastPosition + entry.getKey().getUsername() + ", score: " + current_score);
+                out.println(lastPosition + entry.getKey().getUsername() + ", score: " + currentScore + ", number of objectives satisfied: " + currentNumObjectiveSatisfied);
             }
-            current_index++;
+            currentIndex++;
         }
 
         // Send end game message

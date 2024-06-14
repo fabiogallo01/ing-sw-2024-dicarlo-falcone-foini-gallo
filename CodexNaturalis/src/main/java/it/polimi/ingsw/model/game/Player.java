@@ -18,6 +18,7 @@ public class Player {
     private final StarterCard starterCard;
     private ArrayList<GamingCard> hand;
     private boolean turn;
+    private int numObjectivesSatisfied;
 
     public boolean isTurn() {
         return turn;
@@ -48,6 +49,7 @@ public class Player {
         this.starterCard = starterCard;
         this.hand = hand;
         this.turn = false;
+        this.numObjectivesSatisfied = 0;
     }
 
     /**
@@ -174,6 +176,10 @@ public class Player {
         }else{
             hand.add(card);
         }
+    }
+
+    public int getNumObjectivesSatisfied(){
+        return numObjectivesSatisfied;
     }
 
     /**
@@ -636,6 +642,9 @@ public class Player {
                 }
                 // Assign points
                 totalPoint += (totalObject/2)*2 + minOccurrence*3;
+
+                // Assign number of objectives satisfied
+                numObjectivesSatisfied += (totalObject/2) + minOccurrence;
             }else if(objective.getPattern() != Pattern.NONE){ // Points given by number of patterns
                 Pattern pattern = objective.getPattern();
                 int numPatterns = playerArea.countPattern(objective.getFrontKingdom(), pattern);
@@ -644,9 +653,15 @@ public class Player {
                 }else{ // three points
                     totalPoint += numPatterns*3;
                 }
+
+                // Assign number of objectives satisfied
+                numObjectivesSatisfied += numPatterns;
             }else{ // Points given by number of resources
                 int totalResources = playerArea.countKingdoms(objective.getFrontKingdom());
                 totalPoint += (totalResources/3)*2;
+
+                // Assign number of objectives satisfied
+                numObjectivesSatisfied += totalResources/3;
             }
         }
         return totalPoint;

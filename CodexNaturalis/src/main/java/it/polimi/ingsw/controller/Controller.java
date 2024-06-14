@@ -181,9 +181,19 @@ public class Controller {
         // Create a list with map entries
         List<Map.Entry<Player, Integer>> orderedList = new LinkedList<>(scoreboard.entrySet());
 
-        orderedList.sort((entry1, entry2) -> {
+        /*orderedList.sort((entry1, entry2) -> {
             // Decreasing order
             return entry2.getValue().compareTo(entry1.getValue());
+        });*/
+
+        orderedList.sort((entry1, entry2) -> {
+            // Compare by score first
+            int scoreComparison = entry2.getValue().compareTo(entry1.getValue());
+            if (scoreComparison != 0) { // Score are different, so return the bigger one
+                return scoreComparison;
+            }
+            // If scores are equal, compare by number of objectives satisfied
+            return Integer.compare(entry2.getKey().getNumObjectivesSatisfied(), entry1.getKey().getNumObjectivesSatisfied());
         });
 
         // Create a new ordered LinkedHashMap
@@ -213,17 +223,28 @@ public class Controller {
      * @author Lorenzo Foini
      */
     public ArrayList<Player> calculateWinners(LinkedHashMap<Player, Integer> leaderboard){
-        // Find max score
-        int maxScore = 0;
-        for (int score : leaderboard.values()) {
-            maxScore = Math.max(maxScore, score);
+        // Find max score and max number of objectives satisfied
+        int maxScore = -1;
+        int maxNumObjectiveSatisfied = -1;
+        for (Player player : leaderboard.keySet()) {
+            // Get player's parameters
+            int playerScore = player.getScore();
+            int playerNumObjectiveSatisfied = player.getNumObjectivesSatisfied();
+
+            // Check values of the two parameters with the previous maximum ones
+            if(playerScore > maxScore) {
+                maxScore = playerScore;
+                maxNumObjectiveSatisfied = playerNumObjectiveSatisfied;
+            } else if(playerScore == maxScore && playerNumObjectiveSatisfied > maxNumObjectiveSatisfied){
+                maxNumObjectiveSatisfied = playerNumObjectiveSatisfied;
+            }
         }
 
         // Get list of winners
         ArrayList<Player> winners = new ArrayList<>();
-        for (Map.Entry<Player, Integer> entry : leaderboard.entrySet()) {
-            if (entry.getValue() == maxScore) {
-                winners.add(entry.getKey());
+        for (Player player : leaderboard.keySet()) {
+            if (player.getScore() == maxScore && player.getNumObjectivesSatisfied() == maxNumObjectiveSatisfied) {
+                winners.add(player);
             }
         }
         return winners;
