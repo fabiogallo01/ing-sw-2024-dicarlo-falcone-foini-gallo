@@ -455,6 +455,7 @@ public class GameTableTest {
 
     }
 
+
     /**
      * Tests drawing a GamingCard from the table and the replacement of the drawn card
      * Covers the cases when:

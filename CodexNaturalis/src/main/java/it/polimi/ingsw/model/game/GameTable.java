@@ -1269,6 +1269,7 @@ public class GameTable {
         else this.joined--;
     }
 
+
     /**
      * Player getter by username
      *
