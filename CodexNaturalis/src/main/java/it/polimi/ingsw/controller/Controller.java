@@ -181,11 +181,6 @@ public class Controller {
         // Create a list with map entries
         List<Map.Entry<Player, Integer>> orderedList = new LinkedList<>(scoreboard.entrySet());
 
-        /*orderedList.sort((entry1, entry2) -> {
-            // Decreasing order
-            return entry2.getValue().compareTo(entry1.getValue());
-        });*/
-
         orderedList.sort((entry1, entry2) -> {
             // Compare by score first
             int scoreComparison = entry2.getValue().compareTo(entry1.getValue());
