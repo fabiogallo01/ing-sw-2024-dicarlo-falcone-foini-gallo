@@ -249,4 +249,248 @@ public class GameTableTest {
         assertTrue("A player reached 20 points, but the game didn't end", gameTable.isEnded());
     }
 
+
+    /**
+     * Tests that the visible cards are updated correctly after a draw
+     * and replacement from a non-empty deck.
+     *
+     * @throws InvalidDrawFromTableException
+     * @throws EmptyDeckException
+     * @author giacomofalcone
+     */
+    @Test
+    public void testCardReplacement() throws InvalidDrawFromTableException, EmptyDeckException {
+        // Ensure the card is drawn and replaced correctly
+        GamingCard drawnCard = gameTable.drawCardFromTable(0);
+        assertNotNull("Drawn card should not be null", drawnCard);
+        assertEquals("Visible cards size should remain 4 after replacement", 4, gameTable.getVisibleCard().size());
+    }
+
+
+    /**
+     * Tests if the common objectives are set correctly during initialization
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testCommonObjectivesInitialization() {
+        ObjectiveCard[] commonObjectives = gameTable.getCommonObjectives();
+        assertNotNull("Common objectives should not be null", commonObjectives);
+        assertEquals("There should be exactly 2 common objectives", 2, commonObjectives.length);
+    }
+
+
+    /**
+     * Tests the getPlayerByUsername method to ensure it correctly handles both existing and non-existing usernames
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testGetPlayerByUsername() {
+        Player player1 = new Player("Player1", 0, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.GREEN, new ObjectiveCard(1, true, null, Pattern.NONE, Kingdom.NONE, 0), new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE}, 0), new ArrayList<>());
+        Player player2 = new Player("Player2", 0, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.RED, new ObjectiveCard(1, true, null, Pattern.NONE, Kingdom.NONE, 0), new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE}, 0), new ArrayList<>());
+
+        gameTable.addPlayer(player1);
+        gameTable.addPlayer(player2);
+
+        try {
+            Player retrievedPlayer1 = gameTable.getPlayerByUsername("Player1");
+            assertEquals("Player1 should be retrieved correctly", player1, retrievedPlayer1);
+
+            Player retrievedPlayer2 = gameTable.getPlayerByUsername("Player2");
+            assertEquals("Player2 should be retrieved correctly", player2, retrievedPlayer2);
+        } catch (NoPlayerWithSuchUsernameException e) {
+            fail("Players should exist");
+        }
+
+        try {
+            gameTable.getPlayerByUsername("NonExistentPlayer");
+            fail("Expected NoPlayerWithSuchUsernameException to be thrown");
+        } catch (NoPlayerWithSuchUsernameException e) {
+            assertTrue("Exception thrown correctly", true);
+        }
+    }
+
+
+    /**
+     * Tests the set and get methods for scoreboard
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testSetAndGetScoreboard() {
+        Scoreboard newScoreboard = new Scoreboard();
+        gameTable.setScoreboard(newScoreboard);
+        assertEquals("Scoreboard should be updated correctly", newScoreboard, gameTable.getScoreboard());
+    }
+
+
+    /**
+     * Tests if the game ends correctly when resource and gold decks are empty
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testGameEndsWhenDecksAreEmpty() {
+        while (gameTable.getGoldDeck().deckSize() > 0) {
+            try {
+                gameTable.drawGoldCardDeck();
+            } catch (EmptyDeckException e) {
+                fail("Unexpected EmptyDeckException: " + e.getMessage());
+            }
+        }
+        while (gameTable.getResourceDeck().deckSize() > 0) {
+            try {
+                gameTable.drawResourceCardDeck();
+            } catch (EmptyDeckException e) {
+                fail("Unexpected EmptyDeckException: " + e.getMessage());
+            }
+        }
+        assertFalse("Game should not end if there are still visible cards", gameTable.isEnded());
+
+        // Remove all visible cards
+        for (int i = gameTable.getVisibleCard().size() - 1; i >= 0; i--) {
+            try {
+                gameTable.drawCardFromTable(i);
+            } catch (InvalidDrawFromTableException e) {
+                fail("Unexpected InvalidDrawFromTableException: " + e.getMessage());
+            }
+        }
+
+        assertTrue("Game should end when all decks and visible cards are empty", gameTable.isEnded());
+    }
+
+
+    /**
+     * Tests if the finish game getter and setter works correctly
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testSetFinished() {
+        assertFalse("Game should not be ended at the start", gameTable.isFinished());
+        gameTable.setFinished();
+        assertTrue("Game should be ended", gameTable.isFinished());
+    }
+
+
+    /**
+     * Tests if the "last turn" getter and setter works correctly
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testIsFull() {
+        // Initially, no players have joined, so isFull should return false
+        assertFalse("Game should not be full initially", gameTable.isFull());
+
+        // Simulate players joining
+        for (int i = 0; i < numPlayers; i++) {
+            gameTable.setJoined(true);
+        }
+
+        // Now the number of joined players should be equal to numPlayers, so isFull should return true
+        assertTrue("Game should be full when all players have joined", gameTable.isFull());
+
+        // Simulate a player leaving
+        gameTable.setJoined(false);
+
+        // Now isFull should return false again
+        assertFalse("Game should not be full if a player leaves", gameTable.isFull());
+    }
+
+
+    /**
+     * Tests if the "last turn" getter and setter works correctly
+     *
+     * @author giacomofalcone
+     */
+    @Test
+    public void testSetLastTurn() {
+        assertFalse("Game should not be ended at the start", gameTable.isLastTurn());
+        gameTable.setLastTurn();
+        assertTrue("Game should be ended", gameTable.isLastTurn());
+    }
+
+
+    /**
+     * Tests if NoPlayerWithSuchUsernameException is thrown when searching for a non-existent username
+     *
+     * @throws NoPlayerWithSuchUsernameException
+     * @author giacomofalcone
+     */
+    @Test(expected = NoPlayerWithSuchUsernameException.class)
+    public void testGetPlayerByUsernameException() throws NoPlayerWithSuchUsernameException {
+        // Attempt to get a player with a username that doesn't exist
+        gameTable.getPlayerByUsername("nonexistentUsername");
+    }
+
+
+    /**
+     * Tests drawing a GoldCard from the table and the replacement of the drawn card
+     * Covers the cases when:
+     * 1. The gold deck is not empty
+     * 2. The gold deck is empty, but the resource deck is not empty
+     *
+     * @throws InvalidDrawFromTableException if the position is invalid
+     * @throws EmptyDeckException if the decks are empty when drawing cards
+     */
+    @Test
+    public void testDrawGoldCardFromTable() throws InvalidDrawFromTableException, EmptyDeckException {
+        // Assuming the first card in visibleCards is a GoldCard
+        gameTable.getVisibleCard().set(0, new GoldCard(false, Kingdom.FUNGIKINGDOM, 1, new Corner[4], new Kingdom[3], ConditionPoint.QUILL, 1));
+
+        // Case 1: Gold deck is not empty
+        GamingCard card = gameTable.drawCardFromTable(0);
+        assertNotNull("Card should be drawn", card);
+        assertTrue("New card should be a GoldCard", gameTable.getVisibleCard().get(0) instanceof GoldCard);
+
+        // Case 2: Gold deck is empty, resource deck is not empty
+        while (gameTable.getGoldDeck().deckSize() > 0) {
+            gameTable.drawGoldCardDeck();
+        }
+        card = gameTable.drawCardFromTable(0);
+        assertNotNull("Card should be drawn", card);
+        assertNotNull("New card should be a GamingCard", gameTable.getVisibleCard().get(0));
+
+    }
+
+    /**
+     * Tests drawing a GamingCard from the table and the replacement of the drawn card
+     * Covers the cases when:
+     * 1. The resource deck is not empty
+     * 2. The resource deck is empty, but the gold deck is not empty
+     * 3. Both the resource deck and the gold deck are empty
+     *
+     * @throws InvalidDrawFromTableException if the position is invalid
+     * @throws EmptyDeckException if the decks are empty when drawing cards
+     */
+    @Test
+    public void testDrawResourceCardFromTable() throws InvalidDrawFromTableException, EmptyDeckException {
+        // Assuming the first card in visibleCards is a GamingCard
+        gameTable.getVisibleCard().set(0, new GamingCard(false, Kingdom.FUNGIKINGDOM, 1, new Corner[4], 1));
+
+        // Case 1: Resource deck is not empty
+        GamingCard card = gameTable.drawCardFromTable(0);
+        assertNotNull("Card should be drawn", card);
+        assertNotNull("New card should be a GamingCard", gameTable.getVisibleCard().get(0));
+
+        // Case 2: Resource deck is empty, gold deck is not empty
+        while (gameTable.getResourceDeck().deckSize() > 0) {
+            gameTable.drawResourceCardDeck();
+        }
+        card = gameTable.drawCardFromTable(0);
+        assertNotNull("Card should be drawn", card);
+        assertTrue("New card should be a GoldCard", gameTable.getVisibleCard().get(0) instanceof GoldCard);
+
+        // Case 3: Both decks are empty
+        while (gameTable.getGoldDeck().deckSize() > 0) {
+            gameTable.drawGoldCardDeck();
+        }
+        int initialSize = gameTable.getVisibleCard().size();
+        card = gameTable.drawCardFromTable(0);
+        assertEquals("Visible cards size should decrease", initialSize - 1, gameTable.getVisibleCard().size());
+    }
+
+
 }

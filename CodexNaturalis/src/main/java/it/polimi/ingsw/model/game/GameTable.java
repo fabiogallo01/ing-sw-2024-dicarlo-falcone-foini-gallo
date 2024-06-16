@@ -69,15 +69,6 @@ public class GameTable {
         return resourceDeck;
     }
 
-    /**
-     * Resource deck setter
-     *
-     * @param resourceDeck updated resource deck
-     * @author Fabio Gallo
-     */
-    public void setResourceDeck(GamingDeck resourceDeck) {
-        this.resourceDeck = resourceDeck;
-    }
 
     /**
      * It creates the 40 resource cards and put them in the resource deck
@@ -509,15 +500,6 @@ public class GameTable {
         return goldDeck;
     }
 
-    /**
-     * Golden deck setter
-     *
-     * @param goldDeck updated golden deck
-     * @author Fabio Gallo
-     */
-    public void setGoldDeck(GamingDeck goldDeck) {
-        this.goldDeck = goldDeck;
-    }
 
     /**
      * It creates the 40 golden cards and put them in the golden deck
@@ -1029,15 +1011,6 @@ public class GameTable {
         return starterDeck;
     }
 
-    /**
-     * Starter deck setter
-     *
-     * @param starterDeck updated starter deck
-     * @author Fabio Gallo
-     */
-    public void setStarterDeck(GamingDeck starterDeck) {
-        this.starterDeck = starterDeck;
-    }
 
     /**
      * It creates the 6 starting cards and put them in the starting deck
@@ -1178,15 +1151,6 @@ public class GameTable {
         return objectiveDeck;
     }
 
-    /**
-     * Objective deck setter
-     *
-     * @param objectiveDeck updated objective deck
-     * @author Fabio Gallo
-     */
-    public void setObjectiveDeck(ObjectiveDeck objectiveDeck) {
-        this.objectiveDeck = objectiveDeck;
-    }
 
     /**
      * It creates the 16 objective cards and put them in the objective deck
@@ -1250,16 +1214,6 @@ public class GameTable {
 
 
     /**
-     * Visible cards setter
-     *
-     * @param visibleCard updated visible cards
-     * @author Fabio Gallo
-     */
-    public void setVisibleCard(ArrayList<GamingCard> visibleCard) {
-        this.visibleCards = visibleCard;
-    }
-
-    /**
      * It adds a card to the visible cards
      *
      * @param gamingCard it is the card that is going to be put face up with the visible cards
@@ -1280,15 +1234,6 @@ public class GameTable {
         return commonObjectives;
     }
 
-    /**
-     * Common objectives setter
-     *
-     * @param commonObjectives updated common objectives
-     * @author Fabio Gallo
-     */
-    public void setCommonObjectives(ObjectiveCard[] commonObjectives) {
-        this.commonObjectives = commonObjectives;
-    }
 
     /**
      * NumPlayers getter
@@ -1300,15 +1245,6 @@ public class GameTable {
         return numPlayers;
     }
 
-    /**
-     * NumPlayers setter
-     *
-     * @param num number of players
-     * @author Fabio Gallo
-     */
-    public void setNumPlayers(int num) {
-        this.numPlayers = num;
-    }
 
     /**
      * Players getter
@@ -1326,10 +1262,6 @@ public class GameTable {
 
     public void setLastTurn() {
         this.lastTurn = true;
-    }
-
-    public int getJoined() {
-        return joined;
     }
 
     public void setJoined(boolean joined) {
@@ -1354,15 +1286,6 @@ public class GameTable {
         throw new NoPlayerWithSuchUsernameException("There isn't a player in the game with such username.");
     }
 
-    /**
-     * Players setter
-     *
-     * @param players updated players list
-     * @author Fabio Gallo
-     */
-    public void setPlayers(ArrayList<Player> players) {
-        this.players = players;
-    }
 
     /**
      * Adds a player to the game and set score
