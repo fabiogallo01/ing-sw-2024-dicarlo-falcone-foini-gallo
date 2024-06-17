@@ -1,9 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.cards.*;
-import it.polimi.ingsw.model.exception.InvalidPlayCardIndexException;
-import it.polimi.ingsw.model.exception.InvalidPlayException;
-import it.polimi.ingsw.model.exception.InvalidPositionAreaException;
+import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.Color;
 import it.polimi.ingsw.model.game.Player;
 import it.polimi.ingsw.model.game.PlayerArea;
@@ -197,6 +195,118 @@ public class PlayerTest {
     public void tearDown() {
     }
 
+    /**
+     * Test for setHand method with exactly three cards.
+     * Expected behavior: hand set successfully without exceptions.
+     */
+    @Test
+    public void setHandTest_handWithThreeCards_handSetSuccessfully() {
+        ArrayList<GamingCard> hand = new ArrayList<>();
+        Corner[] frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
+        };
+
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+        try {
+            player.setHand(hand);
+        } catch (InvalidNumCardsPlayerHandException e) {
+            fail("Exception should not be thrown for hand with exactly three cards");
+        }
+        assertEquals(hand, player.getHand());
+    }
+
+    /**
+     * Test for setHand method with less than three cards.
+     * Expected behavior: InvalidNumCardsPlayerHandException thrown.
+     */
+    @Test(expected = InvalidNumCardsPlayerHandException.class)
+    public void setHandTest_handWithLessThanThreeCards_exceptionThrown() throws InvalidNumCardsPlayerHandException {
+        ArrayList<GamingCard> hand = new ArrayList<>();
+        Corner[] frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
+        };
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+
+        player.setHand(hand);
+    }
+
+    /**
+     * Test for setHand method with more than three cards.
+     * Expected behavior: InvalidNumCardsPlayerHandException thrown.
+     */
+    @Test(expected = InvalidNumCardsPlayerHandException.class)
+    public void setHandTest_handWithMoreThanThreeCards_exceptionThrown() throws InvalidNumCardsPlayerHandException {
+        ArrayList<GamingCard> hand = new ArrayList<>();
+        Corner[] frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
+        };
+
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+
+        player.setHand(hand);
+    }
+
+    /**
+     * Test for addCardHand method adding a card to hand with two cards.
+     * Expected behavior: card added successfully.
+     */
+    @Test
+    public void addCardHandTest_addCardToHandWithTwoCards_cardAddedSuccessfully() {
+        Corner[] frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
+        };
+
+        try {
+            // Set player's hand side to 2 by removing a card
+            player.getHand().removeFirst();
+
+            // Set player's hand side to 3 by adding a card
+            player.addCardHand(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+            assertEquals(3, player.getHand().size());
+        } catch (HandAlreadyFullException e) {
+            fail("Exception should not be thrown for hand with less than three cards");
+        }
+    }
+
+    /**
+     * Test for addCardHand method adding a card to a full hand.
+     * Expected behavior: HandAlreadyFullException thrown.
+     */
+    @Test(expected = HandAlreadyFullException.class)
+    public void addCardHandTest_addCardToFullHand_exceptionThrown() throws HandAlreadyFullException, InvalidNumCardsPlayerHandException {
+        ArrayList<GamingCard> hand = new ArrayList<>();
+        Corner[] frontCorners = new Corner[]{
+                new Corner(true, false, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, true, GameObject.NONE, Kingdom.NONE),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
+                new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
+        };
+
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+        hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+
+        player.setHand(hand);
+        player.addCardHand(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
+    }
+
 
     @Test
     public void playCardTest_occupiedPositionToPlayGiven_ShouldThrowInvalidPlayException_ShouldShowErrorMessage() {
@@ -230,7 +340,7 @@ public class PlayerTest {
             player.playCard(3, new int[]{36, 41}, true);
             fail("All went good.");
         } catch (InvalidPlayException e) {
-            assertEquals("You can't play this card in this position.\nMistake: The card you want to play can't cover two corners of the same card.", e.getMessage()); //DA SISTEMARE IN PLAYER
+            assertEquals("You can't play this card in this position.\nMistake: The card you want to play can't cover two corners of the same card.", e.getMessage());
             System.out.println(e.getMessage());
         } catch (Exception e) {
             fail(e.getMessage());
@@ -302,7 +412,6 @@ public class PlayerTest {
 
 
     }
-
 
     @Test
     public void calculateObjectivePointsTest_noPoints() {
