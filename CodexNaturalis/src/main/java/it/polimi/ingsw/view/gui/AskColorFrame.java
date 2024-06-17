@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.gui;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.io.IOException;
 public class AskColorFrame extends JFrame {
     private String selectedColor; // contains client's selected color
     private final Object lock = new Object();
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
 
     /**
      * AskColorFrame constructor, it calls method init() for initialization of the frame
@@ -58,7 +60,7 @@ public class AskColorFrame extends JFrame {
     private void init(ArrayList<String> colors, boolean repeated, String previousColor) {
         // Set frame default close operation, size and layout
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(400, 200);
+        this.setSize(550, 300);
         this.setLayout(new BorderLayout());
 
         // Setting custom image icon
@@ -69,6 +71,21 @@ public class AskColorFrame extends JFrame {
             e.printStackTrace();
         }
 
+        // Create background panel and set it
+        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        this.setContentPane(backgroundPanel);
+
+        // Create a transparent panel for labels and button
+        JPanel transparentPanel = new JPanel(new GridBagLayout());
+        transparentPanel.setOpaque(false);
+
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(25, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+
         // If repeated is true => Show label which says that previousColor is already used
         if(repeated){
             // Removed used color for visualization
@@ -76,9 +93,10 @@ public class AskColorFrame extends JFrame {
 
             JLabel repeatedLabel = new JLabel("Sorry, "+ previousColor+" is already used.");
             repeatedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            repeatedLabel.setFont(customFont);
 
-            // Add label in the frame
-            this.add(repeatedLabel, BorderLayout.NORTH);
+            // Add label in the transparent panel with grid back constraint
+            transparentPanel.add(repeatedLabel, gbc);
         }
 
         // Create panel for input
@@ -87,9 +105,13 @@ public class AskColorFrame extends JFrame {
 
         // Add label for asking client is color
         JLabel colorLabel = new JLabel("Select a color:");
+        colorLabel.setFont(customFont);
 
         // Create combo box with available colors
         JComboBox<String> comboBox = new JComboBox<>(colors.toArray(new String[0]));
+
+        // Set custom renderer
+        comboBox.setRenderer(new ColorCellRenderer());
 
         // Add label and combo box to the panel
         panel.add(colorLabel);
@@ -97,6 +119,10 @@ public class AskColorFrame extends JFrame {
 
         // Create button for sending input and close this frame
         JButton confirmButton = new JButton("CONFIRM");
+        confirmButton.setPreferredSize(new Dimension(200, 40)); // Set preferred size
+        confirmButton.setFont(customFont); // Set custom font
+        confirmButton.setForeground(Color.BLACK); // Set text color
+        confirmButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
         // Add listener when client click on "CONFIRM" => Set frame's parameter
         confirmButton.addActionListener(e -> {
             selectedColor = (String) comboBox.getSelectedItem();
@@ -106,9 +132,12 @@ public class AskColorFrame extends JFrame {
             }
         });
 
-        // Add panel and button in the frame
-        this.add(panel, BorderLayout.CENTER);
-        this.add(confirmButton, BorderLayout.SOUTH);
+        // Add panel and button to the transparent panel with grid back constraint
+        transparentPanel.add(panel, gbc);
+        transparentPanel.add(confirmButton, gbc);
+
+        // Add transparent panel to the frame
+        this.add(transparentPanel, BorderLayout.CENTER);
 
         // Set frame's location and visibility
         this.setLocationRelativeTo(null);
@@ -132,5 +161,35 @@ public class AskColorFrame extends JFrame {
      */
     public String getSelectedColor() {
         return selectedColor;
+    }
+}
+
+// Custom renderer for JComboBox
+class ColorCellRenderer extends DefaultListCellRenderer {
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                  boolean isSelected, boolean cellHasFocus) {
+        Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+        if (component instanceof JLabel) {
+            JLabel label = (JLabel) component;
+
+            // Set the color based on the value
+            switch (value.toString()) {
+                case "blue":
+                    label.setForeground(Color.BLUE);
+                    break;
+                case "green":
+                    label.setForeground(Color.GREEN);
+                    break;
+                case "red":
+                    label.setForeground(Color.RED);
+                    break;
+                default: // yellow
+                    label.setForeground(Color.YELLOW);
+                    break;
+            }
+        }
+        return component;
     }
 }

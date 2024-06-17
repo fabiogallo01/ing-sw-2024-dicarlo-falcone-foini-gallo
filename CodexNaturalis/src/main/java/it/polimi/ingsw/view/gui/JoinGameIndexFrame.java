@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.gui;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 public class JoinGameIndexFrame extends JFrame {
     private String selectedGame; // contains the selected game to join
     private final Object lock = new Object();
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
 
     /**
      * CreateJoinFrame constructor, it calls method init() for initialization of the frame
@@ -54,9 +56,35 @@ public class JoinGameIndexFrame extends JFrame {
             e.printStackTrace();
         }
 
+        // Setting custom image icon from resource
+        try {
+            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            this.setIconImage(icon);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Create background panel and set it
+        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        this.setContentPane(backgroundPanel);
+
+        // Create a transparent panel for labels and button
+        JPanel transparentPanel = new JPanel(new GridBagLayout());
+        transparentPanel.setOpaque(false);
+
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(25, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+
         // Create label with question
         JLabel questionsLabel = new JLabel("Which game you want to join?", SwingConstants.CENTER);
-        this.add(questionsLabel, BorderLayout.NORTH);
+        questionsLabel.setFont(customFont);
+
+        // Add label in the transparent panel with grid back constraint
+        transparentPanel.add(questionsLabel, gbc);
 
         // Create new panel: it contains list of games and their players' username
         JPanel mainPanel = new JPanel();
@@ -66,25 +94,35 @@ public class JoinGameIndexFrame extends JFrame {
         for (Map.Entry<String, List<String>> entry : joinGamesAndPlayers.entrySet()) {
             // Create new game label and add into main panel
             JLabel gameLabel = new JLabel(entry.getKey());
+            gameLabel.setFont(customFont);
             mainPanel.add(gameLabel);
+
             // Iterate through players' usernames
             for (String username : entry.getValue()) {
                 // Create new player label and add into main panel
                 JLabel playerPanel = new JLabel(username);
+                playerPanel.setFont(customFont);
                 mainPanel.add(playerPanel);
             }
         }
 
         // Add scroll pane and add it into the frame
         JScrollPane scrollPaneGames = new JScrollPane(mainPanel);
-        this.add(scrollPaneGames, BorderLayout.CENTER);
 
-        // Create a panel, it contains the two buttons
+        // Add scroll pane in the transparent panel with grid back constraint
+        transparentPanel.add(scrollPaneGames, gbc);
+
+        // Create a panel, it contains the buttons for joining a game or back to the previous window
         JPanel buttonPanel = createButtonPanel(new ArrayList<>(joinGamesAndPlayers.keySet()));
 
         // Add scroll pane and add it into the frame
         JScrollPane scrollPaneButtons = new JScrollPane(buttonPanel);
-        this.add(scrollPaneButtons, BorderLayout.SOUTH);
+
+        // Add scroll pane in the transparent panel with grid back constraint
+        transparentPanel.add(scrollPaneButtons, gbc);
+
+        // Add transparent panel to the frame
+        this.add(transparentPanel, BorderLayout.CENTER);
 
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -111,7 +149,11 @@ public class JoinGameIndexFrame extends JFrame {
 
         // Create exit button
         JButton backButton = new JButton("<-- BACK");
-        backButton.setPreferredSize(new Dimension(150, 50));
+        backButton.setPreferredSize(new Dimension(200, 50));
+        backButton.setFont(customFont); // Set custom font
+        backButton.setForeground(Color.BLACK); // Set text color
+        backButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+        // Add action listener
         backButton.addActionListener(e -> {
             selectedGame = "0";
             this.dispose(); // Close the window
@@ -126,7 +168,11 @@ public class JoinGameIndexFrame extends JFrame {
         for(String gameKey: gameKeys){
             // Create button
             JButton gameButton = new JButton("JOIN "+gameKey.toUpperCase());
-            gameButton.setPreferredSize(new Dimension(150, 50));
+            gameButton.setPreferredSize(new Dimension(200, 50));
+            gameButton.setFont(customFont); // Set custom font
+            gameButton.setForeground(Color.BLACK); // Set text color
+            gameButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+            // Add action listener
             gameButton.addActionListener(e -> {
                 selectedGame = gameKey;
                 this.dispose(); // Close the window

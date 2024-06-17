@@ -14,6 +14,7 @@ public class PlayerAreaFrame extends JFrame {
     private final PlayerArea playerArea;
     private final int numRows;
     private final int numCols;
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 15);
 
     public PlayerAreaFrame(String title, PlayerArea playerArea, int numRows, int numCols) {
         super(title);
@@ -48,6 +49,7 @@ public class PlayerAreaFrame extends JFrame {
                 // If there is card => Add such card's image in the label
                 if(playerArea.getArea()[i][j]){ // If is true => Cell is empty
                     label = new JLabel("( " + i + " , " + j + " )");
+                    label.setFont(customFont);
                 }else{ // If is false => There is a card in such position (i,j)
                     // Get card
                     int[] position = new int[2];

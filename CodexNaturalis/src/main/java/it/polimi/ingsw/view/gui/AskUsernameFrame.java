@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.gui;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.io.IOException;
 public class AskUsernameFrame extends JFrame {
     private String username; // contains client's username
     private final Object lock = new Object();
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
 
     /**
      * AskUsernameFrame constructor, it calls method init() for initialization of the frame
@@ -55,10 +57,10 @@ public class AskUsernameFrame extends JFrame {
     private void init(boolean repeated, String previousUsername) {
         // Set frame default close operation, size and layout
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(400, 300);
+        this.setSize(550, 300);
         this.setLayout(new BorderLayout());
 
-        // Setting custom image icon
+        // Setting custom image icon from resource
         try {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
@@ -71,24 +73,31 @@ public class AskUsernameFrame extends JFrame {
         this.setContentPane(backgroundPanel);
 
         // Create a transparent panel for labels and button
-        JPanel transparentPanel = new JPanel();
+        JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
-        transparentPanel.setLayout(new BorderLayout());
+
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(25, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
 
         // If repeated is true => Show label which says that previousUsername is already used
-        if(repeated){
+        if (repeated) {
             JLabel repeatedLabel;
-            if(!previousUsername.isEmpty()){
+            if (!previousUsername.isEmpty()) {
                 // Create label and set horizontal alignment
-                repeatedLabel = new JLabel("Sorry, "+previousUsername+" is already used.");
-            } else{
+                repeatedLabel = new JLabel("Sorry, " + previousUsername + " is already used.");
+            } else {
                 // Create label and set horizontal alignment
                 repeatedLabel = new JLabel("Sorry, you didn't insert a username.");
             }
             repeatedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            repeatedLabel.setFont(customFont); // Set custom font
 
-            // Add label in the transparent panel
-            transparentPanel.add(repeatedLabel, BorderLayout.NORTH);
+            // Add label in the transparent panel with grid back constraint
+            transparentPanel.add(repeatedLabel, gbc);
         }
 
         // Create main panel for input
@@ -96,9 +105,9 @@ public class AskUsernameFrame extends JFrame {
         panel.setOpaque(false);
         panel.setLayout(new FlowLayout());
 
-
         // Create label for asking client's username
         JLabel usernameLabel = new JLabel("Insert your username:");
+        usernameLabel.setFont(customFont); // Set custom font
 
         // Create text field to insert username
         JTextField textField = new JTextField(15);
@@ -107,8 +116,16 @@ public class AskUsernameFrame extends JFrame {
         panel.add(usernameLabel);
         panel.add(textField);
 
+        // Add input panel to the transparent panel with grid back constraint
+        transparentPanel.add(panel, gbc);
+
         // Create button for sending input and close this frame
         JButton confirmButton = new JButton("CONFIRM");
+        confirmButton.setPreferredSize(new Dimension(200, 40)); // Set preferred size
+        confirmButton.setFont(customFont); // Set custom font
+        confirmButton.setForeground(Color.BLACK); // Set text color
+        confirmButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+
         // Add listener when client clicks on "CONFIRM" => Set frame's parameter
         confirmButton.addActionListener(e -> {
             username = textField.getText().trim();
@@ -118,9 +135,8 @@ public class AskUsernameFrame extends JFrame {
             }
         });
 
-        // Add input panel and button to the transparent panel
-        transparentPanel.add(panel, BorderLayout.CENTER);
-        transparentPanel.add(confirmButton, BorderLayout.SOUTH);
+        // Add button to the transparent panel with grid back constraint
+        transparentPanel.add(confirmButton, gbc);
 
         // Add transparent panel to the frame
         this.add(transparentPanel, BorderLayout.CENTER);

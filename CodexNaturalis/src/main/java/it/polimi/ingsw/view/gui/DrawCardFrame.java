@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.game.GameTable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -19,10 +20,12 @@ import java.io.IOException;
  */
 public class DrawCardFrame extends JFrame {
     private final Object lock = new Object();
-    private final int width = 225;
+    private final int width = 200;
     private final GameTable gameTable; // It represents the gameTable of the match
     private int indexSelectedCard;
     private final boolean turn;
+    private final Font labelFont = new Font("SansSerif", Font.BOLD, 18);
+    private final Font buttonFont = new Font("SansSerif", Font.BOLD, 12);
 
     /**
      * DrawCardFrame constructor, it calls method init() for initialization of frame
@@ -48,7 +51,7 @@ public class DrawCardFrame extends JFrame {
     private void init(){
         // Set frame parameters
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
-        this.setSize(1500, 300);
+        this.setSize(1500, 500);
         this.setLayout(new BorderLayout());
 
         // Setting custom image icon
@@ -59,17 +62,40 @@ public class DrawCardFrame extends JFrame {
             e.printStackTrace();
         }
 
+        // Create background panel and set it
+        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        this.setContentPane(backgroundPanel);
+
+        // Create a transparent panel for labels and button
+        JPanel transparentPanel = new JPanel(new GridBagLayout());
+        transparentPanel.setOpaque(false);
+
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(50, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+
         // Create label with question and add it in the frame
         JLabel informationLabel;
         if(turn) informationLabel = new JLabel("Select which card you want to draw");
         else informationLabel = new JLabel("These cards represent: top card of resource and gold deck, visible cards in table");
 
         informationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(informationLabel, BorderLayout.NORTH);
+        informationLabel.setFont(labelFont);
+
+        // Add label to the transparent panel with grid back constraint
+        transparentPanel.add(informationLabel, gbc);
 
         // Call to function for create main panel
         JPanel mainPanel = createMainPanel();
-        this.add(mainPanel, BorderLayout.CENTER);
+
+        // Add main panel to the transparent panel with grid back constraint
+        transparentPanel.add(mainPanel, gbc);
+
+        // Add transparent panel to the frame
+        this.add(transparentPanel, BorderLayout.CENTER);
 
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -88,8 +114,14 @@ public class DrawCardFrame extends JFrame {
 
     private JPanel createMainPanel(){
         JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setOpaque(false);
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
+        // Setting common constraints
+        gbc.insets = new Insets(5, 5, 5, 5); // Add space around components
+        gbc.ipadx = 5; // Add internal padding horizontally
+        gbc.ipady = 5; // Add internal padding vertically
+
         int indexColumn = 0;
 
         // GET IMAGES AND BUTTONS, if they exist
@@ -144,7 +176,7 @@ public class DrawCardFrame extends JFrame {
      * @author Foini Lorenzo
      */
     private void addImageLabel(JPanel panel, int cardId, boolean side, GridBagConstraints gbc, int column){
-        int imageHeight = 120;
+        int imageHeight = 100;
         // Get image of the resource deck top card
         JLabel imageLabel = new JLabel(getImageFromID(cardId, side, width, imageHeight));
         imageLabel.setVerticalAlignment(JLabel.CENTER);
@@ -165,9 +197,14 @@ public class DrawCardFrame extends JFrame {
      * @author Foini Lorenzo
      */
     private void addButton(JPanel panel, String text, int returnedValue, GridBagConstraints gbc, int column){
-        int buttonHeight = 150;
+        int buttonHeight = 50;
         JButton selectButton = new JButton(text);
         selectButton.setPreferredSize(new Dimension(width, buttonHeight));
+        selectButton.setFont(buttonFont); // Set custom font
+        selectButton.setForeground(Color.BLACK); // Set text color
+        selectButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+
+        // Add action listener
         selectButton.addActionListener(e -> {
             indexSelectedCard = returnedValue;
             this.dispose(); // Close the window

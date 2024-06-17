@@ -14,6 +14,7 @@ import java.util.ArrayList;
  * @author Foini Lorenzo
  */
 public class PostGameFrame extends JFrame {
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
 
     /**
      * PostGameFrame constructor, it calls method init() for initialization of frame
@@ -71,14 +72,11 @@ public class PostGameFrame extends JFrame {
     }
 
     private void addWinnerLabel(String winnerMessage){
-        // Create new font for this label
-        Font font = new Font("Arial", Font.BOLD, 15);
-
         // Create new label with winner(s) message
         JLabel winnerMessageLabel = new JLabel(winnerMessage);
 
         // Set label's font and alignment
-        winnerMessageLabel.setFont(font);
+        winnerMessageLabel.setFont(customFont);
         winnerMessageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         winnerMessageLabel.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -87,16 +85,13 @@ public class PostGameFrame extends JFrame {
     }
 
     private void addHasWonMessage(boolean hasWon){
-        // Create new font for this label
-        Font font = new Font("Arial", Font.BOLD, 25);
-
         // Create new label based on value of hasWon
         JLabel hasWonLabel;
         if(hasWon) hasWonLabel = new JLabel("CONGRATULATIONS, YOU WON!!!");
         else hasWonLabel = new JLabel("SORRY, YOU LOST.");
 
         // Set label's font and alignment
-        hasWonLabel.setFont(font);
+        hasWonLabel.setFont(customFont);
         hasWonLabel.setHorizontalAlignment(SwingConstants.CENTER);
         hasWonLabel.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -105,8 +100,6 @@ public class PostGameFrame extends JFrame {
     }
 
     private void addFinalScoreboard(ArrayList<String> finalScoreboard){
-        Font font = new Font("Arial", Font.BOLD, 20);
-
         // Create new panel for containing the elements of finalScoreboard
         JPanel scoreboardPanel = new JPanel();
         scoreboardPanel.setLayout(new GridLayout(5, 1));
@@ -117,7 +110,7 @@ public class PostGameFrame extends JFrame {
             JLabel label = new JLabel(string);
 
             // Set label's font and alignment
-            label.setFont(font);
+            label.setFont(customFont);
             label.setHorizontalAlignment(SwingConstants.CENTER);
             label.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -130,14 +123,11 @@ public class PostGameFrame extends JFrame {
     }
 
     private void addExitGameMessage(){
-        // Create new font for this label
-        Font font = new Font("Arial", Font.BOLD, 20);
-
         // Create new label with exit message
         JLabel exitLabel = new JLabel("THANKS FOR PLAYING, now close this window to exit.");
 
         // Set label's font and alignment
-        exitLabel.setFont(font);
+        exitLabel.setFont(customFont);
         exitLabel.setHorizontalAlignment(SwingConstants.CENTER);
         exitLabel.setVerticalAlignment(SwingConstants.CENTER);
 
