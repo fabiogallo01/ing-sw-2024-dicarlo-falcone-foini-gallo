@@ -15,32 +15,26 @@ import java.util.*;
 public class ViewGUI {
 
     public String displayNumberPlayer(){
-        // TODO: Improve Frame graphics: add font, color, background, ...
-        // See other classes in gui package for example and better understanding
         NumPlayersFrame numPlayersFrame = new NumPlayersFrame("SELECT NUMBER OF PLAYERS");
         return numPlayersFrame.getSelectedNumPlayers();
     }
 
     public String displayUsername(){
-        // TODO: Improve Frame graphics: add font, color, background, ...
         AskUsernameFrame askUsernameFrame = new AskUsernameFrame("INSERT USERNAME");
         return askUsernameFrame.getUsername();
     }
 
     public String displayRepeatedUsername(String previousUsername){
-        // TODO: Improve Frame graphics: add font, color, background, ...
         AskUsernameFrame askValidUsernameFrame = new AskUsernameFrame("INSERT VALID USERNAME", previousUsername);
         return askValidUsernameFrame.getUsername();
     }
 
     public String displayColor(ArrayList<String> colors){
-        // TODO: Improve Frame graphics: add font, color, background, ...
         AskColorFrame getColorFrame = new AskColorFrame("INSERT COLOR", colors);
         return getColorFrame.getSelectedColor();
     }
 
     public String displayInvalidColor(ArrayList<String> colors, String previousColor){
-        // TODO: Improve Frame graphics: add font, color, background, ...
         AskColorFrame getValidColorFrame = new AskColorFrame("INSERT VALID COLOR", colors, previousColor);
         return getValidColorFrame.getSelectedColor();
     }
@@ -54,7 +48,6 @@ public class ViewGUI {
      * @author giacomofalcone
      */
     public String displayStarterCard(int starterCardID) {
-        // TODO: Improve Frame graphics: add font, color, background, ...
         StarterCardFrame getStarterCardFrame = new StarterCardFrame("SELECT STARTER CARD'S SIDE", starterCardID);
         return getStarterCardFrame.getSelectedSide();
     }
@@ -72,7 +65,6 @@ public class ViewGUI {
      * @author giacomofalcone
      */
     public String displayObjectiveCards(String starterCardSide, int starterCardID, int[] handCardIDs, int[] commonObjectiveCardIDs, int[] secretObjectiveCardIDs) {
-        // TODO: Improve Frame graphics: add font, color, background, ...
         SecretObjectiveFrame secretObjectiveFrame = new SecretObjectiveFrame("SELECT SECRET OBJECTIVE CARD", starterCardSide, starterCardID, handCardIDs, commonObjectiveCardIDs, secretObjectiveCardIDs);
         return secretObjectiveFrame.getSelectedSecretCard();
     }
@@ -85,7 +77,6 @@ public class ViewGUI {
      * @author Foini Lorenzo
      */
     public String displayCreateJoinGame(int countNotFullGame){
-        // TODO: Improve Frame graphics: add font, color, background, ...
         CreateJoinFrame createJoinFrame = new CreateJoinFrame("CREATE OR JOIN GAME", countNotFullGame);
         return createJoinFrame.getChoice();
     }
@@ -98,14 +89,11 @@ public class ViewGUI {
      * @author Foini Lorenzo
      */
     public String displayJoinGameIndex(Map<String, List<String>> joinGamesAndPlayers){
-        // TODO: Improve Frame graphics: add font, color, background, ...
         JoinGameIndexFrame joinGameIndexFrame = new JoinGameIndexFrame("SELECT GAME TO JOIN", joinGamesAndPlayers);
         return joinGameIndexFrame.getSelectedIndex();
     }
 
     public WaitStartGameFrame displayWaitStartGame(boolean create){
-        // TODO: Improve Frame graphics: add font, color, background, ...
-        // TODO: Close the window when the game started
         return new WaitStartGameFrame("WAIT START OF THE GAME", create);
     }
 
@@ -119,7 +107,6 @@ public class ViewGUI {
     }
 
     public WaitEndGameFrame displayWaitEndGame(){
-        // TODO: Improve Frame graphics: add font, color, background, ...
         return new WaitEndGameFrame("WAIT END OF THE GAME");
     }
 
@@ -128,7 +115,6 @@ public class ViewGUI {
     }
 
     public void displayGameCrashed(){
-        // TODO: Improve Frame graphics: add font, color, background, ...
         new GameCrashedFrame("GAME CRASHED");
     }
 }
