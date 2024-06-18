@@ -21,7 +21,6 @@ import java.io.IOException;
 public class DrawCardFrame extends JFrame {
     private final Object lock = new Object();
     private final int width = 200;
-    private final int buttonHeight = 50;
     private final GameTable gameTable; // It represents the gameTable of the match
     private int indexSelectedCard;
     private final boolean enableButton;
@@ -98,7 +97,7 @@ public class DrawCardFrame extends JFrame {
         // exit button if enableButton is false
         if(!enableButton){
             JButton exitButton = new JButton("CLICK HERE TO EXIT FROM THIS WINDOW!");
-            exitButton.setPreferredSize(new Dimension(width, buttonHeight));
+            exitButton.setPreferredSize(new Dimension(350, 50));
             exitButton.setFont(buttonFont); // Set custom font
             exitButton.setForeground(Color.BLACK); // Set text color
             exitButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
@@ -215,6 +214,7 @@ public class DrawCardFrame extends JFrame {
      * @author Foini Lorenzo
      */
     private void addButton(JPanel panel, String text, int returnedValue, GridBagConstraints gbc, int column){
+        int buttonHeight = 50;
         JButton selectButton = new JButton(text);
         selectButton.setPreferredSize(new Dimension(width, buttonHeight));
         selectButton.setFont(buttonFont); // Set custom font

@@ -43,7 +43,7 @@ public class PostGameFrame extends JFrame {
     private void init(String winnerMessage, boolean hasWon, ArrayList<String> finalScoreboard){
         // Set frame parameters
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1000, 500);
+        this.setSize(800, 400);
         this.setLayout(new GridLayout(4, 1));
 
         // Setting custom image icon
@@ -54,24 +54,46 @@ public class PostGameFrame extends JFrame {
             e.printStackTrace();
         }
 
-        // Add label with winner(s) message
-        addWinnerLabel(winnerMessage);
+        // Create background panel and set it
+        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        this.setContentPane(backgroundPanel);
 
-        // Add label with message based on hasWon value
-        addHasWonMessage(hasWon);
+        // Create a transparent panel for labels and button
+        JPanel transparentPanel = new JPanel(new GridBagLayout());
+        transparentPanel.setOpaque(false);
 
-        // Add label with final scoreboard
-        addFinalScoreboard(finalScoreboard);
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(25, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
 
-        // Add label with exit game message
-        addExitGameMessage();
+        // Create label with winner(s) message and add it in transparent panel with grid bag constraint
+        JLabel winnerLabel = addWinnerLabel(winnerMessage);
+        transparentPanel.add(winnerLabel, gbc);
+
+        // Create label with has won/lose message and add it in transparent panel with grid bag constraint
+        JLabel hasWonLabel = addHasWonLabel(hasWon);
+        transparentPanel.add(hasWonLabel, gbc);
+
+        // Create panel with scoreboard and add it in transparent panel with grid bag constraint
+        JPanel finalScoreboardPanel = addFinalScoreboardPanel(finalScoreboard);
+        transparentPanel.add(finalScoreboardPanel, gbc);
+
+        // Create label with exit message and add it in transparent panel with grid bag constraint
+        JLabel exitGameLabel = addExitGameLabel();
+        transparentPanel.add(exitGameLabel, gbc);
+
+        // Add transparent panel to the frame
+        this.add(transparentPanel, BorderLayout.CENTER);
 
         // Set frame relative location and visibility
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
-    private void addWinnerLabel(String winnerMessage){
+    private JLabel addWinnerLabel(String winnerMessage){
         // Create new label with winner(s) message
         JLabel winnerMessageLabel = new JLabel(winnerMessage);
 
@@ -80,11 +102,10 @@ public class PostGameFrame extends JFrame {
         winnerMessageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         winnerMessageLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        // Add label in the frame's first row
-        this.add(winnerMessageLabel);
+        return winnerMessageLabel;
     }
 
-    private void addHasWonMessage(boolean hasWon){
+    private JLabel addHasWonLabel(boolean hasWon){
         // Create new label based on value of hasWon
         JLabel hasWonLabel;
         if(hasWon) hasWonLabel = new JLabel("CONGRATULATIONS, YOU WON!!!");
@@ -95,14 +116,14 @@ public class PostGameFrame extends JFrame {
         hasWonLabel.setHorizontalAlignment(SwingConstants.CENTER);
         hasWonLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        // Add label in the frame's second row
-        this.add(hasWonLabel);
+        return hasWonLabel;
     }
 
-    private void addFinalScoreboard(ArrayList<String> finalScoreboard){
+    private JPanel addFinalScoreboardPanel(ArrayList<String> finalScoreboard){
         // Create new panel for containing the elements of finalScoreboard
         JPanel scoreboardPanel = new JPanel();
         scoreboardPanel.setLayout(new GridLayout(5, 1));
+        scoreboardPanel.setOpaque(false);
 
         // Iterate through elements of finalScoreboard
         for(String string : finalScoreboard){
@@ -118,11 +139,10 @@ public class PostGameFrame extends JFrame {
             scoreboardPanel.add(label);
         }
 
-        // Add panel in the frame's third row
-        this.add(scoreboardPanel);
+        return scoreboardPanel;
     }
 
-    private void addExitGameMessage(){
+    private JLabel addExitGameLabel(){
         // Create new label with exit message
         JLabel exitLabel = new JLabel("THANKS FOR PLAYING, now close this window to exit.");
 
@@ -131,7 +151,6 @@ public class PostGameFrame extends JFrame {
         exitLabel.setHorizontalAlignment(SwingConstants.CENTER);
         exitLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        // Add label in the frame's fourth row
-        this.add(exitLabel);
+        return exitLabel;
     }
 }

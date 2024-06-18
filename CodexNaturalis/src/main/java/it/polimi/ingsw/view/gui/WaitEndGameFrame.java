@@ -35,7 +35,7 @@ public class WaitEndGameFrame extends JFrame {
     private void init(){
         // Set frame default close operation, size and layout
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(550, 300);
+        this.setSize(650, 300);
         this.setLayout(new BorderLayout());
 
         // Setting custom image icon
