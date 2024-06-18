@@ -102,6 +102,7 @@ public class AskColorFrame extends JFrame {
         // Create panel for input
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
+        panel.setOpaque(false);
 
         // Add label for asking client is color
         JLabel colorLabel = new JLabel("Select a color:");
@@ -111,7 +112,7 @@ public class AskColorFrame extends JFrame {
         JComboBox<String> comboBox = new JComboBox<>(colors.toArray(new String[0]));
 
         // Set custom renderer
-        comboBox.setRenderer(new ColorCellRenderer());
+        comboBox.setRenderer(new ColorComboBoxCellRenderer());
 
         // Add label and combo box to the panel
         panel.add(colorLabel);
@@ -165,7 +166,7 @@ public class AskColorFrame extends JFrame {
 }
 
 // Custom renderer for JComboBox
-class ColorCellRenderer extends DefaultListCellRenderer {
+class ColorComboBoxCellRenderer extends DefaultListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index,
                                                   boolean isSelected, boolean cellHasFocus) {

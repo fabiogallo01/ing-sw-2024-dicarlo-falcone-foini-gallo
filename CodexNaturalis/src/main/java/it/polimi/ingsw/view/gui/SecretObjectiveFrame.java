@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.gui;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,10 +18,10 @@ import java.io.IOException;
 public class SecretObjectiveFrame extends JFrame{
     private String selectedSecretCard; // Index of the selected secret objective card as string: "1" or "2"
     private final Object lock = new Object();
-    Font customFont = new Font("SansSerif", Font.BOLD, 15); // // Create a custom Font
-    private final int width = 200;
-    private final int imageHeight = 125;
-    private final int buttonHeight = 25;
+    private Font customFont = new Font("SansSerif", Font.BOLD, 15); // // Create a custom Font
+    private final int width = 180;
+    private final int imageHeight = 100;
+    private final int buttonHeight = 35;
 
     /**
      * SecretObjectiveFrame constructor, it calls method init() for initialization of the frame
@@ -51,8 +52,7 @@ public class SecretObjectiveFrame extends JFrame{
     private void init(String starterCardSide, int starterCardID, int[] handCardIDs, int[] commonObjectiveCardIDs, int[] secretObjectiveCardIDs){
         // Set frame parameters
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(700, 800);
-        this.setLayout(new GridLayout(4, 1));
+        this.setLayout(new BorderLayout());
 
         // Setting custom image icon
         try {
@@ -62,21 +62,41 @@ public class SecretObjectiveFrame extends JFrame{
             e.printStackTrace();
         }
 
+        // Create background panel and set it
+        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        this.setContentPane(backgroundPanel);
+
+        // Create a transparent panel for labels and button
+        JPanel transparentPanel = new JPanel(new GridBagLayout());
+        transparentPanel.setOpaque(false);
+
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(30, 25, 30, 25);
+        gbc.anchor = GridBagConstraints.CENTER;
+
         // Create new panel for displaying starter card
         JPanel starterCardPanel = createStarterPanel(starterCardSide, starterCardID);
-        this.add(starterCardPanel);
+        transparentPanel.add(starterCardPanel, gbc);
+
+        // Reset gbc insect
+        gbc.insets = new Insets(0, 25, 30, 25);
 
         // Create new panel for displaying hand's cards
         JPanel handPanel = createHandCommonPanel("This is your hand", handCardIDs);
-        this.add(handPanel);
+        transparentPanel.add(handPanel, gbc);
 
         // Create new panel for displaying common objective cards
         JPanel commonObjectivesPanel = createHandCommonPanel("These are the two common objective cards", commonObjectiveCardIDs);
-        this.add(commonObjectivesPanel);
+        transparentPanel.add(commonObjectivesPanel, gbc);
 
         // Create new panel for display secret objective cards
         JPanel secretObjectivesPanel = createSecretObjectivePanel(secretObjectiveCardIDs);
-        this.add(secretObjectivesPanel);
+        transparentPanel.add(secretObjectivesPanel, gbc);
+
+        this.add(transparentPanel, BorderLayout.CENTER);
 
         this.pack();
         this.setLocationRelativeTo(null);
@@ -103,6 +123,7 @@ public class SecretObjectiveFrame extends JFrame{
         // Create panel
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
+        panel.setOpaque(false);
 
         // Create label
         JLabel label = new JLabel("This is your starter card", SwingConstants.CENTER);
@@ -132,6 +153,7 @@ public class SecretObjectiveFrame extends JFrame{
         // Create panel
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
+        panel.setOpaque(false);
 
         // Create label
         JLabel label = new JLabel(labelText, SwingConstants.CENTER);
@@ -141,6 +163,7 @@ public class SecretObjectiveFrame extends JFrame{
         // Create panel for images
         JPanel imagesPanel = new JPanel();
         imagesPanel.setLayout(new FlowLayout());
+        imagesPanel.setOpaque(false);
 
         // Iterate through IDs
         for (int cardID : cardsIDs) {
@@ -166,6 +189,7 @@ public class SecretObjectiveFrame extends JFrame{
         // Create panel
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
+        panel.setOpaque(false);
 
         // Create label with question
         JLabel instructionLabel = new JLabel("Choose which secret objective card you want to use", SwingConstants.CENTER);
@@ -175,10 +199,12 @@ public class SecretObjectiveFrame extends JFrame{
         // Create panel for images
         JPanel imagesPanel = new JPanel();
         imagesPanel.setLayout(new FlowLayout());
+        imagesPanel.setOpaque(false);
 
         // Create panel for buttons
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout());
+        buttonsPanel.setOpaque(false);
 
         // Iterate through IDs
         for (int i = 0; i < secretObjectiveCardIDs.length; i++) {
@@ -188,7 +214,12 @@ public class SecretObjectiveFrame extends JFrame{
 
             int index = i+1; // i start from 0, so add 1
             JButton selectButton = new JButton("SELECT");
-            selectButton.setPreferredSize(new Dimension(width, buttonHeight));
+            selectButton.setPreferredSize(new Dimension(width, buttonHeight)); // Set preferred size
+            selectButton.setFont(customFont); // Set custom font
+            selectButton.setForeground(Color.BLACK); // Set text color
+            selectButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+
+            // Add listener when client click on "CONFIRM" => Set frame's parameter
             selectButton.addActionListener(e -> {
                 selectedSecretCard = String.valueOf(index);
                 this.dispose(); // Close the window

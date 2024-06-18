@@ -105,7 +105,7 @@ public class CreateJoinFrame extends JFrame {
 
         // First button: create new game
         JButton createButton = new JButton("CREATE NEW GAME");
-        createButton.setPreferredSize(new Dimension(200, 50)); // Set preferred size
+        createButton.setPreferredSize(new Dimension(200, 40)); // Set preferred size
         createButton.setFont(customFont); // Set custom font
         createButton.setForeground(Color.BLACK); // Set text color
         createButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
@@ -121,7 +121,7 @@ public class CreateJoinFrame extends JFrame {
 
         // Second button: join a game
         JButton joinButton = new JButton("JOIN A GAME");
-        joinButton.setPreferredSize(new Dimension(200, 50));
+        joinButton.setPreferredSize(new Dimension(200, 40));
         joinButton.setFont(customFont); // Set custom font
         joinButton.setForeground(Color.BLACK); // Set text color
         joinButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border

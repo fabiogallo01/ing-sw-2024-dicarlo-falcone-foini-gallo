@@ -258,7 +258,7 @@ public class GameFrame extends JFrame {
         // Create button for looking at the deck and visible cards
         JButton drawButton = new JButton("Draw");
         drawButton.addActionListener(e -> {
-            new DrawCardFrame("AFTER THE PLAY, YOU CAN DRAW ONE OF THESE CARDS", gameTable, false);
+            new DrawCardFrame("DRAWABLE CARDS", gameTable, false);
         });
         // Add draw button in the panel in second row and fourth column
         // These labels will occupy 10% of the panel
@@ -305,6 +305,8 @@ public class GameFrame extends JFrame {
                     button = new JButton(getImageFromID(card.getID(), card.getSide(),200, 100));
                     button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),200, 100));
                 }
+
+                // Add action listener
                 int finalI = i;
                 int finalJ = j;
                 button.addActionListener(e -> {

@@ -67,6 +67,7 @@ public class NumPlayersFrame extends JFrame {
         // Create of the panel
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
+        panel.setOpaque(false);
 
         // Add label for combo box
         JLabel label = new JLabel("Number of players:");
@@ -82,7 +83,7 @@ public class NumPlayersFrame extends JFrame {
 
         // Create button for sending input and close this frame
         JButton confirmButton = new JButton("CONFIRM");
-        confirmButton.setPreferredSize(new Dimension(200, 50));
+        confirmButton.setPreferredSize(new Dimension(200, 40));
         confirmButton.setFont(customFont); // Set custom font
         confirmButton.setForeground(Color.BLACK); // Set text color
         confirmButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border

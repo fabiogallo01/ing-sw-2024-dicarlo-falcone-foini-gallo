@@ -21,9 +21,10 @@ import java.io.IOException;
 public class DrawCardFrame extends JFrame {
     private final Object lock = new Object();
     private final int width = 200;
+    private final int buttonHeight = 50;
     private final GameTable gameTable; // It represents the gameTable of the match
     private int indexSelectedCard;
-    private final boolean turn;
+    private final boolean enableButton;
     private final Font labelFont = new Font("SansSerif", Font.BOLD, 18);
     private final Font buttonFont = new Font("SansSerif", Font.BOLD, 12);
 
@@ -32,14 +33,14 @@ public class DrawCardFrame extends JFrame {
      *
      * @param title window's title
      * @param gameTable game table
-     * @param turn: If true => It's player's turn
-     *              If false => IT's not player's turn
+     * @param enableButton: If true => The buttons for drawing a card are present
+     *                      If false => The button for drawing a card are not present
      * @author Foini Lorenzo
      */
-    DrawCardFrame(String title, GameTable gameTable, boolean turn){
+    DrawCardFrame(String title, GameTable gameTable, boolean enableButton){
         super(title);
         this.gameTable = gameTable;
-        this.turn = turn;
+        this.enableButton = enableButton;
         init();
     }
 
@@ -50,7 +51,7 @@ public class DrawCardFrame extends JFrame {
      */
     private void init(){
         // Set frame parameters
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Use DISPOSE_ON_CLOSE to close only this window
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1500, 500);
         this.setLayout(new BorderLayout());
 
@@ -79,7 +80,7 @@ public class DrawCardFrame extends JFrame {
 
         // Create label with question and add it in the frame
         JLabel informationLabel;
-        if(turn) informationLabel = new JLabel("Select which card you want to draw");
+        if(enableButton) informationLabel = new JLabel("Select which card you want to draw");
         else informationLabel = new JLabel("These cards represent: top card of resource and gold deck, visible cards in table");
 
         informationLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -94,6 +95,23 @@ public class DrawCardFrame extends JFrame {
         // Add main panel to the transparent panel with grid back constraint
         transparentPanel.add(mainPanel, gbc);
 
+        // exit button if enableButton is false
+        if(!enableButton){
+            JButton exitButton = new JButton("CLICK HERE TO EXIT FROM THIS WINDOW!");
+            exitButton.setPreferredSize(new Dimension(width, buttonHeight));
+            exitButton.setFont(buttonFont); // Set custom font
+            exitButton.setForeground(Color.BLACK); // Set text color
+            exitButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+
+            // Add action listener
+            exitButton.addActionListener(e -> {
+                this.dispose(); // Close the window
+            });
+
+            // Add main panel to the transparent panel with grid back constraint
+            transparentPanel.add(exitButton, gbc);
+        }
+
         // Add transparent panel to the frame
         this.add(transparentPanel, BorderLayout.CENTER);
 
@@ -101,7 +119,7 @@ public class DrawCardFrame extends JFrame {
         this.setVisible(true);
 
         // If it's player's turn, then wait until he selects a card to draw
-        if(turn){
+        if(enableButton){
             synchronized (lock) {
                 try {
                     lock.wait();
@@ -132,7 +150,7 @@ public class DrawCardFrame extends JFrame {
         if(!gameTable.getResourceDeck().getDeck().isEmpty()){
             // Resource deck is not empty => Add image and button
             addImageLabel(mainPanel, gameTable.getResourceDeck().getDeck().getLast().getID(), false, gbc, indexColumn);
-            if(turn){
+            if(enableButton){
                 addButton(mainPanel, "RESOURCE DECK TOP CARD", 1, gbc, indexColumn);
             }
             indexColumn++;
@@ -142,7 +160,7 @@ public class DrawCardFrame extends JFrame {
         if(!gameTable.getGoldDeck().getDeck().isEmpty()){
             // Gold deck is not empty => Add image and button
             addImageLabel(mainPanel, gameTable.getGoldDeck().getDeck().getLast().getID(),false, gbc, indexColumn);
-            if(turn){
+            if(enableButton){
                 addButton(mainPanel, "GOLD DECK TOP CARD", 2, gbc, indexColumn);
             }
             indexColumn++;
@@ -154,7 +172,7 @@ public class DrawCardFrame extends JFrame {
         for(GamingCard card: gameTable.getVisibleCard()){
             // Add image and button for this card
             addImageLabel(mainPanel, card.getID(), true, gbc, indexColumn);
-            if(turn){
+            if(enableButton){
                 addButton(mainPanel, "VISIBLE CARD "+indexCard, indexVisible, gbc, indexColumn);
             }
             indexColumn++;
@@ -197,7 +215,6 @@ public class DrawCardFrame extends JFrame {
      * @author Foini Lorenzo
      */
     private void addButton(JPanel panel, String text, int returnedValue, GridBagConstraints gbc, int column){
-        int buttonHeight = 50;
         JButton selectButton = new JButton(text);
         selectButton.setPreferredSize(new Dimension(width, buttonHeight));
         selectButton.setFont(buttonFont); // Set custom font
