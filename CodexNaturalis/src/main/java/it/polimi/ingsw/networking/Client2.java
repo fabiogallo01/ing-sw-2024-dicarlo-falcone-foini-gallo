@@ -251,7 +251,7 @@ public class Client2 {
                 }
 
                 // Call to function for displaying draw choices
-                int index = viewGui.displayDrawChoice(gameTable, true);
+                int index = viewGui.displayDrawChoice(gameTable);
                 switch(index){
                     case 1:
                     case 2:{

@@ -113,8 +113,8 @@ public class ViewGUI {
         return new GameFrame("CODEX NATURALIS", out, player, gameTable, counterResources, invalidPlay, mistakePlay);
     }
 
-    public int displayDrawChoice(GameTable gameTable, boolean turn){
-        DrawCardFrame drawCardFrame = new DrawCardFrame("SELECT FROM WHERE YOU WANT DO DRAW", gameTable, turn);
+    public int displayDrawChoice(GameTable gameTable){
+        DrawCardFrame drawCardFrame = new DrawCardFrame("SELECT FROM WHERE YOU WANT DO DRAW", gameTable, true);
         return drawCardFrame.getIndexSelectedCard();
     }
 
