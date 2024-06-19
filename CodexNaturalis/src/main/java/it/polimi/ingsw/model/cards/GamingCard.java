@@ -1,10 +1,11 @@
 package it.polimi.ingsw.model.cards;
 
 /**
- * Abstract class representing game's resource cards
+ * Class representing game's resource cards
+ * It extends Card
  * It is extended by GoldCard
  *
- * @author Andrea Di Carlo, Lorenzo Foini
+ * @author Di Carlo Andrea, Foini Lorenzo, Gallo Fabio
  */
 public class GamingCard extends Card{
     protected final Kingdom kingdom;
@@ -18,7 +19,7 @@ public class GamingCard extends Card{
      * @param kingdom for card's kingdom
      * @param points for card's point
      * @param frontCorners for card's front corners
-     * @author Andrea Di Carlo, Foini Lorenzo
+     * @author Di Carlo Andrea, Foini Lorenzo, Gallo Fabio
      */
     public GamingCard(boolean side, Kingdom kingdom, int points, Corner[] frontCorners, int ID) {
         super(side, frontCorners, ID); // Using the constructor without backCorners
@@ -27,20 +28,20 @@ public class GamingCard extends Card{
     }
 
     /**
-     * Kingdom getter
+     * kingdom getter
      *
-     * @return kingdom
-     * @author Andrea Di Carlo
+     * @return card's main kingdom
+     * @author Di Carlo Andrea
      */
     public Kingdom getKingdom() {
         return kingdom;
     }
 
     /**
-     * Points getter
+     * points getter
      *
-     * @return number of points given by the card
-     * @author Andrea Di Carlo
+     * @return number of points given by the gold card when played on front
+     * @author Di Carlo Andrea
      */
     public int getPoints() {
         return points;

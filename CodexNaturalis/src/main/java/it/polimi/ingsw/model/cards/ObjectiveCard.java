@@ -3,28 +3,26 @@ package it.polimi.ingsw.model.cards;
 /**
  * Class representing game's objective cards
  *
- * @author Andrea Di Carlo, Lorenzo Foini
+ * @author Di Carlo Andrea, Foini Lorenzo, Gallo Fabio
  */
 public class ObjectiveCard {
     private final int points;
-    private boolean isSecret;
-    private final GameObject[] objects;
-    private final Pattern pattern;
-    private final Kingdom frontKingdom;
+    private final GameObject[] objects; // all NONE if the objective is not related to objects
+    private final Pattern pattern; // NONE if the objective is not related to pattern
+    private final Kingdom frontKingdom; // NONE if the objects is not related to kingdom
     private final int ID;
+
     /**
      * Objective card constructor, it assigns all the parameters
      *
      * @param points for objective points
-     * @param isSecret true => secret objective, false => not secret objective
-     * @param objects array of card's object (Can be None)
-     * @param pattern for objective with pattern (Can be None)
-     * @param frontKingdom representing card kingdom (Can be None)
-     * @author Foini Lorenzo
+     * @param objects array of card's object (Can be NONE)
+     * @param pattern for objective with pattern (Can be NONE)
+     * @param frontKingdom representing card kingdom (Can be NONE)
+     * @author Foini Lorenzo, Gallo Fabio
      */
-    public ObjectiveCard(int points, boolean isSecret, GameObject[] objects, Pattern pattern, Kingdom frontKingdom, int ID) {
+    public ObjectiveCard(int points, GameObject[] objects, Pattern pattern, Kingdom frontKingdom, int ID) {
         this.points = points;
-        this.isSecret = isSecret;
         this.objects = objects;
         this.pattern = pattern;
         this.frontKingdom = frontKingdom;
@@ -32,65 +30,51 @@ public class ObjectiveCard {
     }
 
     /**
-     * Points getter
+     * points getter
      *
-     * @return number of points of that card
-     * @author Andrea Di Carlo
+     * @return number of points assign by this card (multiply by the number of times of satisfied condition)
+     * @author Di Carlo Andrea
      */
     public int getPoints() {
         return points;
     }
 
     /**
-     * Is secret getter
-     *
-     * @return true => secret objective, false => not secret objective
-     * @author Lorenzo Foini
-     */
-    public boolean getIsSecret() {
-        return isSecret;
-    }
-
-    /**
-     * Is secret setter
-     *
-     * @param isSecret true => secret objective, false => not secret objective
-     * @author Lorenzo Foini
-     */
-    public void setIsSecret(boolean isSecret){
-        this.isSecret = isSecret;
-    }
-
-    /**
-     * Objects getter
+     * objects getter
      *
      * @return array of objects
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public GameObject[] getObjects() {
         return objects;
     }
 
     /**
-     * Pattern getter
+     * pattern getter
      *
      * @return type of pattern
-     * @author Andrea Di Carlo
+     * @author Di Carlo Andrea
      */
     public Pattern getPattern() {
         return pattern;
     }
 
     /**
-     * Front kingdom getter
+     * frontKingdom getter
      *
      * @return card's kingdom
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public Kingdom getFrontKingdom() {
         return frontKingdom;
     }
 
+    /**
+     * ID getter
+     *
+     * @return card's ID
+     * @author Gallo Fabio
+     */
     public int getID() {
         return ID;
     }

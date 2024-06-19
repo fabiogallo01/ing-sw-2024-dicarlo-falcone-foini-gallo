@@ -3,9 +3,8 @@ package it.polimi.ingsw.model.cards;
 /**
  * Enumeration of different Kingdoms that can be on cards
  *
- * @author giacomofalcone, LorenzoFoini
+ * @author Falcone Giacomo, Foini Lorenzo
  */
-
 public enum Kingdom {
     ANIMALKINGDOM,
     PLANTKINGDOM,
@@ -13,4 +12,3 @@ public enum Kingdom {
     INSECTKINGDOM,
     NONE
 }
-

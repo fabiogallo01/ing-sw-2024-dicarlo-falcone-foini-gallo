@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.cards;
 /**
  * Enumeration for type of pattern
  *
- * @author Lorenzo Foini
+ * @author Foini Lorenzo
  */
 public enum Pattern{
     PRIMARYDIAGONAL,

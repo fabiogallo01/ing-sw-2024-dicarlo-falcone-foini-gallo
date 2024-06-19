@@ -122,7 +122,7 @@ public class GameFrame extends JFrame {
         commonObjective1.setFont(labelFont);
         JLabel commonObjective2 = new JLabel("Common objective n.2");
         commonObjective2.setFont(labelFont);
-        JLabel secretObjective = new JLabel("Secret objective");
+        JLabel secretObjective = new JLabel("Your secret objective");
         secretObjective.setFont(labelFont);
 
         // Set horizontal and vertical alignment to center

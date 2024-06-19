@@ -3,9 +3,8 @@ package it.polimi.ingsw.model.cards;
 /**
  * Enumeration of different ways to score points with gold cards.
  *
- * @author giacomofalcone
+ * @author Falcone Giacomo
  */
-
 public enum ConditionPoint {
 
     /**

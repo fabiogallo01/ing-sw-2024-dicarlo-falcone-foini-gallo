@@ -1,29 +1,31 @@
 package it.polimi.ingsw.model.cards;
 
 /**
- * Abstract class representing game's cards
+ * Class representing game's cards
+ * It is not abstract because during the deserialization of GameTable when client plays with GUI, it casts all teh cards to Card
+ * => Can't be abstract
  * It is extended by GamingCard (resource card and gold card) and StarterCard
  *
- * @author Andrea Di Carlo, Lorenzo Foini, Fabio Gallo
+ * @author Di Carlo Andrea, Falcone Giacomo, Foini Lorenzo, Gallo Fabio
  */
-//public abstract class Card {
 public class Card {
-    protected boolean side;
+    protected boolean side; // true => Front, false => Back
     protected Corner[] frontCorners;
     protected Corner[] backCorners;
     protected int[] inGamePosition;
-    protected boolean counted; // true => Counted in patter, false => Not counted in pattern
+    protected boolean counted; // true => Counted in pattern, false => Not counted in pattern
     protected final int ID;
 
     /**
-     * Card constructor, it assigns all the parameters (back corners)
+     * Card constructor, it assigns all the parameters (also back corners)
      * Used by StarterCard
      * Set back corners, inGamePosition to -1 and counted to false
      *
      * @param side for card side. true => Front, false => Back
      * @param frontCorners for card's front corners
      * @param backCorners for card's back corners
-     * @author Andrea Di Carlo, Foini Lorenzo
+     * @param ID card's ID
+     * @author Di Carlo Andrea, Falcone Giacomo, Foini Lorenzo
      */
     public Card(boolean side, Corner[] frontCorners, Corner[] backCorners, int ID) {
         this.side = side;
@@ -43,11 +45,13 @@ public class Card {
      *
      * @param side for card side. true => Front, false => Back
      * @param frontCorners for card's front corners
+     * @param ID card's ID
      * @author Foini Lorenzo, Fabio Gallo
      */
     public Card(boolean side, Corner[] frontCorners, int ID) {
         this.side = side;
         this.frontCorners = frontCorners;
+        // Create new back corners => They are the same for all cards
         this.backCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -62,60 +66,61 @@ public class Card {
     }
 
     /**
-     * Side getter
+     * side getter
      *
      * @return boolean for side. true => Front, false => Back
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public boolean getSide(){
         return side;
     }
 
     /**
-     * Side setter
+     * side setter
      *
-     * @param side for side. true => Front, false => Back
-     * @author Lorenzo Foini
+     * @param side for setting side. true => Front, false => Back
+     * @author Foini Lorenzo
      */
     public void setSide(boolean side){
         this.side = side;
     }
 
     /**
-     * Back corners getter
+     * backCorners getter
      *
      * @return array of back corners
-     * @author Andrea Di Carlo
+     * @author Di Carlo Andrea
      */
     public Corner[] getBackCorners() {
         return backCorners;
     }
 
     /**
-     * Front corners getter
+     * frontCorners getter
      *
      * @return array of front corners
-     * @author Andrea Di Carlo
+     * @author Di Carlo Andrea
      */
     public Corner[] getFrontCorners() {
         return frontCorners;
     }
 
     /**
-     * Card's in game position getter
+     * inGamePosition getter
      *
      * @return array of card's in game position
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public int[] getInGamePosition(){
         return inGamePosition;
     }
 
     /**
-     * Card's in game position setter
+     * inGamePosition setter
+     * It is guaranteed that position to be set is valid
      *
      * @param inGamePosition array of card's in game position to be set
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void setInGamePosition(int[] inGamePosition){
         this.inGamePosition[0] = inGamePosition[0];
@@ -125,8 +130,8 @@ public class Card {
     /**
      * counted getter
      *
-     * @return boolean value of counted
-     * @author Lorenzo Foini
+     * @return boolean value of counted. true => Count in pattern, false => Not count in pattern
+     * @author Foini Lorenzo
      */
     public boolean getCounted(){
         return counted;
@@ -135,27 +140,31 @@ public class Card {
     /**
      * counted setter
      *
-     * @param counted boolean value of counted
-     * @author Lorenzo Foini
+     * @param counted boolean value of counted. true => Count in pattern, false => Not count in pattern
+     * @author Foini Lorenzo
      */
     public void setCounted(boolean counted){
         this.counted = counted;
     }
 
     /**
-     * counted getter
+     * Method for setting to false the visibility of a corner, given its position
      *
      * @param position representing which corner to set his side to false
-     * @author Andrea Di Carlo, Fabio Gallo
+     * @author Di Carlo Andrea, Foini Lorenzo
      */
     public void setVisibleCornerFalse(int position)
     {
-        if (side)
-        { getFrontCorners()[position].setVisible(false); }
-        else
-        { getBackCorners()[position].setVisible(false); }
+        if(side) getFrontCorners()[position].setVisible(false);
+        else getBackCorners()[position].setVisible(false);
     }
 
+    /**
+     * ID getter
+     *
+     * @return ID of the card
+     * @author Gallo Fabio
+     */
     public int getID() {
         return ID;
     }
