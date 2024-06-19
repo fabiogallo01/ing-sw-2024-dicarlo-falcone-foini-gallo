@@ -62,7 +62,6 @@ public class PlayerAreaFrame extends JFrame {
                     label = new JLabel(getImageFromID(card.getID(), card.getSide(),150, 75));
                 }
 
-                label.setBorder(new LineBorder(Color.BLACK, 1)); // Set border
                 label.setHorizontalAlignment(SwingConstants.CENTER);
                 label.setVerticalAlignment(SwingConstants.CENTER);
                 label.setPreferredSize(new Dimension(150, 75));

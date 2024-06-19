@@ -334,10 +334,9 @@ public class GameFrame extends JFrame {
                     Card card = playerArea.getCardByPosition(position);
 
                     // Create new button with image
-                    button = new JButton(getImageFromID(card.getID(), card.getSide(),200, 100));
-                    button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),200, 100));
+                    button = new JButton(getImageFromID(card.getID(), card.getSide(),175, 75));
+                    button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),175, 75));
                 }
-                button.setBorder(new LineBorder(Color.BLACK, 1)); // Set border
 
                 // Add action listener
                 int finalI = i;
@@ -349,7 +348,7 @@ public class GameFrame extends JFrame {
                     enableButtons(handCardsImageButtons,true);
                 });
 
-                button.setPreferredSize(new Dimension(200, 100));
+                button.setPreferredSize(new Dimension(175, 75));
                 panel.add(button);
 
                 // Add the button to the list of grid buttons
