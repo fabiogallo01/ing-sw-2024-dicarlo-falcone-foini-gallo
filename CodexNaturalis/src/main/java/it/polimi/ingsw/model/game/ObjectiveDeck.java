@@ -6,13 +6,13 @@ import java.util.*;
 /**
  * Class representing objective deck
  *
- * @author Giacomo Falcone, Foini Lorenzo
+ * @author Falcone Giacomo, Foini Lorenzo
  */
 public class ObjectiveDeck {
-    private final ArrayList<ObjectiveCard> deck;
+    private final ArrayList<ObjectiveCard> deck; // List of objectives cards
 
     /**
-     * objective deck constructor, it assigns the parameter
+     * ObjectiveDeck constructor, it assigns the parameter
      *
      * @param deck list of cards of deck
      * @author Foini Lorenzo
@@ -22,10 +22,10 @@ public class ObjectiveDeck {
     }
 
     /**
-     * Method for gettin deck size
+     * Method for getting deck size
      *
      * @return size of the deck
-     * @author Giacomo Falcone
+     * @author Falcone Giacomo
      */
     public int deckSize() {
         return deck.size();
@@ -35,7 +35,7 @@ public class ObjectiveDeck {
      * deck getter
      *
      * @return list of deck's cards
-     * @author Lorenzzo Foini
+     * @author Foini Lorenzo
      */
     public ArrayList<ObjectiveCard> getDeck(){
         return deck;
@@ -44,7 +44,7 @@ public class ObjectiveDeck {
     /**
      * Method for shuffle cards in the deck
      *
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void shuffleDeck(){
         Collections.shuffle(deck);
@@ -54,15 +54,15 @@ public class ObjectiveDeck {
      * Method for draw the top card (last in the list) of the deck
      * It also removes that card from the deck
      *
-     * @throws EmptyObjectiveDeckException if the deck is empty and player tries to draw from it
      * @return the objective card at the top
+     * @throws EmptyObjectiveDeckException if the deck is empty and player tries to draw from it
      * @author Giacomo Falcone
      */
     public ObjectiveCard drawTopCard() throws EmptyObjectiveDeckException{
-        if(deck.isEmpty()){
+        if(deck.isEmpty()){ // Deck is empty => Throw new EmptyObjectiveDeckException
             throw new EmptyObjectiveDeckException("Objective deck is empty, you can't draw from this deck.");
         }
-        else{
+        else{ // Deck has at least a card that can be drawn
             return deck.removeLast();
         }
     }

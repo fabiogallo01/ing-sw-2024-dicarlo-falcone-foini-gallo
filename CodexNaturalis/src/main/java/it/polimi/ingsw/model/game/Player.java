@@ -5,28 +5,20 @@ import java.util.*;
 
 /**
  * Class representing the players in the match
- * It contains parameters for player's cards, score and username
+ * It contains parameters for player's cards, score, username, color and turn
  *
- * @author Foini Lorenzo
+ * @author Falcone Giacomo, Foini Lorenzo, Gallo Fabio
  */
 public class Player {
     private final String username;
     private int score;
-    private PlayerArea playerArea;
+    private final PlayerArea playerArea;
     private final Color color;
     private final ObjectiveCard secretObjective;
     private final StarterCard starterCard;
     private ArrayList<GamingCard> hand;
     private boolean turn;
-    private int numObjectivesSatisfied;
-
-    public boolean isTurn() {
-        return turn;
-    }
-
-    public void setTurn(boolean turn) {
-        this.turn = turn;
-    }
+    private int numObjectivesSatisfied; // Int value which represent the number of objectives satisfied when calculating final points
 
     /**
      * Player constructor, it assigns all the parameters
@@ -53,31 +45,50 @@ public class Player {
     }
 
     /**
-     * Username getter
+     * turn getter
+     *
+     * @author Foini Lorenzo
+     */
+    public boolean isTurn() {
+        return turn;
+    }
+
+    /**
+     * turn setter
+     *
+     * @param turn boolean value of the turn to set
+     * @author Foini Lorenzo
+     */
+    public void setTurn(boolean turn) {
+        this.turn = turn;
+    }
+
+    /**
+     * username getter
      *
      * @return player's username
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public String getUsername(){
         return username;
     }
 
     /**
-     * Score getter
+     * score getter
      *
      * @return player's score
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public int getScore(){
         return score;
     }
 
     /**
-     * Score setter
+     * score setter
      *
      * @param score for setting player's score
      * @throws NegativeScoreException if try to assign a negative score
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void setScore(int score) throws NegativeScoreException {
         if (score < 0) {
@@ -88,71 +99,61 @@ public class Player {
     }
 
     /**
-     * Player's area getter
+     * playerArea getter
      *
      * @return player's area
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public PlayerArea getPlayerArea(){
         return playerArea;
     }
 
     /**
-     * Player's area setter
-     *
-     * @param playerArea for setting player's area
-     * @author Lorenzo Foini
-     */
-    public void setPlayerArea(PlayerArea playerArea){
-        this.playerArea = playerArea;
-    }
-
-    /**
-     * Color getter
+     * color getter
      *
      * @return player's color
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public Color getColor(){
         return color;
     }
 
     /**
-     * Secret objective getter
+     * secretObjective getter
      *
      * @return player's secret objective
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public ObjectiveCard getSecretObjective(){
         return secretObjective;
     }
 
     /**
-     * Starter card getter
+     * starterCard getter
      *
      * @return starter card
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public StarterCard getStarterCard(){
         return starterCard;
     }
 
     /**
-     * Player's hand getter
+     * hand getter
      *
      * @return player's hand
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public ArrayList<GamingCard> getHand(){
         return hand;
     }
 
     /**
-     * Player's hand setter
+     * hand setter
      *
      * @param hand for setting player's hand
      * @throws InvalidNumCardsPlayerHandException if hand doesn't have exactly three cards
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void setHand(ArrayList<GamingCard> hand) throws InvalidNumCardsPlayerHandException{
         if(hand.size() != 3){
@@ -168,7 +169,7 @@ public class Player {
      *
      * @param card representing the card to be added to player's hand
      * @throws HandAlreadyFullException if player's hand is already full (three cards)
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     public void addCardHand(GamingCard card) throws HandAlreadyFullException{
         if(hand.size() == 3){
@@ -178,6 +179,12 @@ public class Player {
         }
     }
 
+    /**
+     * numObjectivesSatisfied getter
+     *
+     * @return number of objectives satisfied when calculating final points
+     * @author Foini Lorenzo
+     */
     public int getNumObjectivesSatisfied(){
         return numObjectivesSatisfied;
     }
@@ -192,13 +199,15 @@ public class Player {
      * @throws InvalidPlayCardIndexException if player select an out of hand bound
      * @throws InvalidPositionAreaException if player select an out of area bound
      * @throws InvalidPlayException if player wants to play the card in an invalid position of his area
-     * @author Lorenzo Foini
+     * @author Falcone Giacomo, Foini Lorenzo, Gallo Fabio
      */
     public void playCard(int positionCardHand, int[] positionArea, boolean side) throws InvalidPlayCardIndexException, InvalidPositionAreaException, InvalidPlayException {
+        // Check if the player select an invalid index from his hand (should be from 1 to 3)
         if (positionCardHand < 1 || positionCardHand > 3) {
             throw new InvalidPlayCardIndexException("Invalid selection of the card from hand.");
         }
-        else if(!isValidPosition(positionArea)){
+        else if(!isValidPosition(positionArea)){ // Check if the position where to play the card are valid or not
+            // Throw new exception
             throw new InvalidPositionAreaException("Not valid index's position.");
         }
         else{
@@ -206,22 +215,26 @@ public class Player {
             GamingCard cardToPlay = hand.get(positionCardHand-1);
             //Set the card to the playing side chosen by the user
             cardToPlay.setSide(side);
-            // Check if the card is actually playable given the game's rules
+
+            // Now need to check if the card is actually playable given the game's rules
+            // Call to method isPlayable for getting a mistake or not
             String mistake = isPlayable(cardToPlay, positionArea); // Variable which contains the exception's message
-            if (!mistake.equals("None")) { // Raised exception
+
+            if (!mistake.equals("None")) { // Raised exception because an invalid play have been chosen
                 throw new InvalidPlayException("You can't play this card in this position.\nMistake: " + mistake);
             }
             else{ //The card is playable
-                // Add the card in the given position
+                // Add the card in the given position in player's area
                 playerArea.addCard(cardToPlay, positionArea);
 
                 // Remove the card from the player's hand
                 hand.remove(positionCardHand-1);
 
-                // Add points to the player
+                // Add points to the player base on the card
                 // Check if the played card is a goldCard and if it is played on front
                 if(cardToPlay instanceof GoldCard && side && ((GoldCard) cardToPlay).getConditionPoint() != ConditionPoint.NONE) {
                     // Assign points based on type of condition point
+                    // For doing so, call to counter method of the playerArea
                     switch (((GoldCard) cardToPlay).getConditionPoint()){
                         case QUILL:
                             score += cardToPlay.getPoints() * playerArea.countObject(GameObject.QUILL);
@@ -236,7 +249,7 @@ public class Player {
                             score += cardToPlay.getPoints() * playerArea.countHiddenCorner(cardToPlay.getInGamePosition());
                             break;
                     }
-                }else if(side){
+                }else if(side){ // Not a gold card
                     // Some resource cards assign one point
                     score += cardToPlay.getPoints();
                 }
@@ -249,7 +262,7 @@ public class Player {
      *
      * @param position representing the position of the selected card to be played
      * @return true if the position is valid, false otherwise
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     private boolean isValidPosition(int[] position) {
         // Check if the position is valid in the matrix
@@ -264,10 +277,10 @@ public class Player {
      * @param cardToPlay representing the selected card to be played
      * @param position representing the position of the selected card to be played
      * @return "None" if the card is playable, otherwise what type of mistake
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     private String isPlayable(GamingCard cardToPlay, int[] position) {
-        /* List of possible invalid plays:
+        /* List of possible invalid plays that don't respect game's rules:
             1. There is already a card in that position
 
             2. The card covers two corners of the same card.
@@ -314,7 +327,7 @@ public class Player {
      *
      * @param position representing the position of the selected card to be played
      * @return true => Condition is valid. return false => Condition is not valid
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     private boolean checkCondition1(int[] position){
         // true => Cell is empty
@@ -327,11 +340,11 @@ public class Player {
      *
      * @param position representing the position of the selected card to be played
      * @return true => Condition is valid. return false => Condition is not valid
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     private boolean checkCondition2(int[] position){
-        // Need to check first row, last row, first column and last column
-        if(position[0] == 0){
+        // Need to check first row, last row, first column and last column as "limit case"
+        if(position[0] == 0){ // First row
             if(position[1] == 0){ // Top left corner
                 // Just check if there is a card that is located on one of the two sides of the chosen position.
                 return playerArea.getArea()[position[0]][position[1] + 1] &&
@@ -350,7 +363,7 @@ public class Player {
 
             }
 
-        } else if(position[0] == 80){
+        } else if(position[0] == 80){ // Last row
             if(position[1] == 0){ // bottom left corner
                 // Just check if there is a card that is located on one of the two sides of the chosen position.
                 return playerArea.getArea()[position[0]][position[1] + 1] &&
@@ -396,11 +409,11 @@ public class Player {
      *
      * @param position representing the position of the selected card to be played
      * @return true => Condition is valid. return false => Condition is not valid
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     private boolean checkCondition3(int[] position){
-        // Need to check first row, last row, first column and last column
-        if(position[0] == 0){
+        // Need to check first row, last row, first column and last column as "limit case"
+        if(position[0] == 0){ // First row
             if(position[1] == 0){ // Top left corner
                 // Just check if there is a card that is located in the bottom right corner of this position
                 // Need to invert condition
@@ -419,7 +432,7 @@ public class Player {
 
             }
 
-        } else if(position[0] == 80){
+        } else if(position[0] == 80){ // Last row
             if(position[1] == 0){ // bottom left corner
                 // Just check if there is a card that is located in the top right corner of this position
                 // Need to invert condition
@@ -464,7 +477,7 @@ public class Player {
      *
      * @param position representing the position of the selected card to be played
      * @return true => Condition is valid. return false => Condition is not valid
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     private boolean checkCondition4(int[] position){
         // Get the cards in the corners and check if the covered corner can be covered or not
@@ -473,7 +486,7 @@ public class Player {
         Card checkedCard;
         int[] checkedPosition = new int[2];
 
-        // Need to check first row, last row, first column and last column
+        // Need to check first row, last row, first column and last column as "limit case"
         if(position[0] != 80){ // Not last row
             if(position[1] != 80){ // Not last column
                 // Just check if the card in the bottom right corner has top left corner empty
@@ -549,13 +562,9 @@ public class Player {
                 if(!playerArea.getArea()[checkedPosition[0]][checkedPosition[1]]){
                     checkedCard = playerArea.getCardByPosition(checkedPosition);
                     if (checkedCard.getSide()) { // Card is played on the front
-                        if (checkedCard.getFrontCorners()[3].getEmpty()) {
-                            return false; // Card in the top left corner has front bottom right corner empty
-                        }
+                        return !checkedCard.getFrontCorners()[3].getEmpty(); // Card in the top left corner has front bottom right corner empty
                     } else { // Card is played on the back
-                        if (checkedCard.getBackCorners()[3].getEmpty()) {
-                            return false; // Card in the top left corner has back bottom right corner empty
-                        }
+                        return !checkedCard.getBackCorners()[3].getEmpty(); // Card in the top left corner has back bottom right corner empty
                     }
                 }
             }
@@ -571,7 +580,7 @@ public class Player {
      *
      * @param cardToPlay representing the played card
      * @return true => Condition is valid. return false => Condition is not valid
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo
      */
     private boolean checkCondition5(GamingCard cardToPlay){
         // Check if the card is a gold card played on front
@@ -581,6 +590,8 @@ public class Player {
             int countPlantKingdom = 0;
             int countFungiKingdom = 0;
             int countInsectKingdom = 0;
+
+            // Iterate through resources for counting the total amount
             for(Kingdom resource : ((GoldCard) cardToPlay).getResources()){
                 switch (resource) {
                     case Kingdom.ANIMALKINGDOM:
@@ -597,7 +608,8 @@ public class Player {
                         break;
                 }
             }
-            // Check condition
+            // Check condition: there must be at least the same amount of resources in the area
+            // Using playerArea's counter methods
             return playerArea.countKingdoms(Kingdom.ANIMALKINGDOM) >= countAnimalKingdom &&
                    playerArea.countKingdoms(Kingdom.PLANTKINGDOM) >= countPlantKingdom &&
                    playerArea.countKingdoms(Kingdom.FUNGIKINGDOM) >= countFungiKingdom &&
@@ -610,10 +622,11 @@ public class Player {
 
     /**
      * Method for calculate total points scored by the player given the three objectives (2 common + secret)
+     * Such points won't be added to player's score, it will be done by the caller of this method
      *
      * @param commonObjectives representing the two common objective for all players
      * @return number of points scored by player
-     * @author Lorenzo Foini
+     * @author Foini Lorenzo, Gallo Fabio
      */
     public int calculateObjectivePoints(ObjectiveCard[] commonObjectives){
         // Collect all three objectives
@@ -622,28 +635,33 @@ public class Player {
         objectives[1] = commonObjectives[1];
         objectives[2] = secretObjective;
 
-        int totalPoint = 0;
+        int totalPoint = 0; // Total points scored by the player with the objectives
 
         // Points scored with objectives
         for(ObjectiveCard objective : objectives){
             if(objective.getFrontKingdom() == Kingdom.NONE){ // Points given by number of objects
-                int totalObject = 0;
-                int minOccurrence = 0;
+                int totalObject = 0; // Counter for the objectives with same objects
+                int minOccurrence = 0; // Counter for the objective with three different objects
+                // Get objective's objects
                 GameObject[] gameObjects = objective.getObjects();
 
                 if(gameObjects[0] == GameObject.MANUSCRIPT){ // Case two manuscripts
+                    // Count the occurrence of MANUSCRIPT in playerArea
                     totalObject += playerArea.countObject(GameObject.MANUSCRIPT);
                 }else if(gameObjects[0] == GameObject.INKWELL){ // Case two inkwells
+                    // Count the occurrence of INKWELL in playerArea
                     totalObject += playerArea.countObject(GameObject.INKWELL);
                 }else if(gameObjects[1] == GameObject.QUILL){ // Case two quills
+                    // Count the occurrence of QUILL in playerArea
                     totalObject += playerArea.countObject(GameObject.QUILL);
                 }else{ // Case all three objects
+                    // Count the minimum occurrence of the three objectives in playerArea
                     minOccurrence += Math.min(Math.min(playerArea.countObject(GameObject.QUILL), playerArea.countObject(GameObject.INKWELL)), playerArea.countObject(GameObject.MANUSCRIPT));
                 }
-                // Assign points
+                // Assign points scored with the objectives
                 totalPoint += (totalObject/2)*2 + minOccurrence*3;
 
-                // Assign number of objectives satisfied
+                // Assign number of objectives satisfied by the player
                 numObjectivesSatisfied += (totalObject/2) + minOccurrence;
             }else if(objective.getPattern() != Pattern.NONE){ // Points given by number of patterns
                 Pattern pattern = objective.getPattern();

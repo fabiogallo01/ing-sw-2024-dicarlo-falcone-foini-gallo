@@ -6,63 +6,64 @@ import it.polimi.ingsw.model.exception.*;
 import java.util.*;
 
 /**
- * Class to handle the gaming decks(resource, golden, starting)
+ * Class to handle the gaming decks(resource, golden, starting decks)
  *
- * @author Fabio Gallo
+ * @author Gallo Fabio
  */
 public class GamingDeck {
-    private final ArrayList<Card> deck;
+    private final ArrayList<Card> deck; // List of Card: use polymorphism
 
     /**
-     * Gaming deck constructor
+     * GamingDeck constructor
      *
-     * @param deck deck
-     * @author Fabio Gallo
+     * @param deck deck to assign
+     * @author Gallo Fabio
      */
     public GamingDeck(ArrayList<Card> deck) {
         this.deck = deck;
     }
 
     /**
+     * Method for returning size of the deck
+     *
      * @return size of the deck
-     * @author Fabio Gallo
+     * @author Gallo Fabio
      */
     public int deckSize() {
         return deck.size();
     }
 
     /**
-     * Deck getter
+     * deck getter
      *
      * @return deck
-     * @author Fabio Gallo
+     * @author Gallo Fabio
      */
     public ArrayList<Card> getDeck() {
         return deck;
     }
 
     /**
-     * Deck shuffler
+     * Method for shuffling the dekc
      *
-     * @author Fabio Gallo
+     * @author Gallo Fabio
      */
     public void shuffleDeck() {
         Collections.shuffle(deck);
     }
 
     /**
-     * To draw a card from a deck
+     * Method for drawing a card from the deck
      *
-     * @return the top card of the deck
+     * @return the top card of the deck and remove it from the list of cards
      * @throws EmptyDeckException if the deck is empty
      * @author Fabio Gallo
      */
     public Card drawTopCard() throws EmptyDeckException {
-        if (deck.isEmpty()) {
+        if (deck.isEmpty()) { // Deck is empty => Throw new EmptyDeckException
             throw new EmptyDeckException("This deck is empty, you can't draw from this deck.");
-        } else {
+        } else { // Deck has at least a card that can be drawn
             return deck.removeLast();
         }
     }
-
 }
