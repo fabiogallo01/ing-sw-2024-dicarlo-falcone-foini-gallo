@@ -21,9 +21,9 @@ import java.util.regex.Pattern;
  */
 public class JoinGameIndexFrame extends JFrame {
     private String selectedGame; // contains the selected game to join
-    private final Object lock = new Object();
-    private final Font labelFont = new Font("SansSerif", Font.BOLD, 18);
-    private final Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
+    private final Object lock = new Object(); // Lock for getting clint choice
+    private final Font labelFont = new Font("SansSerif", Font.BOLD, 18); // Used font for labels
+    private final Font buttonFont = new Font("SansSerif", Font.BOLD, 14); // Used font for buttons
 
     /**
      * CreateJoinFrame constructor, it calls method init() for initialization of the frame
@@ -54,7 +54,7 @@ public class JoinGameIndexFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Setting custom image icon from resource
@@ -62,7 +62,7 @@ public class JoinGameIndexFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -73,7 +73,7 @@ public class JoinGameIndexFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -126,9 +126,9 @@ public class JoinGameIndexFrame extends JFrame {
 
         synchronized (lock) {
             try {
-                lock.wait(); // Wait until user selects a card
+                lock.wait(); // Wait selection
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
         }
     }
@@ -164,12 +164,13 @@ public class JoinGameIndexFrame extends JFrame {
 
         // Iterate through available games
         for(String gameKey: gameKeys){
-            // Create button
+            // Create button for this game
             JButton gameButton = new JButton("JOIN "+gameKey.toUpperCase());
             gameButton.setPreferredSize(new Dimension(125, 35));
             gameButton.setFont(buttonFont); // Set custom font
             gameButton.setForeground(Color.BLACK); // Set text color
             gameButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+
             // Add action listener
             gameButton.addActionListener(e -> {
                 selectedGame = gameKey;
@@ -196,6 +197,7 @@ public class JoinGameIndexFrame extends JFrame {
         if(selectedGame.equals("0")){
             return "0";
         }
+        // Use Pattern and Matcher for finding the index
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(selectedGame);
         if (matcher.find()) {

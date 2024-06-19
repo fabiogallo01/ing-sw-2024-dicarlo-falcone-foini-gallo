@@ -16,9 +16,9 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class AskColorFrame extends JFrame {
-    private String selectedColor; // contains client's selected color
-    private final Object lock = new Object();
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
+    private String selectedColor; // Contains client's selected color
+    private final Object lock = new Object(); // Lock for getting clint choice
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font for graphics
 
     /**
      * AskColorFrame constructor, it calls method init() for initialization of the frame
@@ -68,7 +68,7 @@ public class AskColorFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -79,7 +79,7 @@ public class AskColorFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -91,6 +91,7 @@ public class AskColorFrame extends JFrame {
             // Removed used color for visualization
             colors.remove(previousColor);
 
+            // Create label
             JLabel repeatedLabel = new JLabel("Sorry, "+ previousColor+" is already used.");
             repeatedLabel.setHorizontalAlignment(SwingConstants.CENTER);
             repeatedLabel.setFont(customFont);
@@ -99,7 +100,7 @@ public class AskColorFrame extends JFrame {
             transparentPanel.add(repeatedLabel, gbc);
         }
 
-        // Create panel for input
+        // Create panel for client's input
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
         panel.setOpaque(false);
@@ -111,7 +112,7 @@ public class AskColorFrame extends JFrame {
         // Create combo box with available colors
         JComboBox<String> comboBox = new JComboBox<>(colors.toArray(new String[0]));
 
-        // Set custom renderer
+        // Set custom renderer for display the colors with their color
         comboBox.setRenderer(new ColorComboBoxCellRenderer());
 
         // Add label and combo box to the panel
@@ -124,6 +125,7 @@ public class AskColorFrame extends JFrame {
         confirmButton.setFont(customFont); // Set custom font
         confirmButton.setForeground(Color.BLACK); // Set text color
         confirmButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+
         // Add listener when client click on "CONFIRM" => Set frame's parameter
         confirmButton.addActionListener(e -> {
             selectedColor = (String) comboBox.getSelectedItem();
@@ -147,15 +149,15 @@ public class AskColorFrame extends JFrame {
         // Add synchronization on object lock
         synchronized (lock){
             try{
-                lock.wait();
+                lock.wait(); // Wait selection
             } catch (InterruptedException ex){
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
         }
     }
 
     /**
-     * color getter
+     * selectedColor getter
      *
      * @return client's selected color
      * @author Foini Lorenzo
@@ -165,7 +167,13 @@ public class AskColorFrame extends JFrame {
     }
 }
 
-// Custom renderer for JComboBox
+/**
+ * New class for custom renderer for JComboBox
+ * Used for adding to the colors' labels their colors
+ * It extends DefaultListCellRenderer
+ *
+ * @author Foini Lorenzo
+ */
 class ColorComboBoxCellRenderer extends DefaultListCellRenderer {
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index,

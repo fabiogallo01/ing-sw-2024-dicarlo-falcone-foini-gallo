@@ -19,13 +19,12 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class DrawCardFrame extends JFrame {
-    private final Object lock = new Object();
-    private final int width = 200;
+    private final Object lock = new Object(); // Lock for getting clint choice
     private final GameTable gameTable; // It represents the gameTable of the match
     private int indexSelectedCard;
     private final boolean enableButton;
-    private final Font labelFont = new Font("SansSerif", Font.BOLD, 18);
-    private final Font buttonFont = new Font("SansSerif", Font.BOLD, 12);
+    private final Font labelFont = new Font("SansSerif", Font.BOLD, 18); // Used font for labels
+    private final Font buttonFont = new Font("SansSerif", Font.BOLD, 12); // Used font for buttons
 
     /**
      * DrawCardFrame constructor, it calls method init() for initialization of frame
@@ -59,7 +58,7 @@ public class DrawCardFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -70,7 +69,7 @@ public class DrawCardFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -102,7 +101,7 @@ public class DrawCardFrame extends JFrame {
             exitButton.setForeground(Color.BLACK); // Set text color
             exitButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
 
-            // Add action listener
+            // Add action listener for close this window
             exitButton.addActionListener(e -> {
                 this.dispose(); // Close the window
             });
@@ -114,6 +113,7 @@ public class DrawCardFrame extends JFrame {
         // Add transparent panel to the frame
         this.add(transparentPanel, BorderLayout.CENTER);
 
+        // Set frame's location and visibility
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
@@ -121,24 +121,34 @@ public class DrawCardFrame extends JFrame {
         if(enableButton){
             synchronized (lock) {
                 try {
-                    lock.wait();
+                    lock.wait(); // Wait selection
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    System.out.println(ex.getMessage());
                 }
             }
         }
     }
 
+    /**
+     * This method is used for create the main panel
+     * It contains the labels, images and buttons (if enableButton is true)
+     *
+     * @return such JPanel
+     * @author Foini Lorenzo
+     */
     private JPanel createMainPanel(){
+        // Create new panel
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setOpaque(false);
 
+        // Create new grid back constraint
         GridBagConstraints gbc = new GridBagConstraints();
         // Setting common constraints
         gbc.insets = new Insets(5, 5, 5, 5); // Add space around components
         gbc.ipadx = 5; // Add internal padding horizontally
         gbc.ipady = 5; // Add internal padding vertically
 
+        // Index of the column for adding the component in such column
         int indexColumn = 0;
 
         // GET IMAGES AND BUTTONS, if they exist
@@ -195,16 +205,16 @@ public class DrawCardFrame extends JFrame {
     private void addImageLabel(JPanel panel, int cardId, boolean side, GridBagConstraints gbc, int column){
         int imageHeight = 100;
         // Get image of the resource deck top card
-        JLabel imageLabel = new JLabel(getImageFromID(cardId, side, width, imageHeight));
+        JLabel imageLabel = new JLabel(getImageFromID(cardId, side, imageHeight));
         imageLabel.setVerticalAlignment(JLabel.CENTER);
 
         // Add image in the panel in first row
         // This image will occupy 50% of the panel's height
-        addComponent(panel, imageLabel, gbc, 0, column, 1, 1, 1, 0.5);
+        addComponent(panel, imageLabel, gbc, 0, column);
     }
 
     /**
-     * This method is used for adding in the given JPanel a component with given constraints
+     * This method is used for adding in the given JPanel a button with given constraints
      *
      * @param panel: Panel to which to add the component.
      * @param text: text of the button
@@ -214,9 +224,12 @@ public class DrawCardFrame extends JFrame {
      * @author Foini Lorenzo
      */
     private void addButton(JPanel panel, String text, int returnedValue, GridBagConstraints gbc, int column){
+        // Set button height
         int buttonHeight = 50;
+
+        // Create new button
         JButton selectButton = new JButton(text);
-        selectButton.setPreferredSize(new Dimension(width, buttonHeight));
+        selectButton.setPreferredSize(new Dimension(200, buttonHeight));
         selectButton.setFont(buttonFont); // Set custom font
         selectButton.setForeground(Color.BLACK); // Set text color
         selectButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
@@ -232,7 +245,7 @@ public class DrawCardFrame extends JFrame {
 
         // Add button in the panel in second row
         // This button will occupy 50% of the panel's height
-        addComponent(panel, selectButton, gbc, 1, column, 1, 1, 1, 0.5);
+        addComponent(panel, selectButton, gbc, 1, column);
     }
 
     /**
@@ -240,12 +253,11 @@ public class DrawCardFrame extends JFrame {
      *
      * @param cardID: card's id.
      * @param side: card's side.
-     * @param width: final card's width.
      * @param height: final card's height.
      * @return the image as a ImageIcon
      * @author Foini Lorenzo
      */
-    private ImageIcon getImageFromID(int cardID, boolean side, int width, int height){
+    private ImageIcon getImageFromID(int cardID, boolean side, int height){
         BufferedImage originalImage; // Original image with its size
         Image scaledImage; // Same image as before but with parameters size
         ImageIcon imageIcon; // ImageIcon to return
@@ -254,6 +266,7 @@ public class DrawCardFrame extends JFrame {
         if(side) stringSide="front"; // side: true => front
         else stringSide="back"; // side: false => back
 
+        // Get image from resources
         String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
         try {
             originalImage = ImageIO.read(new File(path));
@@ -262,7 +275,7 @@ public class DrawCardFrame extends JFrame {
         }
 
         // Re-dimensioning the image
-        scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        scaledImage = originalImage.getScaledInstance(200, height, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
 
         return imageIcon;
@@ -276,25 +289,20 @@ public class DrawCardFrame extends JFrame {
      * @param gbc: Layout specifications for positioning and sizing the component.
      * @param row: Row to place the component in the layout.
      * @param col: Column to place the component in the layout.
-     * @param width: Horizontal cells the component should occupy in the layout.
-     * @param height: Vertical cells the component should occupy in the layout.
-     * @param weightx: Horizontal expansion priority of the component in the layout.
-     * @param weighty: Vertical expansion priority of the component in the layout.
      * @author Falcone Giacomo
      */
-    private void addComponent(JPanel panel, Component comp, GridBagConstraints gbc,
-                              int row, int col, int width, int height, double weightx, double weighty) {
+    private void addComponent(JPanel panel, Component comp, GridBagConstraints gbc, int row, int col) {
         gbc.gridx = col;
         gbc.gridy = row;
-        gbc.gridwidth = width;
-        gbc.gridheight = height;
-        gbc.weightx = weightx;
-        gbc.weighty = weighty;
+        gbc.gridwidth = 1; // Horizontal cells the component should occupy in the layout.
+        gbc.gridheight = 1; // Vertical cells the component should occupy in the layout.
+        gbc.weightx = 1; // Horizontal expansion priority of the component in the layout.
+        gbc.weighty = 0.5; // Vertical expansion priority of the component in the layout.
         panel.add(comp, gbc);
     }
 
     /**
-     * selected card index getter
+     * indexSelectedCard index getter
      *
      * @return client selected secret card index: from 1 to 6
      * @author Foini Lorenzo

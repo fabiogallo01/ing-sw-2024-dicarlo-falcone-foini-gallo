@@ -16,8 +16,8 @@ import java.io.IOException;
  */
 public class CreateJoinFrame extends JFrame {
     private String choice; // "create" or "join"
-    private final Object lock = new Object();
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
+    private final Object lock = new Object(); // Lock for getting clint choice
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
 
     /**
      * CreateJoinFrame constructor, it calls method init() for initialization of the frame
@@ -48,7 +48,7 @@ public class CreateJoinFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -59,7 +59,7 @@ public class CreateJoinFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -79,16 +79,18 @@ public class CreateJoinFrame extends JFrame {
         // Add buttons in the transparent panel with grid back constraint
         transparentPanel.add(buttonsPanel, gbc);
 
+        // Add transparent panel to the frame
         this.add(transparentPanel, BorderLayout.CENTER);
 
+        // Set frame's location and visibility
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
         synchronized (lock) {
             try {
-                lock.wait(); // Wait until user selects a card
+                lock.wait(); // Wait selection
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+               System.out.println(ex.getMessage());
             }
         }
     }
@@ -100,6 +102,7 @@ public class CreateJoinFrame extends JFrame {
      * @author Foini Lorenzo
      */
     private JPanel createButtonPanel(int countNotFullGame){
+        // Create new panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 

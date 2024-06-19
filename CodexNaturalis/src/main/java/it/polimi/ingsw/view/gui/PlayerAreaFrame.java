@@ -5,18 +5,26 @@ import it.polimi.ingsw.model.game.PlayerArea;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class PlayerAreaFrame extends JFrame {
-    private final PlayerArea playerArea;
+    private final PlayerArea playerArea; // player's area with the played cards
     private final int numRows;
     private final int numCols;
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 15);
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 15); // Used font
 
+    /**
+     * PlayerAreaFrame constructor, it calls method init() for initialization of the frame
+     *
+     * @param title window's title
+     * @param playerArea of the player
+     * @param numRows number or rows
+     * @param numCols number of columns
+     * @author Foini Lorenzo
+     */
     public PlayerAreaFrame(String title, PlayerArea playerArea, int numRows, int numCols) {
         super(title);
         this.playerArea = playerArea;
@@ -25,6 +33,11 @@ public class PlayerAreaFrame extends JFrame {
         init();
     }
 
+    /**
+     * This method is used for initialization of frame
+     *
+     * @author Foini Lorenzo
+     */
     private void init(){
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(1000, 500);
@@ -35,7 +48,7 @@ public class PlayerAreaFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create new panel
@@ -59,7 +72,7 @@ public class PlayerAreaFrame extends JFrame {
                     Card card = playerArea.getCardByPosition(position);
 
                     // Create new button with image
-                    label = new JLabel(getImageFromID(card.getID(), card.getSide(),150, 75));
+                    label = new JLabel(getImageFromID(card.getID(), card.getSide()));
                 }
 
                 label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -82,9 +95,10 @@ public class PlayerAreaFrame extends JFrame {
         int offsetY = (viewHeight - viewport.getHeight()) / 2 - 225; // Offset for put (40,40) at center
         viewport.setViewPosition(new Point(offsetX, offsetY));
 
-        // Add panel in the frame
+        // Add scrollPane in the frame
         this.add(scrollPane);
 
+        // Set frame's location and visibility
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -94,12 +108,10 @@ public class PlayerAreaFrame extends JFrame {
      *
      * @param cardID: card's id.
      * @param side: card's side.
-     * @param width: final card's width.
-     * @param height: final card's height.
      * @return the image as a ImageIcon
      * @author Foini Lorenzo
      */
-    private ImageIcon getImageFromID(int cardID, boolean side, int width, int height){
+    private ImageIcon getImageFromID(int cardID, boolean side){
         BufferedImage originalImage; // Original image with its size
         Image scaledImage; // Same image as before but with parameters size
         ImageIcon imageIcon; // ImageIcon to return
@@ -108,6 +120,7 @@ public class PlayerAreaFrame extends JFrame {
         if(side) stringSide="front"; // side: true => front
         else stringSide="back"; // side: false => back
 
+        // Get image from resources
         String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
         try {
             originalImage = ImageIO.read(new File(path));
@@ -116,7 +129,7 @@ public class PlayerAreaFrame extends JFrame {
         }
 
         // Re-dimensioning the image
-        scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        scaledImage = originalImage.getScaledInstance(150, 75, Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(scaledImage);
 
         return imageIcon;

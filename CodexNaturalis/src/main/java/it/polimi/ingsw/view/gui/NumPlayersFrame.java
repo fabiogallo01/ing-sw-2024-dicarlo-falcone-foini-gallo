@@ -15,9 +15,9 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class NumPlayersFrame extends JFrame {
-    private String selectedNumPlayers; // contains the number of players as a string
-    private final Object lock = new Object();
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
+    private String selectedNumPlayers; // Contains the number of players as a string
+    private final Object lock = new Object(); // Lock for getting clint choice
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
 
     /**
      * NumPlayersFrame constructor, it calls method init() for initialization of the frame
@@ -46,7 +46,7 @@ public class NumPlayersFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -57,7 +57,7 @@ public class NumPlayersFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -87,6 +87,7 @@ public class NumPlayersFrame extends JFrame {
         confirmButton.setFont(customFont); // Set custom font
         confirmButton.setForeground(Color.BLACK); // Set text color
         confirmButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+
         // Add listener when client click on "CONFIRM" => Set frame's parameter
         confirmButton.addActionListener(e -> {
             selectedNumPlayers = comboBox.getSelectedItem().toString();
@@ -110,9 +111,9 @@ public class NumPlayersFrame extends JFrame {
         // Add synchronization on object lock
         synchronized (lock){
             try{
-                lock.wait();
+                lock.wait(); // Wait selection
             } catch (InterruptedException ex){
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
         }
     }

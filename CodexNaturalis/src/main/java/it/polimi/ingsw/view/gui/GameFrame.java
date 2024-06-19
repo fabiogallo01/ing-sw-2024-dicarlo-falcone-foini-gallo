@@ -19,25 +19,31 @@ import java.util.ArrayList;
  * It represents the after login window.
  * It extends JFrame.
  *
- * @author Falcone Giacomo, Foini Lorenzo
+ * @author Foini Lorenzo
  */
 public class GameFrame extends JFrame {
-    private PrintWriter out;
+    private final PrintWriter out; // Client PrintWriter
     private final int NUM_ROWS = 81;
     private final int NUM_COLS = 81;
     private Player clientPlayer; // It represents the clients
     private GameTable gameTable; // It represents the gameTable of the match
-    private ArrayList<JButton> gridButtons;
-    private ArrayList<JButton> handCardsImageButtons;
-    private ArrayList<JButton> handCardsSelectButtons;
-    private JLabel errorLabel;
-    private String invalidPlay;
-    private String mistakePlay;
+    private ArrayList<JButton> gridButtons; // List of buttons of the player's area
+    private ArrayList<JButton> handCardsImageButtons; // List of buttons with images of player's hand
+    private ArrayList<JButton> handCardsSelectButtons; // List of buttons with "play card x" (x=1,2,3)
+    private String invalidPlay; // Text with invalid play
+    private String mistakePlay; // Text with which type of invalid play did the client make
 
     /**
      * GameFrame constructor, it calls method init() for initialization of frame
      *
+     *
      * @param title window's title
+     * @param out: client's printWriter
+     * @param player: client's player's reference
+     * @param gameTable: gameTable of the game
+     * @param counterResources: list which contains the counter of the resources in player's area
+     * @param invalidPlay: contains invalid play error
+     * @param mistakePlay: contains which type of error has been made by the client
      * @author Foini Lorenzo
      */
     GameFrame(String title, PrintWriter out, Player player, GameTable gameTable, ArrayList<Integer> counterResources, String invalidPlay, String mistakePlay){
@@ -51,6 +57,9 @@ public class GameFrame extends JFrame {
     /**
      * This method is used for initialization of frame
      *
+     * @param player: client's player's reference
+     * @param gameTable: gameTable of the game
+     * @param counterResources: list which contains the counter of the resources in player's area
      * @author Foini Lorenzo
      */
     void init(Player player, GameTable gameTable, ArrayList<Integer> counterResources){
@@ -69,7 +78,7 @@ public class GameFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Call to function createPanelNorth() for creating new panel to be added in the content pane
@@ -97,6 +106,7 @@ public class GameFrame extends JFrame {
         contentPane.add(panelEast,BorderLayout.EAST);
         contentPane.add(panelSouth,BorderLayout.SOUTH);
 
+        // Set frame's location and visibility
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
@@ -106,11 +116,14 @@ public class GameFrame extends JFrame {
      * The north panel contains the two common objectives and the secret one
      *
      * @return the panel that will be added in the content pane
-     * @author Falcone Giacomo, Foini Lorenzo
+     * @author Foini Lorenzo
      */
     public JPanel createPanelNorth(){
         // Create new font for label in this panel
         Font labelFont = new Font("SansSerif", Font.BOLD, 12);
+
+        // Create new label which says that the client has made and error while playing
+        JLabel errorLabel;
 
         // Create new panel and use a GridBagLayout, so we can choose the size of the cells
         JPanel panel = new JPanel(new GridBagLayout());
@@ -135,9 +148,9 @@ public class GameFrame extends JFrame {
 
         // Add labels in the panel in first row
         // These labels will occupy 30% of the panel
-        addComponent(panel, commonObjective1, gbc, 0, 0, 1, 1, 1, 0.3);
-        addComponent(panel, commonObjective2, gbc, 0, 1, 1, 1, 1, 0.3);
-        addComponent(panel, secretObjective, gbc, 0, 2, 1, 1, 1, 0.3);
+        addComponent(panel, commonObjective1, gbc, 0, 0, 0.3);
+        addComponent(panel, commonObjective2, gbc, 0, 1, 0.3);
+        addComponent(panel, secretObjective, gbc, 0, 2, 0.3);
 
         // Get images of the three objective cards
         // For doing so we call method getImageFromID with teh cards' IDs, width and height
@@ -153,9 +166,9 @@ public class GameFrame extends JFrame {
 
         // Add image labels in the panel in second row
         // These labels will occupy 70% of the panel
-        addComponent(panel, imageCommonObjective1, gbc, 1, 0, 1, 1, 1, 0.7);
-        addComponent(panel, imageCommonObjective2, gbc, 1, 1, 1, 1, 1, 0.7);
-        addComponent(panel, imageSecretObjective, gbc, 1, 2, 1, 1, 1, 0.7);
+        addComponent(panel, imageCommonObjective1, gbc, 1, 0, 0.7);
+        addComponent(panel, imageCommonObjective2, gbc, 1, 1, 0.7);
+        addComponent(panel, imageSecretObjective, gbc, 1, 2, 0.7);
 
         // Create label which indicates if it is client's turn
         JLabel turnLabel;
@@ -174,7 +187,7 @@ public class GameFrame extends JFrame {
 
         // Add turnLabel in the panel in first row and fourth column
         // These labels will occupy 30% of the panel
-        addComponent(panel, turnLabel, gbc, 0, 3, 1, 1, 1, 0.3);
+        addComponent(panel, turnLabel, gbc, 0, 3, 0.3);
 
         // Assign error label: it contains player's error when he does an invalid play
         if(invalidPlay.isEmpty() && mistakePlay.isEmpty()) errorLabel = new JLabel("NO ERROR WHILE PLAYING");
@@ -192,7 +205,7 @@ public class GameFrame extends JFrame {
         errorLabel.setVerticalAlignment(JLabel.CENTER);
         // Add turn label in the panel in second row and fourth column
         // These labels will occupy 70% of the panel
-        addComponent(panel, errorLabel, gbc, 1, 3, 1, 1, 1, 0.7);
+        addComponent(panel, errorLabel, gbc, 1, 3, 0.7);
 
         if(!clientPlayer.isTurn()){
             enableButtons(handCardsSelectButtons,false);
@@ -233,20 +246,23 @@ public class GameFrame extends JFrame {
 
         // Add label in the panel in first row
         // This label will occupy 10% of the panel
-        addComponent(panel, scoreboard, gbc, indexRow, 0, 1, 1, 1, 0.1);
+        addComponent(panel, scoreboard, gbc, indexRow, 0, 0.1);
         indexRow++;
 
         // Create labels for players and their scores
         ArrayList<Player> players = gameTable.getPlayers();
         for(Player player: players){
+            // Get player's username, score, and color
             String playerUsername = player.getUsername();
             int playerScore = player.getScore();
             java.awt.Color playerColor = toColor(player.getColor().toString());
+
+            // Create new label and set its graphics
             JLabel playerLabel = new JLabel(playerUsername +": "+ playerScore+ " pts");
             playerLabel.setFont(labelFont);
             playerLabel.setForeground(playerColor);
             playerLabel.setVerticalAlignment(JLabel.CENTER);
-            addComponent(panel, playerLabel, gbc, indexRow, 0, 1, 1, 1, 0.1);
+            addComponent(panel, playerLabel, gbc, indexRow, 0, 0.1);
             indexRow++;
         }
 
@@ -257,14 +273,13 @@ public class GameFrame extends JFrame {
                 JButton buttonPlayerArea = new JButton(playerUsername+"'s AREA");
                 buttonPlayerArea.setFont(buttonFont);
                 buttonPlayerArea.setBorder(new LineBorder(Color.BLACK, 1)); // Set border
-                // Add listener
-                buttonPlayerArea.addActionListener(e -> {
-                    new PlayerAreaFrame(playerUsername + "'s AREA", player.getPlayerArea(), NUM_ROWS, NUM_COLS);
-                });
+
+                // Add listener which will open a PlayerAreaFrame if clicked
+                buttonPlayerArea.addActionListener(e -> new PlayerAreaFrame(playerUsername + "'s AREA", player.getPlayerArea(), NUM_ROWS, NUM_COLS));
 
                 // Add buttons in the panel in second row
                 // These buttons will occupy 30% of the panel
-                addComponent(panel, buttonPlayerArea, gbc, indexRow, 0, 1, 1, 1, 0.1);
+                addComponent(panel, buttonPlayerArea, gbc, indexRow, 0, 0.1);
                 indexRow++;
             }
         }
@@ -273,23 +288,21 @@ public class GameFrame extends JFrame {
         JButton drawButton = new JButton("DRAW");
         drawButton.setFont(buttonFont);
         drawButton.setBorder(new LineBorder(Color.BLACK, 1)); // Set border
-        drawButton.addActionListener(e -> {
-            new DrawCardFrame("DRAWABLE CARDS", gameTable, false);
-        });
+
+        // Add listener which will open a DrawCardFrame if clicked
+        drawButton.addActionListener(e -> new DrawCardFrame("DRAWABLE CARDS", gameTable, false));
         // Add draw button in the panel in second row and fourth column
         // These labels will occupy 10% of the panel
-        addComponent(panel, drawButton, gbc, indexRow, 0, 1, 1, 1, 0.1);
+        addComponent(panel, drawButton, gbc, indexRow, 0, 0.1);
         indexRow++;
 
         // Create buttons to reset scroll bar and add it in the panel
         JButton buttonResetScrollBar = new JButton("RESET SCROLLBAR");
         buttonResetScrollBar.setFont(buttonFont);
         buttonResetScrollBar.setBorder(new LineBorder(Color.BLACK, 1)); // Set border
-        // Add listener
-        buttonResetScrollBar.addActionListener(e -> {
-            resetScrollBar(scrollPane);
-        });
-        addComponent(panel, buttonResetScrollBar, gbc, indexRow, 0, 1, 1, 1, 0.1);
+        // Add listener for resetting the scrollbar
+        buttonResetScrollBar.addActionListener(e -> resetScrollBar(scrollPane));
+        addComponent(panel, buttonResetScrollBar, gbc, indexRow, 0, 0.1);
 
 
         // Set panel values
@@ -342,10 +355,11 @@ public class GameFrame extends JFrame {
                 int finalI = i;
                 int finalJ = j;
                 button.addActionListener(e -> {
+                    // Send selected position to the server
                     out.println(finalI);
                     out.println(finalJ);
-                    enableButtons(gridButtons, false);
-                    enableButtons(handCardsImageButtons,true);
+                    enableButtons(gridButtons, false); // Disable buttons of the grid
+                    enableButtons(handCardsImageButtons,true); // Enable buttons of the images of cards in hand
                 });
 
                 button.setPreferredSize(new Dimension(175, 75));
@@ -355,7 +369,7 @@ public class GameFrame extends JFrame {
                 gridButtons.add(button);
             }
         }
-        enableButtons(gridButtons, false);
+        enableButtons(gridButtons, false); // Disable buttons of the grid
 
         // Create scrollbar for visualization of the game area
         JScrollPane scrollPane = new JScrollPane(panel);
@@ -395,35 +409,35 @@ public class GameFrame extends JFrame {
         titleLabel.setHorizontalAlignment(JLabel.CENTER);
         titleLabel.setVerticalAlignment(JLabel.CENTER);
         // This label will occupy 12.5% of the panel
-        addComponent(panel, titleLabel, gbc, 0, 0, 1, 1, 1, 0.125);
+        addComponent(panel, titleLabel, gbc, 0, 0, 0.125);
 
         // Count number of animal kingdom
         JLabel animalKingdomLabel = new JLabel("Animal kingdom: " + counterResources.getFirst());
         animalKingdomLabel.setFont(labelFont);
         animalKingdomLabel.setForeground(new java.awt.Color(0,255,255));
         // This label will occupy 12.5% of the panel
-        addComponent(panel, animalKingdomLabel, gbc, 1, 0, 1, 1, 1, 0.125);
+        addComponent(panel, animalKingdomLabel, gbc, 1, 0, 0.125);
 
         // Count number of fungi kingdom
         JLabel fungiKingdomLabel = new JLabel("Fungi kingdom: " + counterResources.get(1));
         fungiKingdomLabel.setFont(labelFont);
         fungiKingdomLabel.setForeground(new java.awt.Color(255,0,0));
         // This label will occupy 12.5% of the panel
-        addComponent(panel, fungiKingdomLabel, gbc, 2, 0, 1, 1, 1, 0.125);
+        addComponent(panel, fungiKingdomLabel, gbc, 2, 0, 0.125);
 
         // Count number of insect kingdom
         JLabel insectKingdomLabel = new JLabel("Insect kingdom: " + counterResources.get(2));
         insectKingdomLabel.setFont(labelFont);
         insectKingdomLabel.setForeground(new java.awt.Color(128,0,128));
         // This label will occupy 12.5% of the panel
-        addComponent(panel, insectKingdomLabel, gbc, 3, 0, 1, 1, 1, 0.125);
+        addComponent(panel, insectKingdomLabel, gbc, 3, 0, 0.125);
 
         // Count number of plant kingdom
         JLabel plantKingdomLabel = new JLabel("Plant kingdom: " + counterResources.getLast());
         plantKingdomLabel.setFont(labelFont);
         plantKingdomLabel.setForeground(new java.awt.Color(0,128,0));
         // This label will occupy 15% of the panel
-        addComponent(panel, plantKingdomLabel, gbc, 4, 0, 1, 1, 1, 0.125);
+        addComponent(panel, plantKingdomLabel, gbc, 4, 0, 0.125);
 
         // Count number of inkwell object
         int counterInkwellObject = clientPlayer.getPlayerArea().countObject(GameObject.INKWELL);
@@ -431,7 +445,7 @@ public class GameFrame extends JFrame {
         inkwellLabel.setFont(labelFont);
         inkwellLabel.setForeground(new java.awt.Color(184,134,11));
         // This label will occupy 15% of the panel
-        addComponent(panel, inkwellLabel, gbc, 5, 0, 1, 1, 1, 0.125);
+        addComponent(panel, inkwellLabel, gbc, 5, 0, 0.125);
 
         // Count number of manuscript object
         int counterManuscriptObject = clientPlayer.getPlayerArea().countObject(GameObject.MANUSCRIPT);
@@ -439,7 +453,7 @@ public class GameFrame extends JFrame {
         manuscriptLabel.setFont(labelFont);
         manuscriptLabel.setForeground(new java.awt.Color(184,134,11));
         // This label will occupy 12.5% of the panel
-        addComponent(panel, manuscriptLabel, gbc, 6, 0, 1, 1, 1, 0.125);
+        addComponent(panel, manuscriptLabel, gbc, 6, 0, 0.125);
 
         // Count number of quill object
         int counterQuillObject = clientPlayer.getPlayerArea().countObject(GameObject.QUILL);
@@ -447,7 +461,7 @@ public class GameFrame extends JFrame {
         quillLabel.setFont(labelFont);
         quillLabel.setForeground(new java.awt.Color(184,134,11));
         // This label will occupy 12.5% of the panel
-        addComponent(panel, quillLabel, gbc, 7, 0, 1, 1, 1, 0.125);
+        addComponent(panel, quillLabel, gbc, 7, 0, 0.125);
 
         // Set panel values
         panel.setBackground(new java.awt.Color(240,255,255));
@@ -462,7 +476,7 @@ public class GameFrame extends JFrame {
      * The south panel contains player's hand
      *
      * @return the panel that will be added in the content pane
-     * @author Falcone Giacomo, Foini Lorenzo
+     * @author Foini Lorenzo
      */
     public JPanel createPanelSouth(){
         // Create new font
@@ -476,19 +490,22 @@ public class GameFrame extends JFrame {
         int indexColumn = 0;
         ArrayList<GamingCard> hand = clientPlayer.getHand();
         for(GamingCard card : hand){
+            // Create new button for card
             JButton buttonCard = new JButton(getImageFromID(card.getID(), card.getSide(),350, 120));
             buttonCard.setBorder(new LineBorder(Color.BLACK, 1)); // Set border
             buttonCard.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),350, 120));
+
+            // Add action listener
             buttonCard.addActionListener(e -> {
-                buttonCard.setIcon(getImageFromID(card.getID(), !card.getSide(), 350, 120));
-                buttonCard.setDisabledIcon(getImageFromID(card.getID(), !card.getSide(),350, 120));
-                card.setSide(!card.getSide());
+                buttonCard.setIcon(getImageFromID(card.getID(), !card.getSide(), 350, 120)); // Reverse the side
+                buttonCard.setDisabledIcon(getImageFromID(card.getID(), !card.getSide(),350, 120)); // Reverse the side
+                card.setSide(!card.getSide()); // Set reversed side to the card
             });
             handCardsImageButtons.add(buttonCard);
 
             // Add button in the panel in first row
             // The button will occupy 70% of the panel's height
-            addComponent(panel, buttonCard, gbc, 0, indexColumn, 1, 1, 1, 0.7);
+            addComponent(panel, buttonCard, gbc, 0, indexColumn, 0.7);
             indexColumn++;
 
             // Create button for playing this card
@@ -496,19 +513,22 @@ public class GameFrame extends JFrame {
             JButton buttonPlayCard = new JButton("PLAY CARD "+indexCard);
             buttonPlayCard.setFont(font);
             buttonPlayCard.setBorder(new LineBorder(Color.BLACK, 1)); // Set border
+
+            // Add action listener
             buttonPlayCard.addActionListener(e -> {
+                // Send to the server client choice of the side
                 out.println(indexCard);
                 if(card.getSide()) out.println("front");
                 else out.println("back");
-                enableButtons(gridButtons,true);
-                enableButtons(handCardsImageButtons,false);
-                enableButtons(handCardsSelectButtons,false);
+                enableButtons(gridButtons,true); // Enable buttons of the grid
+                enableButtons(handCardsImageButtons,false); // Disable buttons of the images of the cards in hand
+                enableButtons(handCardsSelectButtons,false); // Disable buttons for playing the cards in hand
             });
             handCardsSelectButtons.add(buttonPlayCard);
 
             // Add buttons in the panel in second row
             // These buttons will occupy 30% of the panel
-            addComponent(panel, buttonPlayCard, gbc, 1, indexColumn-1, 1, 1, 1, 0.3);
+            addComponent(panel, buttonPlayCard, gbc, 1, indexColumn-1, 0.3);
         }
 
         // Check if is not client's turn or if the player has already played a card
@@ -525,6 +545,13 @@ public class GameFrame extends JFrame {
         return panel;
     }
 
+    /**
+     * This method is used for returning the given color as a java.awt.Color
+     *
+     * @param playerColor color of the player as a string
+     * @return the given color as a java.awt.Color
+     * @author Foini Lorenzo
+     */
     private java.awt.Color toColor(String playerColor){
         return switch (playerColor) {
             case "RED" -> java.awt.Color.RED;
@@ -534,6 +561,12 @@ public class GameFrame extends JFrame {
         };
     }
 
+    /**
+     * This method is used for resetting the scrollbar of player's area frame
+     *
+     * @param scrollPane: scollbar to be reset
+     * @author Foini Lorenzo
+     */
     private void resetScrollBar(JScrollPane scrollPane) {
         // Impost scroll bar to center: we want (40,40) to be in the center of the window
         JViewport viewport = scrollPane.getViewport();
@@ -552,20 +585,17 @@ public class GameFrame extends JFrame {
      * @param gbc: Layout specifications for positioning and sizing the component.
      * @param row: Row to place the component in the layout.
      * @param col: Column to place the component in the layout.
-     * @param width: Horizontal cells the component should occupy in the layout.
-     * @param height: Vertical cells the component should occupy in the layout.
-     * @param weightx: Horizontal expansion priority of the component in the layout.
      * @param weighty: Vertical expansion priority of the component in the layout.
      * @author Falcone Giacomo
      */
     private void addComponent(JPanel panel, Component comp, GridBagConstraints gbc,
-                              int row, int col, int width, int height, double weightx, double weighty) {
+                              int row, int col, double weighty) {
         gbc.gridx = col;
         gbc.gridy = row;
-        gbc.gridwidth = width;
-        gbc.gridheight = height;
-        gbc.weightx = weightx;
-        gbc.weighty = weighty;
+        gbc.gridwidth = 1; // Horizontal cells the component should occupy in the layout.
+        gbc.gridheight = 1; // Vertical cells the component should occupy in the layout.
+        gbc.weightx = 1; // Horizontal expansion priority of the component in the layout.
+        gbc.weighty = weighty; // Vertical expansion priority of the component in the layout.
         panel.add(comp, gbc);
     }
 
@@ -588,6 +618,7 @@ public class GameFrame extends JFrame {
         if(side) stringSide="front"; // side: true => front
         else stringSide="back"; // side: false => back
 
+        // Get image from resources
         String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
         try {
             originalImage = ImageIO.read(new File(path));
@@ -602,12 +633,30 @@ public class GameFrame extends JFrame {
         return imageIcon;
     }
 
+    /**
+     * This method is used for enable/disable a list of buttons
+     *
+     * @param buttons: list of buttons to be enable/disable
+     * @param enable: true => Enable
+     *                false => Disable
+     * @author Foini Lorenzo
+     */
     private void enableButtons(ArrayList<JButton> buttons, boolean enable) {
         for (JButton button : buttons) {
             button.setEnabled(enable);
         }
     }
 
+    /**
+     * This method is update this frame
+     *
+     * @param updatedPlayer: update client's player's reference
+     * @param updatedGameTable: update gameTable of the game
+     * @param counterResources: list which contains the counter of the resources in player's area
+     * @param invalidPlay: contains invalid play error
+     * @param mistakePlay: contains which type of error has been made by the client
+     * @author Foini Lorenzo
+     */
     public void updateGameFrame(Player updatedPlayer, GameTable updatedGameTable, ArrayList<Integer> counterResources, String invalidPlay, String mistakePlay){
         // Update string for error while playing
         this.invalidPlay = invalidPlay;
@@ -618,9 +667,5 @@ public class GameFrame extends JFrame {
 
         // Update frame using method init() with updated parameters
         init(updatedPlayer, updatedGameTable, counterResources);
-
-        // Update frame
-        //this.revalidate();
-        //this.repaint();
     }
 }

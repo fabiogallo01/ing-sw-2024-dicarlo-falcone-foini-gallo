@@ -17,14 +17,16 @@ public class BackgroundPanel extends JPanel {
 
     public BackgroundPanel(String filePath) {
         try {
+            // Set image
             backgroundImage = ImageIO.read(new File(filePath));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
+        // Paint component
         super.paintComponent(g);
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);

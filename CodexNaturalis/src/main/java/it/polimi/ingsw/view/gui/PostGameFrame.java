@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author Foini Lorenzo
  */
 public class PostGameFrame extends JFrame {
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
 
     /**
      * PostGameFrame constructor, it calls method init() for initialization of frame
@@ -51,7 +51,7 @@ public class PostGameFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -62,7 +62,7 @@ public class PostGameFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -93,6 +93,13 @@ public class PostGameFrame extends JFrame {
         this.setVisible(true);
     }
 
+    /**
+     * This method is used for create a label with the winner(s) of the game
+     *
+     * @param winnerMessage: string which contains the message with the winners
+     * @return the created JLabel
+     * @author Foini Lorenzo
+     */
     private JLabel addWinnerLabel(String winnerMessage){
         // Create new label with winner(s) message
         JLabel winnerMessageLabel = new JLabel(winnerMessage);
@@ -105,6 +112,14 @@ public class PostGameFrame extends JFrame {
         return winnerMessageLabel;
     }
 
+    /**
+     * This method is used for create a label for showing to the client if he won/lost
+     *
+     * @param hasWon: true => Client has won
+     *                false => Client has lost
+     * @return the created JLabel
+     * @author Foini Lorenzo
+     */
     private JLabel addHasWonLabel(boolean hasWon){
         // Create new label based on value of hasWon
         JLabel hasWonLabel;
@@ -119,6 +134,13 @@ public class PostGameFrame extends JFrame {
         return hasWonLabel;
     }
 
+    /**
+     * This method is used for create a panel which contains the final scoreboard
+     *
+     * @param finalScoreboard: list of string representing the scores by the player
+     * @return the created JPanel
+     * @author Foini Lorenzo
+     */
     private JPanel addFinalScoreboardPanel(ArrayList<String> finalScoreboard){
         // Create new panel for containing the elements of finalScoreboard
         JPanel scoreboardPanel = new JPanel();
@@ -142,6 +164,12 @@ public class PostGameFrame extends JFrame {
         return scoreboardPanel;
     }
 
+    /**
+     * This method is used for create a label with exit message
+     *
+     * @return the created JLabel
+     * @author Foini Lorenzo
+     */
     private JLabel addExitGameLabel(){
         // Create new label with exit message
         JLabel exitLabel = new JLabel("THANKS FOR PLAYING, now close this window to exit.");

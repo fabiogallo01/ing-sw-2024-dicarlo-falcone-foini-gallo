@@ -15,9 +15,9 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class AskUsernameFrame extends JFrame {
-    private String username; // contains client's username
-    private final Object lock = new Object();
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
+    private String username; // Contains client's username
+    private final Object lock = new Object(); // Lock for getting clint choice
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
 
     /**
      * AskUsernameFrame constructor, it calls method init() for initialization of the frame
@@ -65,7 +65,7 @@ public class AskUsernameFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -76,7 +76,7 @@ public class AskUsernameFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -148,9 +148,9 @@ public class AskUsernameFrame extends JFrame {
         // Add synchronization on object lock
         synchronized (lock){
             try{
-                lock.wait();
+                lock.wait(); // Wait selection
             } catch (InterruptedException ex){
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
         }
     }

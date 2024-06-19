@@ -14,7 +14,7 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class WaitStartGameFrame extends JFrame {
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
 
     /**
      * WaitCreateGameFrame constructor, it calls method init() for initialization of frame
@@ -47,7 +47,7 @@ public class WaitStartGameFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -58,7 +58,7 @@ public class WaitStartGameFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;

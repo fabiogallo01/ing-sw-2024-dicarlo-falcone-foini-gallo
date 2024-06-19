@@ -17,8 +17,8 @@ import java.io.IOException;
  */
 public class StarterCardFrame extends JFrame {
     private String selectedSide; // Store selected side
-    private final Object lock = new Object();
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 18);
+    private final Object lock = new Object(); // Lock for getting clint choice
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
 
     /**
      * StarterCardFrame constructor, it calls method init() for initialization of the frame
@@ -49,7 +49,7 @@ public class StarterCardFrame extends JFrame {
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -60,7 +60,7 @@ public class StarterCardFrame extends JFrame {
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -98,13 +98,22 @@ public class StarterCardFrame extends JFrame {
         // Add synchronization on object lock
         synchronized (lock) {
             try {
-                lock.wait(); // Wait until user selects a side
+                lock.wait(); // Wait selection
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
         }
     }
 
+    /**
+     * This method is used for adding images of the starter card and the two buttons for selection
+     *
+     * @param mainPanel: panel where to add the labels/buttons
+     * @param starterCardID: ID of the starter card
+     * @param side: true => Front
+     *              false => Back
+     * @author Foini Lorenzo
+     */
     public void addImageButton(JPanel mainPanel, int starterCardID, String side){
         String starterPath;
         // Get path to the front image of the card
@@ -141,12 +150,14 @@ public class StarterCardFrame extends JFrame {
             JPanel cardPanel = new JPanel(new BorderLayout());
             cardPanel.setOpaque(false);
 
+            // Add label and button to cardPanel
             cardPanel.add(cardLabel, BorderLayout.CENTER);
             cardPanel.add(confirmButton, BorderLayout.SOUTH);
 
+            // Add cardPanel in mainPanel
             mainPanel.add(cardPanel);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 

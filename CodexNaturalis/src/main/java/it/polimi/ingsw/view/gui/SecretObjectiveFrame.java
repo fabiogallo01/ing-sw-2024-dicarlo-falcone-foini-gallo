@@ -17,11 +17,9 @@ import java.io.IOException;
  */
 public class SecretObjectiveFrame extends JFrame{
     private String selectedSecretCard; // Index of the selected secret objective card as string: "1" or "2"
-    private final Object lock = new Object();
-    private Font customFont = new Font("SansSerif", Font.BOLD, 15); // // Create a custom Font
+    private final Object lock = new Object(); // Lock for getting clint choice
+    private final Font customFont = new Font("SansSerif", Font.BOLD, 15); // Create a custom Font
     private final int width = 180;
-    private final int imageHeight = 100;
-    private final int buttonHeight = 35;
 
     /**
      * SecretObjectiveFrame constructor, it calls method init() for initialization of the frame
@@ -59,7 +57,7 @@ public class SecretObjectiveFrame extends JFrame{
             Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
@@ -70,7 +68,7 @@ public class SecretObjectiveFrame extends JFrame{
         JPanel transparentPanel = new JPanel(new GridBagLayout());
         transparentPanel.setOpaque(false);
 
-        // Create new grid bag constraint for adding the label/button in a pre-fixed position
+        // Create new grid bag constraint for adding the label/button in a pre-fixed position and with margin
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = GridBagConstraints.RELATIVE;
@@ -96,17 +94,19 @@ public class SecretObjectiveFrame extends JFrame{
         JPanel secretObjectivesPanel = createSecretObjectivePanel(secretObjectiveCardIDs);
         transparentPanel.add(secretObjectivesPanel, gbc);
 
+        // Add transparent panel to the frame
         this.add(transparentPanel, BorderLayout.CENTER);
 
+        // Pack the frame, set frame's location and visibility
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 
         synchronized (lock) {
             try {
-                lock.wait(); // Wait until user selects a card
+                lock.wait(); // Wait selection
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                System.out.println(ex.getMessage());
             }
         }
     }
@@ -214,7 +214,7 @@ public class SecretObjectiveFrame extends JFrame{
 
             int index = i+1; // i start from 0, so add 1
             JButton selectButton = new JButton("SELECT");
-            selectButton.setPreferredSize(new Dimension(width, buttonHeight)); // Set preferred size
+            selectButton.setPreferredSize(new Dimension(width, 35)); // Set preferred size
             selectButton.setFont(customFont); // Set custom font
             selectButton.setForeground(Color.BLACK); // Set text color
             selectButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
@@ -250,18 +250,18 @@ public class SecretObjectiveFrame extends JFrame{
         String path = "CodexNaturalis\\resources\\"+side+"\\img_" + id + ".jpeg";
         try {
             BufferedImage cardImage = ImageIO.read(new File(path));
-            Image scaledImage = cardImage.getScaledInstance(width, imageHeight, Image.SCALE_SMOOTH);
+            Image scaledImage = cardImage.getScaledInstance(width, 100, Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImage);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             return null;
         }
     }
 
     /**
-     * selected secret card index getter
+     * selectedSecretCard getter
      *
-     * @return client selected secret card index: "1" or "2"
+     * @return client selected secret card index: "1" or "2" as a string
      * @author Foini Lorenzo
      */
     public String getSelectedSecretCard(){
