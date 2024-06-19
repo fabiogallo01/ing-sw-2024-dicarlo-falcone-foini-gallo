@@ -218,7 +218,7 @@ public class GameTableTest {
         PlayerArea playerArea = new PlayerArea(Area, new ArrayList<Card>());
 
         //creating all the cards needed for the player to start the game
-        ObjectiveCard secretObjective = new ObjectiveCard(1, true, null, Pattern.NONE, Kingdom.NONE, 0);
+        ObjectiveCard secretObjective = new ObjectiveCard(1, null, Pattern.NONE, Kingdom.NONE, 0);
         StarterCard starterCard = new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE}, 0);
         ArrayList<GamingCard> hand = new ArrayList<>();  //empty hand
 
@@ -287,8 +287,8 @@ public class GameTableTest {
      */
     @Test
     public void testGetPlayerByUsername() {
-        Player player1 = new Player("Player1", 0, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.GREEN, new ObjectiveCard(1, true, null, Pattern.NONE, Kingdom.NONE, 0), new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE}, 0), new ArrayList<>());
-        Player player2 = new Player("Player2", 0, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.RED, new ObjectiveCard(1, true, null, Pattern.NONE, Kingdom.NONE, 0), new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE}, 0), new ArrayList<>());
+        Player player1 = new Player("Player1", 0, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.GREEN, new ObjectiveCard(1, null, Pattern.NONE, Kingdom.NONE, 0), new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE}, 0), new ArrayList<>());
+        Player player2 = new Player("Player2", 0, new PlayerArea(new boolean[81][81], new ArrayList<>()), Color.RED, new ObjectiveCard(1, null, Pattern.NONE, Kingdom.NONE, 0), new StarterCard(true, new Corner[4], new Corner[4], new Kingdom[]{Kingdom.NONE}, 0), new ArrayList<>());
 
         gameTable.addPlayer(player1);
         gameTable.addPlayer(player2);
@@ -346,18 +346,7 @@ public class GameTableTest {
                 fail("Unexpected EmptyDeckException: " + e.getMessage());
             }
         }
-        assertFalse("Game should not end if there are still visible cards", gameTable.isEnded());
-
-        // Remove all visible cards
-        for (int i = gameTable.getVisibleCard().size() - 1; i >= 0; i--) {
-            try {
-                gameTable.drawCardFromTable(i);
-            } catch (InvalidDrawFromTableException e) {
-                fail("Unexpected InvalidDrawFromTableException: " + e.getMessage());
-            }
-        }
-
-        assertTrue("Game should end when all decks and visible cards are empty", gameTable.isEnded());
+        assertTrue("Game should end when all decks are empty", gameTable.isEnded());
     }
 
 

@@ -26,14 +26,14 @@ public class PlayerTest {
 
         //2 sets of common objectives, to test different cases, only one secret objective
 
-        ObjectiveCard secretObjective = new ObjectiveCard(2, true, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0);
+        ObjectiveCard secretObjective = new ObjectiveCard(2, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0);
 
-        ObjectiveCard commonObjective3 = new ObjectiveCard(2, false, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.ANIMALKINGDOM, 0);
-        ObjectiveCard commonObjective4 = new ObjectiveCard(3, false, new GameObject[]{GameObject.QUILL, GameObject.INKWELL, GameObject.MANUSCRIPT}, Pattern.NONE, Kingdom.NONE, 0);
+        ObjectiveCard commonObjective3 = new ObjectiveCard(2, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.ANIMALKINGDOM, 0);
+        ObjectiveCard commonObjective4 = new ObjectiveCard(3, new GameObject[]{GameObject.QUILL, GameObject.INKWELL, GameObject.MANUSCRIPT}, Pattern.NONE, Kingdom.NONE, 0);
         commonObjectives = new ObjectiveCard[]{commonObjective3, commonObjective4};
 
-        ObjectiveCard commonObjective1 = new ObjectiveCard(2, false, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.FUNGIKINGDOM, 0);
-        ObjectiveCard commonObjective2 = new ObjectiveCard(3, false, new GameObject[]{GameObject.NONE}, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM, 0);
+        ObjectiveCard commonObjective1 = new ObjectiveCard(2, new GameObject[]{GameObject.NONE}, Pattern.NONE, Kingdom.FUNGIKINGDOM, 0);
+        ObjectiveCard commonObjective2 = new ObjectiveCard(3, new GameObject[]{GameObject.NONE}, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM, 0);
         commonObjectives2 = new ObjectiveCard[]{commonObjective1, commonObjective2};
 
         //starter card

@@ -50,7 +50,7 @@ public class ControllerTest {
      */
     private Player createPlayer(String username) {
         // Create secret objective card
-        ObjectiveCard secretObjective = new ObjectiveCard(2, true, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0);
+        ObjectiveCard secretObjective = new ObjectiveCard(2, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0);
 
         // Create starter card
         Corner[] frontCorners = new Corner[]{
@@ -115,6 +115,36 @@ public class ControllerTest {
 
         // Return new player
         return new Player(username, 0, playerArea, Color.BLUE, secretObjective, starterCard, hand);
+    }
+
+    /**
+     * Method for testing controller's getDisconnectedPlayers method.
+     * It tests if disconnectedPlayers is 0 when creating the controller
+     *
+     * @author Foini Lorenzo
+     */
+    @Test
+    public void getDisconnectedPlayerTest_ShouldBe0WhenCreatingController () {
+        assertEquals(controller.getDisconnectedPlayers(), 0);
+    }
+
+    /**
+     * Method for testing controller's setDisconnectedPlayers method.
+     * It tests if the disconnectedPlayers is increased by 1 when a client disconnect
+     *
+     * @author Foini Lorenzo
+     */
+    @Test
+    public void setDisconnectedPlayerTest_IncreasedBy1WhenAClientDisconnect() {
+        // At first, disconnectedPlayers is 0
+        assertEquals(controller.getDisconnectedPlayers(), 0);
+
+        // Now suppose that a client disconnect
+        // => Increment the counter
+        controller.setDisconnectedPlayers();
+
+        // Now check if the counter goes up by 1
+        assertEquals(controller.getDisconnectedPlayers(), 1);
     }
 
     /**

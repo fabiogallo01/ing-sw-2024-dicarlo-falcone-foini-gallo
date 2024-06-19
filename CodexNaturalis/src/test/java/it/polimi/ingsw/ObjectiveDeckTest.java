@@ -27,30 +27,30 @@ public class ObjectiveDeckTest {
         ArrayList<ObjectiveCard> objectiveCards = new ArrayList<>();
         GameObject[] objects = new GameObject[]{GameObject.NONE};
 
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.SECONDARYDIAGONAL, Kingdom.FUNGIKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.PRIMARYDIAGONAL, Kingdom.PLANTKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.SECONDARYDIAGONAL, Kingdom.ANIMALKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.PRIMARYDIAGONAL, Kingdom.INSECTKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.LOWERRIGHT, Kingdom.FUNGIKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.UPPERLEFT, Kingdom.INSECTKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.FUNGIKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.PLANTKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.ANIMALKINGDOM, 0));
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.INSECTKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.SECONDARYDIAGONAL, Kingdom.FUNGIKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.PRIMARYDIAGONAL, Kingdom.PLANTKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.SECONDARYDIAGONAL, Kingdom.ANIMALKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.PRIMARYDIAGONAL, Kingdom.INSECTKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(3, objects, Pattern.LOWERRIGHT, Kingdom.FUNGIKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(3, objects, Pattern.LOWERLEFT, Kingdom.PLANTKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(3, objects, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(3, objects, Pattern.UPPERLEFT, Kingdom.INSECTKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.NONE, Kingdom.FUNGIKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.NONE, Kingdom.PLANTKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.NONE, Kingdom.ANIMALKINGDOM, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.NONE, Kingdom.INSECTKINGDOM, 0));
 
         objects = new GameObject[]{GameObject.QUILL, GameObject.INKWELL, GameObject.MANUSCRIPT};
-        objectiveCards.add(new ObjectiveCard(3, true, objects, Pattern.NONE, Kingdom.NONE, 0));
+        objectiveCards.add(new ObjectiveCard(3, objects, Pattern.NONE, Kingdom.NONE, 0));
 
         objects = new GameObject[]{GameObject.MANUSCRIPT, GameObject.MANUSCRIPT};
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.NONE, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.NONE, Kingdom.NONE, 0));
 
         objects = new GameObject[]{GameObject.INKWELL, GameObject.INKWELL};
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.NONE, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.NONE, Kingdom.NONE, 0));
 
         objects = new GameObject[]{GameObject.QUILL, GameObject.QUILL};
-        objectiveCards.add(new ObjectiveCard(2, true, objects, Pattern.NONE, Kingdom.NONE, 0));
+        objectiveCards.add(new ObjectiveCard(2, objects, Pattern.NONE, Kingdom.NONE, 0));
 
         // Create new objective deck given the list of cards
         deck = new ObjectiveDeck(objectiveCards);

@@ -44,7 +44,7 @@ public class ScoreboardTest {
      */
     private Player createPlayer(String username) {
         // Create secret objective card
-        ObjectiveCard secretObjective = new ObjectiveCard(2, true, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0);
+        ObjectiveCard secretObjective = new ObjectiveCard(2, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0);
 
         // Create starter card
         Corner[] frontCorners = new Corner[]{
