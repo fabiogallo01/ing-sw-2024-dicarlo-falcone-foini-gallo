@@ -22,29 +22,27 @@ import com.google.gson.Gson;
  * It is also used to handle players' turns
  * It extends Thread and override method run
  *
- * @author Foini Lorenzo
- * @author Gallo Fabio
+ * @author Foini Lorenzo, Gallo Fabio
  */
-public class ClientHandler2 extends Thread {
-    private Socket socket;
-    private List<Controller> controllers;
-    private BufferedReader in;
-    private PrintWriter out;
-    private Controller gameController;
+public class ClientHandler extends Thread {
+    private final Socket socket;
+    private final List<Controller> controllers; // List of all controllers in the server
+    private BufferedReader in;  // Receive message from client
+    private PrintWriter out;  // Send message to client
+    private Controller gameController; // Controller of the game in which there is the client
     private boolean joined = false;
     private String username;
     private boolean gui; //true => GUI, false => TUI
     Gson gson = new Gson(); // Gson for serialization
 
     /**
-     * ViewClientHandler constructor, it assigns/creates all class's parameters
+     * ClientHandler constructor, it assigns socket and controllers
      *
-     * @param socket      representing the client's socket
+     * @param socket representing the client's socket
      * @param controllers representing all the controllers(matches) playing on the server
-     * @author Foini Lorenzo
      * @author Gallo Fabio
      */
-    public ClientHandler2(Socket socket, List<Controller> controllers) {
+    public ClientHandler(Socket socket, List<Controller> controllers) {
         this.socket = socket;
         this.controllers = controllers;
     }
@@ -53,117 +51,160 @@ public class ClientHandler2 extends Thread {
      * Override of method run
      * It asks the client to either join or create a game, insert the username and all the players parameters, then plays the game.
      * Catches IOException if an I/O error occurred
-     * Catches game exceptions
+     * Catches game exceptions if thrown
      *
-     * @author Foini Lorenzo
+     * @author Foini Lorenzo, Gallo Fabio
      */
 
     @Override
     public void run() {
         try {
+            // Create new input buffered reader and output print writer
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
+
+            // Get client selected UI
             gui = "GUI".equalsIgnoreCase(in.readLine());
 
-            // Ask client his username
+            // Ask client his username by calling method askUsername()
             askUsername();
 
             // Ask client if he wants to create or join a game
             // It also call to method initializePlayer for asking other information
             createJoinGame();
 
+            // Check if this client his the last one for starting the game
             if (gameController.getReady() == gameController.getGameTable().getNumPlayers() - 1) {//when the last player joins, it starts the game
-                gameController.setReady();
-                gameController.startGame();//it sets the first player turn
+                gameController.setReady(); // Increment gameController parameter ready by 1
+                gameController.startGame(); // Set the first player turn and start of the game
             } else {
-                gameController.setReady();
-                while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {//it waits for all the players to be ready to play
+                gameController.setReady(); // Increment gameController parameter ready by 1
+
+                //Now wait for all the players to be ready to play
+                while (gameController.getGameTable().getNumPlayers() != gameController.getReady()) {
+                    // If the game has crashed during the login-phase then exit
                     if(gameController.isCrashed()){
                         out.println("Game crashed.");
-                        gameController.setDisconnectedPlayers();
+                        gameController.setDisconnectedPlayers(); // All the player disconnect
                         return;
-                        
                     }
-                    Thread.onSpinWait();
+                    Thread.onSpinWait(); // Wait
                 }
             }
 
+            // Send message to client
             out.println("Game starts now.");
 
-            // Send gameTable to client if he is playing with GUI
+            // Send gameTable to client if he is playing with GUI by calling to method updateGui()
             if(gui){
                 updateGui();
             }
 
+            // Get client's player's reference
             Player player = gameController.getGameTable().getPlayerByUsername(username);
 
-            while (!player.isTurn()) {//waits for your turn
+            // Wait for your turn
+            while (!player.isTurn()) {
+                // If the game has crashed during the login-phase then exit
                 if(gameController.isCrashed()){
                     out.println("Game crashed.");
-                    gameController.setDisconnectedPlayers();
+                    gameController.setDisconnectedPlayers(); // All the player disconnect
                     return;
-                    
                 }
-                Thread.onSpinWait();
+                Thread.onSpinWait(); // Wait
             }
 
-            while (!gameController.getGameTable().isLastTurn()) {//it checks if it is the last turn
-                playTurn();//plays the whole turn
+            // Checks if it is the last turn
+            while (!gameController.getGameTable().isLastTurn()) {
+                // Client plays his turn
+                playTurn();
 
-                if (gameController.getGameTable().isEnded() && username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {//the last player of the turn checks if the next turn is going to be the last
+                // For the last player of the turn checks if the next turn is going to be the last
+                if (gameController.getGameTable().isEnded() && username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {
                     gameController.getGameTable().setLastTurn();
                 }
-                gameController.nextTurn();//sets the turn of this player to false, the turn of the next player to true
-                while (!player.isTurn()) { // Client wait for his turn
+
+                // Sets the turn of this player to false, the turn of the next player to true
+                gameController.nextTurn();
+
+                // Client wait for his turn
+                while (!player.isTurn()) {
+                    // If the game has crashed during the login-phase then exit
                     if(gameController.isCrashed()){
                         out.println("Game crashed.");
-                        gameController.setDisconnectedPlayers();
+                        gameController.setDisconnectedPlayers(); // All the player disconnect
                         return;
-                        
                     }
-                    Thread.onSpinWait();
+                    Thread.onSpinWait(); // Wait
                 }
             }
+
+            // Send message to the client which says that the last turn has started
             sendLastTurnMessage();
 
-            playLastTurn();//different method for the last turn since we are not going to draw a card
+            // Play last turn
+            // Call to a different method since we are not going to draw a card
+            playLastTurn();
+
+            // Sets the turn of this player to false, the turn of the next player to true
             gameController.nextTurn();
 
-            if (username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {//the last player signals that he finished
+            // Check if the client is the last player to finish
+            if (username.equals(gameController.getGameTable().getPlayers().getLast().getUsername())) {
+                // Set gameTable parameter finished to true
                 gameController.getGameTable().setFinished();
             }
-            while (!gameController.getGameTable().isFinished()) {//it makes the other players wait for the last player to finish
+
+            // While loop until the game is not finished
+            // It makes the other players wait for the last player to finish
+            while (!gameController.getGameTable().isFinished()) {
+                // If the game has crashed during the login-phase then exit
                 if(gameController.isCrashed()){
                     out.println("Game crashed.");
-                    gameController.setDisconnectedPlayers();
+                    gameController.setDisconnectedPlayers(); // All the player disconnect
                     return;
-                    
                 }
-                Thread.onSpinWait();
+                Thread.onSpinWait(); // Wait
             }
-            while (!player.isTurn()) {//it prints the final scoreboard and messages one player at a time, so they don't conflict
+
+            // Now prints the final scoreboard and messages one player at a time, so they don't conflict
+            while (!player.isTurn()) {
+                // If the game has crashed during the login-phase then exit
                 if(gameController.isCrashed()){
                     out.println("Game crashed.");
-                    gameController.setDisconnectedPlayers();
+                    gameController.setDisconnectedPlayers(); // All the player disconnect
                     return;
-                    
                 }
-                Thread.onSpinWait();
+                Thread.onSpinWait(); // Wait
             }
+
+            // Calculate final points for all the players
             gameController.calculateFinalPoints();
+
+            // Calculate final scoreboard
             gameController.finalScoreboard();
 
+            // Get leaderboard of the game
             LinkedHashMap<Player, Integer> leaderboard = gameController.getLeaderboard();
 
+            // Calculate winners of the game
             ArrayList<Player> winners = gameController.calculateWinners(leaderboard);
 
+            // Send messages which says that the client has won/lost
             sendWinnersMessage(winners, username);
+            // Send final scoreboard
             sendLeaderboardMessage(leaderboard);
-            gameController.nextTurn();//it lets the other players print the final messages
 
+            // Let the other players print the final messages
+            gameController.nextTurn();
+
+            // Disconnect all the player because the game is ended
             gameController.setDisconnectedPlayers();
         } catch (IOException e) {
+            // Show error message which says which client crashed
             System.err.println("Error: "+ username + " crashed.");
+
+            // Need to set gameTable parameter crashed to true
             if(gameController!=null) {
                 gameController.setCrashed();
                 gameController.setDisconnectedPlayers();
@@ -175,9 +216,10 @@ public class ClientHandler2 extends Thread {
     }
 
     /**
-     * Plays the turn of a player, by playing a card and drawing one
+     * Method which allow the client to play his turn (play a card and draw a new one)
      *
-     * @author Foini Lorenzo
+     * @throws IOException if an IO error occur
+     * @author Foini Lorenzo, Gallo Fabio
      */
     private synchronized void playTurn() throws IOException {
 
@@ -198,10 +240,11 @@ public class ClientHandler2 extends Thread {
     }
 
     /**
-     * Plays the last turn of a player, just by playing a card
+     * Method which allow the client to play his last turn (play a card)
      *
-     * @author Foini Lorenzo
-     * @author Gallo Fabio
+     * @throws IOException if an IO error occur
+     * @throws InterruptedException if happen
+     * @author Foini Lorenzo, Gallo Fabio
      */
     private synchronized void playLastTurn() throws IOException, InterruptedException {
 
@@ -228,22 +271,25 @@ public class ClientHandler2 extends Thread {
         username = in.readLine(); // Get client input
 
         // Check if username is valid: already present or empty
-        while (Server2.getClientsUsername().contains(username) || username.isEmpty()) {
+        while (Server.getClientsUsername().contains(username) || username.isEmpty()) {
             if(username.isEmpty()) {
-                out.println("Invalid username. Please insert a valid username:"); // EMPTY
+                out.println("Invalid username. Please insert a valid username:"); // EMPTY username
             }else {
-                out.println("Username already in use. Please insert a new username:"); // INVALID
+                out.println("Username already in use. Please insert a new username:"); // INVALID username
             }
+
             // If client is playing with GUI, then send the previous username
+            // It will be used for displaying a new type of window
             if(gui){
                 out.println(username); // Previous invalid username
             }
 
+            // Get client username from input
             username = in.readLine();
         }
 
         // Insert username in server's list of usernames
-        Server2.addClientUsername(username);
+        Server.addClientUsername(username);
     }
 
     /**
@@ -261,65 +307,86 @@ public class ClientHandler2 extends Thread {
             out.println("Do you want to create a new game or join a game? (insert create/join):");
             // If the client is playing with GUI, then send him the number of game that can be joined
             if(gui){
-                out.println(Server2.countGameNotFull());
+                out.println(Server.countGameNotFull());
             }
             String choice = in.readLine();
 
-            if ("create".equalsIgnoreCase(choice)) {//if it creates a match, it asks how many players should play
+            if ("create".equalsIgnoreCase(choice)) { //if it creates a match, it asks how many players should play
                 out.println("Enter number of players (insert 2/3/4):");
                 String numPlayers = in.readLine();
+                // Iterate until client select a valid number
                 while (!numPlayers.equals("2") && !numPlayers.equals("3") && !numPlayers.equals("4")) {
                     out.println("Please insert 2/3/4:");
                     numPlayers = in.readLine();
                 }
                 int numberOfPlayers = Integer.parseInt(numPlayers);
 
-                gameController = new Controller(numberOfPlayers);//it creates the gameTable inside the controller
-                joined = initializePlayer(username);//inserts all the player info
+                // Create the gameTable inside the controller
+                gameController = new Controller(numberOfPlayers);
+
+                // Call to method initializePlayer for getting all the other info
+                joined = initializePlayer(username);
+
+                // Increment gameTable parameter joined by 1
                 gameController.getGameTable().setJoined(joined);
-                Server2.addController(gameController);//it adds the match to the matches that can be now joined
+
+                // Add this match to the matches that can be now joined
+                Server.addController(gameController);
 
                 out.println("Game created. Waiting for players...");
-            } else if ("join".equalsIgnoreCase(choice)) {
+            } else if ("join".equalsIgnoreCase(choice)) { // Client wants to join a game
                 ArrayList<String> gameNotFull = new ArrayList<>(); // List of games that can be joined
-                gameNotFull.add("0"); // Exit command
+                gameNotFull.add("0"); // Exit command => Back to create/join question
+
                 int i = 1;
-                // If client is playing with GUI, then the handler sends some prefixed messages
+                // If client is playing with GUI, then the handler sends some prefixed messages for identification
                 if(gui) {
                     out.println("Sending games and players");
                 }
-                for (Controller controller : new ArrayList<>(controllers)) {// it checks the existent games that the player can join
-                    if (!controller.getGameTable().isFull()) {//it prints the username of the players that are in the game
+                // Check the existent games that the player can join
+                for (Controller controller : new ArrayList<>(controllers)) {
+                    // Check if the game is not already full of players
+                    if (!controller.getGameTable().isFull()) {
                         out.println("Game " + i);
+                        // Print the username of the players that are in the game
                         for (Player p : controller.getGameTable().getPlayers()) {
                             out.println("-" + p.getUsername());
                         }
+                        // Add index i to the game that can be joined
                         gameNotFull.add(String.valueOf(i));
                     }
                     i++;
                 }
+                // Send end message if client plays with GUI for identification
                 if(gui) {
                     out.println("End sending games and players");
                 }
+
+                // Check number of game that can be joined (1 => Exit)
                 if(gameNotFull.size() > 1){
                     out.println("Which game you want to join (insert 0 to exit):");
-                    String ans = in.readLine();
+                    String ans = in.readLine(); // Client choice
+                    // Check client choice
                     while (!gameNotFull.contains(ans)) {
                         out.println("Please insert a valid number of game (insert 0 to exit):");
                         ans = in.readLine();
                     }
 
+                    // Client join a game
                     if (!ans.equals("0")) {
-                        gameController = controllers.get(Integer.parseInt(ans)-1);
+                        // Get controller of the joined game
+                        gameController = controllers.get(Integer.parseInt(ans)-1); // Start with 1, not 0
+                        // Increment gameTable parameter joined by 1
                         gameController.getGameTable().setJoined(true);
                         joined = initializePlayer(username);
-                        if (joined) {
+                        if (joined) { // Client has insert all of its info correctly
                             out.println("Joined a game. Waiting for players...");
-                        } else {
+                        } else { // Decrement number of player joined because of a fail/disconnection
                             gameController.getGameTable().setJoined(false);
                         }
                     }
                 }else {
+                    // There aren't games that can be joined
                     out.println("No game to join.");
                 }
             }
@@ -329,19 +396,20 @@ public class ClientHandler2 extends Thread {
     /**
      * Method to ask client which color he wants to use
      *
-     * @return the selected color
+     * @return the selected color as a string
      * @throws IOException if connection lost
-     * @author Foini Lorenzo
+     * @author Foini Lorenzo, Gallo Fabio
      */
     public String askColor() throws IOException {
         String selectedColor;
+        // Get list of available colors and display them
         ArrayList<String> availableColors = gameController.getAvailableColors();
         out.println("Choose a color from this list:");
         for (String color : availableColors) {
             out.println(color);
         }
 
-        // If client is playing with GUI, then the handler send a prefixed message
+        // If client is playing with GUI, then the handler send a prefixed message for identification
         if(gui){
             out.println("End color");
         }
@@ -359,22 +427,23 @@ public class ClientHandler2 extends Thread {
             selectedColor = in.readLine().toLowerCase();
         }
 
-        // Remove such color from available list
+        // Remove selected color from gameController's available list of colors
         gameController.removeAvailableColor(selectedColor);
 
         return selectedColor;
     }
 
     /**
-     * Method to ask client which color he wants to use
+     * Method to ask client which side of the starter card he wants to play
      *
-     * @return the selected color
+     * @return the selected side as a boolean
+     *         true => Front
+     *         false => Back
      * @throws IOException if connection lost
-     * @author Foini Lorenzo
+     * @author Foini Lorenzo, Gallo Fabio
      */
     public boolean askStarterCard(StarterCard starterCard) throws IOException {
         // Check client UI
-        // If GUI => Send to client the starter card's ID
         // If TUI => Call to viewTUI method for displaying such started card
         if(!gui){
             gameController.getViewTui().displayStarterCard(starterCard, out);
@@ -398,7 +467,7 @@ public class ClientHandler2 extends Thread {
     }
 
     /**
-     * Method to ask secret card he wants to use
+     * Method to ask which secret card the client wants to use
      * It show to client his starter card, his hand, two common objective and the two secret objective
      *
      * @param starterCard: client's starter card
@@ -408,33 +477,33 @@ public class ClientHandler2 extends Thread {
      * @param secretCard2: second secret objective card
      * @return the selected secret objective card
      * @throws IOException if connection lost
-     * @author Foini Lorenzo
+     * @author Foini Lorenzo, Gallo Fabio
      */
     public ObjectiveCard askSecreteObjective(StarterCard starterCard, ArrayList<GamingCard> hand, ObjectiveCard[] commonObjective, ObjectiveCard secretCard1, ObjectiveCard secretCard2) throws IOException{
         // Check client UI
-        // If GUI => Send to client the starter card's ID
         // If TUI => Call to viewTUI method for displaying such started card
         if(!gui) {
             // Show client's hand
             out.println("\nThis is your hand:\n");
-            gameController.getViewTui().displayResourceCard(hand.get(0), out); // Call to ViewTUI's method
-            gameController.getViewTui().displayResourceCard(hand.get(1), out); // Call to ViewTUI's method
-            gameController.getViewTui().displayGoldCard((GoldCard) hand.get(2), out); // Call to ViewTUI's method
+            gameController.getViewTui().displayResourceCard(hand.get(0), out); // Call to ViewTUI method
+            gameController.getViewTui().displayResourceCard(hand.get(1), out); // Call to ViewTUI method
+            gameController.getViewTui().displayGoldCard((GoldCard) hand.get(2), out); // Call to ViewTUI method
 
             // Show the two common objective cards
             out.println("\nThis are the two common objectives:\n");
-            gameController.getViewTui().displayObjectiveCard(commonObjective[0], out); // Call to ViewTUI's method
-            gameController.getViewTui().displayObjectiveCard(commonObjective[1], out); // Call to ViewTUI's method
+            gameController.getViewTui().displayObjectiveCard(commonObjective[0], out); // Call to ViewTUI method
+            gameController.getViewTui().displayObjectiveCard(commonObjective[1], out); // Call to ViewTUI method
 
             // Ask client to select his secret objective cards from two different objective cards
             out.println("Now you have to choose which secret objective card you want to use.");
             out.println("You can choose one card from the following two objective cards\n");
+
             // Display the two secret objective cards
             gameController.getViewTui().displayObjectiveCard(secretCard1, out);
             gameController.getViewTui().displayObjectiveCard(secretCard2, out);
         }
 
-        // Ask choice to client (1 => First card, 2 => Second card)
+        // Ask choice to client (1 => First objective card, 2 => Second objective card)
         String stringChoice;
         do {
             out.println("Select your secret objective card (insert 1/2):");
@@ -456,6 +525,7 @@ public class ClientHandler2 extends Thread {
             stringChoice = in.readLine();
         } while (!stringChoice.equals("1") && !stringChoice.equals("2"));
 
+        // Return the selected card given the index
         if (stringChoice.equals("1")) return secretCard1;
         return secretCard2;
     }
@@ -464,8 +534,10 @@ public class ClientHandler2 extends Thread {
      * Method to initialize all the player parameters
      *
      * @param username players' username
-     * @author Foini Lorenzo
-     * @author Gallo Fabio
+     * @throws IOException if connection lost
+     * @throws EmptyDeckException if a deck is empty
+     * @throws EmptyObjectiveDeckException if the objective deck is empty (never happen)
+     * @author Foini Lorenzo, Gallo Fabio
      */
     public boolean initializePlayer(String username) throws IOException, EmptyDeckException, EmptyObjectiveDeckException {
         // Ask client his color
@@ -502,13 +574,17 @@ public class ClientHandler2 extends Thread {
 
         // Call to controller method for create new player with client's information
         gameController.createNewPlayer(username, selectedColor, starterCard, hand, secretObjectiveCard);
+
+        // Correct initialization of player's parameters
         return true;
     }
 
     /**
      * Method to ask the client which card he wants to play, its side and where to play the card
      *
-     * @author Foini Lorenzo
+     * @param username of the client
+     * @throws IOException if connection is lost
+     * @author Foini Lorenzo, Gallo Fabio
      */
     public void askPlay(String username) throws IOException {
         // Display player's area and his hand
@@ -531,14 +607,15 @@ public class ClientHandler2 extends Thread {
         // Ask player which card he wants to play from his hand
         out.println("Which card you want to play (insert 1/2/3):");
 
-        // Send gameTable to client is he is playing with GUI
+        // Send gameTable to client if he's playing with GUI
         if(gui){
             updateGui();
         }
 
+        // Get client's selected card to be played
         String stringPositionCardHand = in.readLine();
 
-        // Check user input
+        // Check client's input
         while (!stringPositionCardHand.equals("1") && !stringPositionCardHand.equals("2") && !stringPositionCardHand.equals("3")) {
             out.println("Please insert 1/2/3:");
             stringPositionCardHand = in.readLine();
@@ -573,18 +650,20 @@ public class ClientHandler2 extends Thread {
             // Play card
             Player player = gameController.getGameTable().getPlayerByUsername(username);
             player.playCard(cardPositionHand, positionArea, sideCardToPlay);
+
+            // Assign score to the player after the play of the card
             gameController.getGameTable().assignScore(player, player.getScore());
 
-            // Show messages
+            // Show messages for correct play and his points
             out.println("\nThe card has been played correctly.");
             out.println("This is your score after this play: " + gameController.getGameTable().getPlayerByUsername(username).getScore() + " pts.");
         } catch (NoPlayerWithSuchUsernameException | InvalidPlayCardIndexException | InvalidPositionAreaException |
                  InvalidPlayException e) {
-            // An error has occur
+            // An error has occur: invalid play
             out.println("\nInvalid play.\n" + e.getMessage());
             out.println("Now you will be asked to insert again all the information.\n");
 
-            // Recall this function for ask again all the information
+            // Recall this function for ask again all the information about the play
             askPlay(username);
         }
     }
@@ -592,7 +671,8 @@ public class ClientHandler2 extends Thread {
     /**
      * Method to ask the client from where he wants to draw his next card
      *
-     * @author Foini Lorenzo
+     * @throws IOException if connection is lost
+     * @author Foini Lorenzo, Gallo Fabio
      */
     public void askDraw(String username) throws IOException {
         // Display the back of the top card of resource deck, if present
@@ -609,13 +689,13 @@ public class ClientHandler2 extends Thread {
             gameController.getViewTui().displayTopGold(topGoldCard, out);
         }
 
-        // Display the 4 visible drawable cards, if present
+        // Display the 4 visible drawable cards, if presents
         ArrayList<GamingCard> visibleCards = gameController.getGameTable().getVisibleCard();
         if(!visibleCards.isEmpty()){
             gameController.getViewTui().displayVisibleTableCard(visibleCards, out);
         }
 
-        // Ask user's choice
+        // Ask client's choice
         out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
         out.println("Insert 1/2/3:");
 
@@ -624,9 +704,10 @@ public class ClientHandler2 extends Thread {
             updateGui();
         }
 
+        // Get client's input
         String stringChoice = in.readLine();
 
-        // Check user input
+        // Check client's input
         while (!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")) {
             out.println("Please insert 1/2/3:");
             stringChoice = in.readLine();
@@ -640,14 +721,15 @@ public class ClientHandler2 extends Thread {
                 try {
                     // Draw card
                     GamingCard cardToDraw = gameController.getGameTable().drawResourceCardDeck();
-                    // Add card in player's hand
+                    // Add card in player's hand if possible
                     gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
 
                 } catch (EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e) {
+                    // Print exception message
                     out.println(e.getMessage());
                     out.println("Select a different type of draw.");
 
-                    // Recall this function for asking again
+                    // Recall this function for asking again the draw
                     askDraw(username);
                 }
                 break;
@@ -657,24 +739,27 @@ public class ClientHandler2 extends Thread {
                 try {
                     // Draw card
                     GoldCard cardToDraw = gameController.getGameTable().drawGoldCardDeck();
-                    // Add card in player's hand
+                    // Add card in player's hand if possible
                     gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
                 } catch (EmptyDeckException | NoPlayerWithSuchUsernameException | HandAlreadyFullException e) {
+                    // Print exception message
                     out.println(e.getMessage());
                     out.println("Select a different type of draw.");
 
-                    // Recall this function for asking again
+                    // Recall this function for asking again the draw
                     askDraw(username);
                 }
                 break;
             }
             case 3: {
                 int size = gameController.getGameTable().getVisibleCard().size();
-                if (size == 0) {
+                // Check size of the visible cards in the table
+                if (size == 0) { // No cards
                     out.println("There are no cards in table.\nSelect a different type of draw.");
-                    // Recall this function for asking again
+                    // Recall this function for asking again the draw
                     askDraw(username);
-                } else if (size == 1) {
+
+                } else if (size == 1) { // Only one card, so draw it
                     out.println("There is only 1 card in the table, so draw this card.");
                     try {
                         // Call to method and add card to hand
@@ -686,7 +771,7 @@ public class ClientHandler2 extends Thread {
                         // Recall this function for asking again
                         askDraw(username);
                     }
-                } else {
+                } else { // Ask client which card he wants to draw
                     out.println("Insert the card's number (insert 1/2/3/4):");
                     int selectedPosition = Integer.parseInt(in.readLine());
                     try {
@@ -695,8 +780,9 @@ public class ClientHandler2 extends Thread {
                         gameController.getGameTable().getPlayerByUsername(username).addCardHand(cardToDraw);
                     } catch (InvalidDrawFromTableException | NoPlayerWithSuchUsernameException |
                              HandAlreadyFullException e) {
+                        // Print exception message
                         out.println(e.getMessage());
-                        // Recall this function for asking again
+                        // Recall this function for asking again the draw
                         askDraw(username);
                     }
                 }
@@ -705,40 +791,92 @@ public class ClientHandler2 extends Thread {
         }
     }
 
+    /**
+     * Method for sending to the client a message
+     * It says that is client's turn
+     *
+     * @author Gallo Fabio
+     */
     public void sendSelectPlayMessage() {
         out.println("It's your turn.\nNow you have to play a card from your hand.\n");
     }
 
+    /**
+     * Method for sending to the client a message
+     * It says that the client has correctly played a card
+     *
+     * @author Gallo Fabio
+     */
     public void sendCorrectPlayMessage() {
         out.println("You have correctly play the card in your game area.");
         out.println("That card has been removed from your hand.");
     }
 
+    /**
+     * Method for sending to the client a message
+     * It says that the clint has to choose from where he wants to draw
+     *
+     * @author Gallo Fabio
+     */
     public void sendSelectDrawMessage() {
         out.println("\nNow you have to select from where you want to draw your next card.");
     }
 
+    /**
+     * Method for sending to the client a message
+     * It says that the client has correctly drawn a card
+     *
+     * @author Gallo Fabio
+     */
     public void sendCorrectDrawMessage() {
         out.println("\nYou have correctly draw a new card and added it in your hands.");
     }
 
+    /**
+     * Method for sending to the client a message
+     * It says that client's turn is finished
+     *
+     * @author Gallo Fabio
+     */
     public void sendFinishTurnMessage() {
         out.println("You have correctly play your turn.");
         if(gui) updateGui();
     }
 
+    /**
+     * Method for sending to the client a wait message
+     *
+     * @author Gallo Fabio
+     */
     public void sendWaitTurnMessage() {
         out.println("\nPlease wait for your turn.\n");
     }
 
+    /**
+     * Method for sending to the client a message
+     * It says that the last turn will now start
+     *
+     * @author Gallo Fabio
+     */
     public void sendLastTurnMessage() {
         out.println("A player has reached 20 points, so the last turn will now start.");
     }
 
+    /**
+     * Method for sending to the client a wait message
+     *
+     * @author Gallo Fabio
+     */
     public void sendWaitFinishGameMessage() {
         out.println("\nWait for others players' last turns.\nThe game will end soon");
     }
 
+    /**
+     * Method for sending to the client a message
+     * It says who is/are the winner(s) and if the client has won/lost
+     *
+     * @author Gallo Fabio
+     */
     public void sendWinnersMessage(ArrayList<Player> winners, String username) {
         boolean hasWon = false; // true: player has won, false: player has lost.
 
@@ -764,6 +902,12 @@ public class ClientHandler2 extends Thread {
         }
     }
 
+    /**
+     * Method for sending to the client a message
+     * It sends the final leaderboard of the game
+     *
+     * @author Gallo Fabio
+     */
     public void sendLeaderboardMessage(LinkedHashMap<Player, Integer> leaderboard) {
         // Send final leaderboard message
         out.println("Final scoreboard:");
@@ -780,9 +924,9 @@ public class ClientHandler2 extends Thread {
             if (currentScore != lastScore || currentNumObjectiveSatisfied != lastNumObjectivesSatisfied) {
                 String position = currentIndex + getSuffix(currentIndex); // "Update" final position
                 out.println(position + entry.getKey().getUsername() + ", score: " + currentScore + ", number of objectives satisfied: " + currentNumObjectiveSatisfied);
-                lastPosition = position;
-                lastScore = currentScore;
-                lastNumObjectivesSatisfied = currentNumObjectiveSatisfied;
+                lastPosition = position; // Assign current position to previous position
+                lastScore = currentScore; // Assign current score to previous score
+                lastNumObjectivesSatisfied = currentNumObjectiveSatisfied; // Assign previous number of objectives satisfied to the previous one
             } else {
                 out.println(lastPosition + entry.getKey().getUsername() + ", score: " + currentScore + ", number of objectives satisfied: " + currentNumObjectiveSatisfied);
             }
@@ -793,6 +937,12 @@ public class ClientHandler2 extends Thread {
         out.println("\nTHANKS FOR PLAYING, the connection will now be reset.\n");
     }
 
+    /**
+     * Method for get index of the leaderboard
+     *
+     * @param index of the position
+     * @author Gallo Fabio
+     */
     public String getSuffix(int index) {
         if (index == 1) {
             return "st: ";
@@ -804,24 +954,35 @@ public class ClientHandler2 extends Thread {
         return "th: ";
     }
 
+    /**
+     * Method for sending to the client a JSON version of the gameTable
+     *
+     * @author Foini Lorenzo
+     */
     private void updateGui(){
         GameTable gameTable = gameController.getGameTable();
-        //Gson gson = new Gson();
         String gameTableJson = gson.toJson(gameTable);
         out.println(gameTableJson);
 
         sendCounterResources();
     }
 
+    /**
+     * Method for sending to the client the counters of the resources in his area
+     *
+     * @author Foini Lorenzo
+     */
     private void sendCounterResources(){
         try {
+            // Get client's player's reference
             PlayerArea playerArea = gameController.getGameTable().getPlayerByUsername(username).getPlayerArea();
+            // Count all the resources and send them to the client
             out.println(playerArea.countKingdoms(Kingdom.ANIMALKINGDOM));
             out.println(playerArea.countKingdoms(Kingdom.FUNGIKINGDOM));
             out.println(playerArea.countKingdoms(Kingdom.INSECTKINGDOM));
             out.println(playerArea.countKingdoms(Kingdom.PLANTKINGDOM));
         } catch(NoPlayerWithSuchUsernameException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 }

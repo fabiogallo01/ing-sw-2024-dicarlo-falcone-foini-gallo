@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.*;
 
 import com.google.gson.Gson;
+import javax.swing.*;
 
 /**
  * Class representing client in a client-server architecture
@@ -19,7 +20,7 @@ import com.google.gson.Gson;
  *
  * @author Foini Lorenzo, Gallo Fabio
  */
-public class Client2 {
+public class Client {
     private static String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 12345;
     private static boolean tui=false;
@@ -292,7 +293,17 @@ public class Client2 {
 
                 // Call to gameFrame method for update the frame
                 if (gameFrame != null) {
-                    gameFrame.updateGameFrame(player, gameTable, counterResources, invalidPlay, mistakePlay);
+                    // Create final variables which will be used in SwingUtilities.invokeLater()
+                    // For using that method, the variables have to be final
+                    final Player finalPlayer = player;
+                    final GameTable finalGameTable = gameTable;
+                    final ArrayList<Integer> finalCounterResources = counterResources;
+                    final String finalInvalidPlay = invalidPlay;
+                    final String finalMistakePlay = mistakePlay;
+                    final GameFrame finalGameFrame = gameFrame;
+
+                    // Use SwingUtilities.invokeLater() for update gameFrame
+                    SwingUtilities.invokeLater(() -> finalGameFrame.updateGameFrame(finalPlayer, finalGameTable, finalCounterResources, finalInvalidPlay, finalMistakePlay));
                 }
             } else if(response.startsWith("Invalid play.")){
                 // Get mistake made by client when playing a card in his area
@@ -309,7 +320,24 @@ public class Client2 {
 
                 // Call to gameFrame method for update the frame
                 if (gameFrame != null) {
-                    gameFrame.updateGameFrame(player, gameTable, counterResources, invalidPlay, mistakePlay);
+                    // Create final variables which will be used in SwingUtilities.invokeLater()
+                    // For using that method, the variables have to be final
+                    final Player finalPlayer = player;
+                    final GameTable finalGameTable = gameTable;
+                    final ArrayList<Integer> finalCounterResources = counterResources;
+                    final String finalInvalidPlay = invalidPlay;
+                    final String finalMistakePlay = mistakePlay;
+                    final GameFrame finalGameFrame = gameFrame;
+
+                    // Use SwingUtilities.invokeLater() for update gameFrame
+                    SwingUtilities.invokeLater(() -> finalGameFrame.updateGameFrame(finalPlayer, finalGameTable, finalCounterResources,  finalInvalidPlay, finalMistakePlay));
+                }
+
+                // Wait 1 second for complete the update of gameFrame with SwingUtilities.invokeLater()
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
 
                 // Display new window for asking client's choice of where he wants to draw
@@ -346,7 +374,17 @@ public class Client2 {
 
                 // Call to gameFrame method for update the frame
                 if (gameFrame != null) {
-                    gameFrame.updateGameFrame(player, gameTable, counterResources, invalidPlay, mistakePlay);
+                    // Create final variables which will be used in SwingUtilities.invokeLater()
+                    // For using that method, the variables have to be final
+                    final Player finalPlayer = player;
+                    final GameTable finalGameTable = gameTable;
+                    final ArrayList<Integer> finalCounterResources = counterResources;
+                    final String finalInvalidPlay = invalidPlay;
+                    final String finalMistakePlay = mistakePlay;
+                    final GameFrame finalGameFrame = gameFrame;
+
+                    // Use SwingUtilities.invokeLater() for update gameFrame
+                    SwingUtilities.invokeLater(() -> finalGameFrame.updateGameFrame(finalPlayer, finalGameTable, finalCounterResources, finalInvalidPlay, finalMistakePlay));
                 }
 
             } else if(response.equals("Wait for others players' last turns.")){
