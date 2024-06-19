@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.exception;
 /**
  * Exception raised when try to get a player from gameTable with a given username
  *
- * @author Lorenzo Foini
+ * @author Foini Lorenzo
  */
 public class NoPlayerWithSuchUsernameException extends Exception {
     public NoPlayerWithSuchUsernameException(String message) {
