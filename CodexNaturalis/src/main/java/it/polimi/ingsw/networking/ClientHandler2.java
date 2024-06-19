@@ -595,19 +595,25 @@ public class ClientHandler2 extends Thread {
      * @author Foini Lorenzo
      */
     public void askDraw(String username) throws IOException {
-        // Display the back of the top card of resource deck
+        // Display the back of the top card of resource deck, if present
         ArrayList<Card> resourceDeck = gameController.getGameTable().getResourceDeck().getDeck();
-        GamingCard topResourceCard = (GamingCard) resourceDeck.getLast();
-        gameController.getViewTui().displayTopResource(topResourceCard, out);
+        if(!resourceDeck.isEmpty()){
+            GamingCard topResourceCard = (GamingCard) resourceDeck.getLast();
+            gameController.getViewTui().displayTopResource(topResourceCard, out);
+        }
 
-        // Display the back of the top card of gold deck
+        // Display the back of the top card of gold deck, if present
         ArrayList<Card> goldDeck = gameController.getGameTable().getGoldDeck().getDeck();
-        GoldCard topGoldCard = (GoldCard) goldDeck.getLast();
-        gameController.getViewTui().displayTopGold(topGoldCard, out);
+        if(!resourceDeck.isEmpty()){
+            GoldCard topGoldCard = (GoldCard) goldDeck.getLast();
+            gameController.getViewTui().displayTopGold(topGoldCard, out);
+        }
 
-        // Display the 4 visible drawable cards
+        // Display the 4 visible drawable cards, if present
         ArrayList<GamingCard> visibleCards = gameController.getGameTable().getVisibleCard();
-        gameController.getViewTui().displayVisibleTableCard(visibleCards, out);
+        if(!visibleCards.isEmpty()){
+            gameController.getViewTui().displayVisibleTableCard(visibleCards, out);
+        }
 
         // Ask user's choice
         out.println("You can draw from:\n- Resource deck (insert 1).\n- Gold deck (insert 2).\n- One of the four cards present in the table (insert 3).");
