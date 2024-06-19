@@ -24,12 +24,24 @@ public class Controller {
                                                  // If true => Final points are already calculated
     private boolean crashed = false; // If false => The game has not crashed
                                     // If true => The game has crashed, so all the clients disconnect
-    private int disconnectedPlayers = 0;
+    private int disconnectedPlayers = 0; // Counter of disconnected players
 
+    /**
+     * disconnectedPlayers getter
+     *
+     * @return value of disconnectedPlayers
+     * @author Gallo Fabio
+     */
     public int getDisconnectedPlayers() {
         return disconnectedPlayers;
     }
 
+    /**
+     * disconnectedPlayers setter
+     * It increments the value by 1
+     *
+     * @author Gallo Fabio
+     */
     public void setDisconnectedPlayers() {
         this.disconnectedPlayers++;
     }
