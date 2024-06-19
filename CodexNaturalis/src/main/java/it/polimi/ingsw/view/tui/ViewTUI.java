@@ -12,7 +12,6 @@ import java.util.ArrayList;
  * @author Di Carlo Andrea, Falcone Giacomo
  */
 public class ViewTUI {
-
     // ANSI escape codes for colors
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -25,11 +24,16 @@ public class ViewTUI {
      * Method to print card's corners
      *
      * @param corner is the corner that has to be printed
-     * @author giacomofalcone
+     * @param left if true => print has to be done on the left
+     *             if false => print has to be done on the right
+     * @author Falcone Giacomo
      */
     public String printCorner(Corner corner, Boolean left){
+        // Check if corner is visible => A card can be played on such corner
         if (corner.getVisible()){
+            // Check if corner isn't empty
             if(!corner.getEmpty()) {
+                // Now print colored kingdom based on the kingdom in such corner and its position
                 if (corner.getKingdom() != Kingdom.NONE) {
                     if (corner.getKingdom() == Kingdom.ANIMALKINGDOM) {
                         if (!left) {
@@ -60,6 +64,7 @@ public class ViewTUI {
                         }
                     }
                 } else if(corner.getObject() != GameObject.NONE){
+                    // Now print colored object based on the object in such corner and its position
                     if (corner.getObject() == GameObject.INKWELL) {
                         if (!left) {
                             return (ANSI_YELLOW + "        INKWELL" + ANSI_RESET);
@@ -82,6 +87,7 @@ public class ViewTUI {
                         }
                     }
                 } else {
+                    // The corner is empty => Print EMPTY
                     if (!left) {
                         return "          EMPTY";
                     } else {
@@ -89,11 +95,13 @@ public class ViewTUI {
                     }
                 }
             }
+            // There isn't a kingdom or an object in this corner, so print nothing
             else{
                 return "               ";
             }
             return "               ";
         }
+        // Corner is not visible => A card can't be played on such corner
         else {
             if (!left) {
                 return "        COVERED";
@@ -103,35 +111,21 @@ public class ViewTUI {
         }
     }
 
-    /*
-    public String printCorner(Corner corner){
-        if(corner.getVisible()){
-            if(corner.getEmpty()){
-                return "EMPTY";
-            } else if (corner.getKingdom() != Kingdom.NONE) {
-                return corner.getKingdom().toString();
-            } else {
-                return corner.getObject().toString();
-            }
-        }
-        else {
-            return "            ";
-        }
-    }*/
-
-
     /**
      * Method to display a given starter card
      *
      * @param starterCard given starter card to be displayed
-     * @author giacomofalcone
+     * @param out client's printWriter
+     * @author Di Carlo Andrea, Falcone Giacomo
      */
-    public synchronized void displayStarterCard(StarterCard starterCard, PrintWriter out){
+    public void displayStarterCard(StarterCard starterCard, PrintWriter out){
+        // Print the whole starter card
         out.println("\nThis is your starter card: \n" +
                 "Front:\n" +
                 "______________________________________________\n" +
                 "|" + printCorner(starterCard.getFrontCorners()[0], true) + "              " + printCorner(starterCard.getFrontCorners()[1], false) +"|\n" +
                 "           ");
+        // Print the kingdom in the center of the card
         for (int i=0; i < starterCard.getFrontKingdoms().length; i++) {
             if (starterCard.getFrontKingdoms()[i] == Kingdom.ANIMALKINGDOM){
                 out.println("             " + ANSI_CYAN + starterCard.getFrontKingdoms()[i] + ANSI_RESET + "   ");
@@ -165,9 +159,11 @@ public class ViewTUI {
      * Method to display a given resource card
      *
      * @param resourceCard given resource card to be displayed
-     * @author AndreaDiC11
+     * @param out client's printWriter
+     * @author Di Carlo Andrea, Falcone Giacomo
      */
     public void displayResourceCard(GamingCard resourceCard, PrintWriter out){
+        // Print resource card's front and the kingdom in the back
         out.println("Resource Card: \nPoints: " + resourceCard.getPoints() + "\n" +
                 "Front:\n" +
                 "______________________________________________\n" +
@@ -201,9 +197,11 @@ public class ViewTUI {
      * Method to display a given gold card
      *
      * @param goldCard given gold card to be displayed
-     * @author AndreaDiC11
+     * @param out client's printWriter
+     * @author Di Carlo Andrea, Falcone Giacomo
      */
     public void displayGoldCard(GoldCard goldCard, PrintWriter out){
+        // Print gold card's front and the kingdom in the back
         out.println("Gold card: \nPoints: " + goldCard.getPoints() + "\n" +
                 "Front:\n" +
                 "______________________________________________\n" +
@@ -222,12 +220,15 @@ public class ViewTUI {
      * Method to display a given objective card
      *
      * @param objectiveCard given objective card to be displayed
+     * @param out client's printWriter
      * @author giacomofalcone
      */
     public void displayObjectiveCard(ObjectiveCard objectiveCard, PrintWriter out) {
+        // Print objective card
         out.println("Objective card:\nPoints:" + objectiveCard.getPoints());
         out.println("Type of objective:");
         if (objectiveCard.getFrontKingdom() != Kingdom.NONE) {
+            // Objective with kingdoms
             if(objectiveCard.getPattern() == Pattern.NONE) {
                 if (objectiveCard.getFrontKingdom() == Kingdom.ANIMALKINGDOM) {
                     out.println(ANSI_CYAN + "ANIMALKINGDOM\nANIMALKINGDOM\nANIMALKINGDOM" + ANSI_RESET);
@@ -242,6 +243,8 @@ public class ViewTUI {
                     out.println(ANSI_RED + "FUNGIKINGDOM\nFUNGIKINGDOM\nFUNGIKINGDOM" + ANSI_RESET);
                 }
             } else {
+                // Objective with pattern
+                // Print the pattern
                 if (objectiveCard.getPattern() == Pattern.LOWERLEFT) {
                     out.println(ANSI_GREEN +
                             "      ------\n" +
@@ -336,7 +339,7 @@ public class ViewTUI {
                     }
                 }
             }
-        } else { // (objectiveCard.getObjects()[0] != GameObject.NONE)
+        } else { // Objective with objects
             for (int j = 0; j < objectiveCard.getObjects().length; j++) {
                 if (objectiveCard.getObjects()[j] == GameObject.INKWELL) {
                     out.println(ANSI_YELLOW + "INKWELL" + ANSI_RESET);
@@ -354,11 +357,14 @@ public class ViewTUI {
      * Method to display the hand of a player
      *
      * @param hand given hand to be displayed
-     * @author giacomofalcone
+     * @param out client's printWriter
+     * @author Falcone Giacomo
      */
     public synchronized void displayHand(ArrayList<GamingCard> hand, PrintWriter out){
         out.println("This is your hand:\n");
-        for (int i=0; i < 3; i++) {
+        // Iterate through cards
+        for (int i=0; i < hand.size(); i++) {
+            // Display card using display card methods
             out.println("Card " + (i+1));
             if (hand.get(i) instanceof GoldCard){
                 displayGoldCard((GoldCard) hand.get(i), out);
@@ -372,11 +378,14 @@ public class ViewTUI {
      * Method to display the visible cards that can be drawn
      *
      * @param visibleCards given 4 visible cards of decks to be displayed
-     * @author giacomofalcone
+     * @param out client's printWriter
+     * @author Falcone Giacomo
      */
     public synchronized void displayVisibleTableCard(ArrayList<GamingCard> visibleCards, PrintWriter out){
         out.println("Visible cards that can be drawn:\n");
-        for (int i=0; i < 4; i++) {
+        // Iterate through cards
+        for (int i=0; i < visibleCards.size(); i++) {
+            // Display card using display card methods
             out.println("Card " + (i+1));
             if (visibleCards.get(i) instanceof GoldCard){
                 displayGoldCard((GoldCard) visibleCards.get(i), out);
@@ -386,14 +395,15 @@ public class ViewTUI {
         }
     }
 
-
     /**
      * Method to display the back of the top card of resource deck
      *
      * @param topResource given the top card of resource deck
-     * @author giacomofalcone
+     * @param out client's printWriter
+     * @author Falcone Giacomo
      */
     public synchronized void displayTopResource(GamingCard topResource, PrintWriter out){
+        // Display the colored kingdom of the card
         out.println("This is the card in top of resource deck: ");
         if(topResource.getKingdom() == Kingdom.ANIMALKINGDOM){
             out.println(ANSI_CYAN + "ANIMALKINGDOM" + ANSI_RESET);
@@ -410,15 +420,16 @@ public class ViewTUI {
         out.print("\n");
     }
 
-
     /**
      * Method to display the back of the top card of gold deck
      *
      * @param topGold given the top card of gold deck
-     * @author giacomofalcone
+     * @param out client's printWriter
+     * @author Falcone Giacomo
      */
     public synchronized void displayTopGold(GoldCard topGold, PrintWriter out){
         out.println("This is the card in top of gold deck: ");
+        // Display the colored kingdom of the card
         if(topGold.getKingdom() == Kingdom.ANIMALKINGDOM){
             out.println(ANSI_CYAN + "ANIMALKINGDOM" + ANSI_RESET);
         }
@@ -434,12 +445,17 @@ public class ViewTUI {
         out.print("\n");
     }
 
-
-
+    /**
+     * Method to display the back of the top card of gold deck
+     *
+     * @param cards list of cards in player's area
+     * @param out client's printWriter
+     * @author Falcone Giacomo
+     */
     public void displayArea(ArrayList<Card> cards, PrintWriter out){
-        // TODO: Display cards[0] => Starter card
+        // Display starter cards
         out.println("Starter card 1:");
-        StarterCard starterCard = (StarterCard) cards.get(0);
+        StarterCard starterCard = (StarterCard) cards.getFirst();
         if(starterCard.getSide()){
             // Front
             out.println(
@@ -475,6 +491,7 @@ public class ViewTUI {
         out.println("Row position:" + starterCard.getInGamePosition()[0]);
         out.println("Column position:" + starterCard.getInGamePosition()[1] + "\n");
 
+        // Display all the other cards
         for(int i = 1; i < cards.size(); i++){
             if(cards.get(i) instanceof GoldCard){ // Is a gold card
                 out.println("Gold card " + i + ":");
@@ -508,13 +525,10 @@ public class ViewTUI {
                             "\n" +   "               "  + printKingdom(resourceCard.getKingdom()) + "\n" + "\n" +
                             "|" + printCorner(resourceCard.getBackCorners()[2], true) + "              " + printCorner(resourceCard.getBackCorners()[3], false) +"|\n" +
                             "______________________________________________");
-                    // TODO: Display resource card played on back
                 }
             }
             out.println("Row position:" + cards.get(i).getInGamePosition()[0]);
             out.println("Column position:" + cards.get(i).getInGamePosition()[1] + "\n");
         }
-
     }
-
 }
