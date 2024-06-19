@@ -22,8 +22,9 @@ import com.google.gson.Gson;
  * @author Fabio Gallo
  */
 public class Client2 {
-    private static final String SERVER_ADDRESS = "localhost";
+    private static String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 12345;
+    private static boolean tui=false;
 
     /**
      * Main method
@@ -34,12 +35,26 @@ public class Client2 {
      * @author Fabio Gallo
      */
     public static void main(String[] args) {
+        if(args.length==1) {
+            if(args[0].equalsIgnoreCase("TUI")) {
+                tui=true;
+            }else if (!args[0].equalsIgnoreCase("GUI")) {
+                SERVER_ADDRESS = args[0];
+            }
+        }
+
+        if (args.length == 2) {
+            SERVER_ADDRESS = args[0];
+            tui = (args[1].equalsIgnoreCase("TUI"));
+        }
+
+
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             try {
-                if (args[0].equalsIgnoreCase("TUI")) {
+                if (tui) {
                     out.println("TUI");
                     startTUI(out, in); // Start communication with TUI
                 } else {

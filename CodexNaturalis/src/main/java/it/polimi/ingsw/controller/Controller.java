@@ -23,7 +23,16 @@ public class Controller {
     private boolean calculateFinalPoints = true; // If false => Need to calculate the final points
                                                  // If true => Final points are already calculated
     private boolean crashed = false; // If false => The game has not crashed
-                                     // If true => The game has crashed, so all the clients disconnect
+                                    // If true => The game has crashed, so all the clients disconnect
+    private int disconnectedPlayers = 0;
+
+    public int getDisconnectedPlayers() {
+        return disconnectedPlayers;
+    }
+
+    public void setDisconnectedPlayers() {
+        this.disconnectedPlayers++;
+    }
 
     /**
      * isCrashed getter
