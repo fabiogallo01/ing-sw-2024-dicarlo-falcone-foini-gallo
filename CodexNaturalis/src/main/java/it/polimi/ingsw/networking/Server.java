@@ -30,7 +30,7 @@ public class Server {
         // Create new server socket
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             // Print server IP (using method getWirelessIPAddress()) and port of the connection
-            System.out.println("Server IP: " + getWirelessIPAddress().getHostAddress() + ".\nServer is listening on port: " + PORT + "\n");
+            System.out.println("Server IP: " + getWirelessIPAddress().getHostAddress() + "\nServer is listening on port: " + PORT + "\n");
 
             // This loop will accept all the new client connections
             while (true) {

@@ -388,6 +388,13 @@ public class Client {
                 }
 
             } else if(response.equals("Wait for others players' last turns.")){
+                // Wait 1 second for complete the update of gameFrame with SwingUtilities.invokeLater()
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
                 // Display new window for wait the other players to finish their turn
                 waitEndGame = viewGui.displayWaitEndGame();
 
