@@ -6,38 +6,45 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
-
-
+/**
+ * Class for testing PlayerArea class
+ *
+ * @author Di Carlo Andrea, Foini Lorenzo, Gallo Fabio
+ */
 public class PlayerAreaTest {
-
+    // Initialize variables
     private PlayerArea playerArea;
     private Corner[] Corners;
 
+    /**
+     * Initialized PlayerArea with starter card already played on back
+     *
+     * @author Di Carlo Andrea, Foini Lorenzo, Gallo Fabio
+     */
     @Before
     public void setUp() {
         //Create matrix area
         boolean[][] Area = new boolean[81][81];
-        for (int row = 0; row < Area.length; row++) {
-            for (int col = 0; col < Area[row].length; col++) {
-                Area[row][col] = true;
-            }
+        for (boolean[] booleans : Area) {
+            Arrays.fill(booleans, true);
         }
 
-        playerArea = new PlayerArea(Area, new ArrayList<Card>());
+        playerArea = new PlayerArea(Area, new ArrayList<>());
 
 
-        // Create startercard
-        Corner[] startcorners = new Corner[]{
+        // Create starterCard
+        Corner[] startCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
 
-        Corner[] backcorners = new Corner[]{
+        Corner[] backCorners = new Corner[]{
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
@@ -51,25 +58,32 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(false, backcorners, startcorners, new Kingdom[]{Kingdom.NONE}, 0);
+        Card startercard = new StarterCard(false, backCorners, startCorners, new Kingdom[]{Kingdom.NONE}, 0);
         playerArea.addCard(startercard, new int[]{40, 40});
 
     }
 
-    @After
-    public void tearDown() {
-    }
-
+    /**
+     * Method for testing countKingdoms() with the four kingdoms
+     *
+     * @author Di Carlo Andrea
+     */
     @Test
-    public void TestCountKingdomStarterCard() {
+    public void TestCountKingdomStarterCard_ShouldBe1ForAllKingdoms() {
         //Should return 1
         assertEquals(1, playerArea.countKingdoms(Kingdom.ANIMALKINGDOM));
         assertEquals(1, playerArea.countKingdoms(Kingdom.FUNGIKINGDOM));
         assertEquals(1, playerArea.countKingdoms(Kingdom.PLANTKINGDOM));
         assertEquals(1, playerArea.countKingdoms(Kingdom.INSECTKINGDOM));
     }
+
+    /**
+     * Method for testing countKingdoms() of animal kingdom after play a new card with 1 animal kingdom
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void TestTwoKingdom() {
+    public void TestTwoKingdom_AddNewCardWithOneAnimalKingdom() {
         // Add card with kingdom ANIMALKINGDOM
         Card card1 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners, 0);
         playerArea.addCard(card1, new int[]{39, 39});
@@ -78,8 +92,13 @@ public class PlayerAreaTest {
         assertEquals(2, playerArea.countKingdoms(Kingdom.ANIMALKINGDOM));
     }
 
+    /**
+     * Method for testing countKingdoms() of planet kingdom after a corner is covered
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void TestKingdomCovered() {
+    public void TestKingdomCovered_CounterShouldBe0() {
         // Should return 0 because PLANTKINGDOM is covered
         Card card1 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners, 0);
         playerArea.addCard(card1, new int[]{39, 39});
@@ -87,31 +106,40 @@ public class PlayerAreaTest {
 
     }
 
+    /**
+     * Method for testing countKingdoms() of insect kingdom after a gold card has been played
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void TestGoldCardKingdom(){
-        // Add goldcard with kingdom INSECTKINGDOM
+    public void TestGoldCardKingdom_AddAGoldCardAndCheckCounter(){
+        // Add goldCard with kingdom INSECTKINGDOM
         Kingdom[] resources = new Kingdom[]{Kingdom.NONE};
-        Card cardgold = new GoldCard(false, Kingdom.INSECTKINGDOM, 0, Corners, resources, ConditionPoint.NONE, 0);
-        playerArea.addCard(cardgold, new int[]{41, 41});
+        Card goldCard = new GoldCard(false, Kingdom.INSECTKINGDOM, 0, Corners, resources, ConditionPoint.NONE, 0);
+        playerArea.addCard(goldCard, new int[]{41, 41});
 
-        // Should return 1 because INSECTKINGDOM is covered
+        // Should return 1 because previous corner with INSECTKINGDOM is covered
+        // But there is a new one with the gold card played on back
         assertEquals(1, playerArea.countKingdoms(Kingdom.INSECTKINGDOM));
     }
 
+    /**
+     * Re-initialization of PlayerArea for calculating the objects
+     *
+     * @author Di Carlo Andrea,  Gallo Fabio
+     */
     @After
-    public void setUptestCountObject() {
+    public void setUpTestCountObject() {
         //Create matrix area
         boolean[][] Area = new boolean[81][81];
-        for (int row = 0; row < Area.length; row++) {
-            for (int col = 0; col < Area[row].length; col++) {
-                Area[row][col] = true;
-            }
+        for (boolean[] booleans : Area) {
+            Arrays.fill(booleans, true);
         }
 
-        playerArea = new PlayerArea(Area, new ArrayList<Card>());
+        playerArea = new PlayerArea(Area, new ArrayList<>());
 
-        // Create startercard
-        Corner[] startcorners = new Corner[]{
+        // Create starterCard
+        Corner[] startCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
@@ -125,18 +153,32 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(false, Corners, startcorners, new Kingdom[]{Kingdom.NONE}, 0);
+        Card startercard = new StarterCard(false, Corners, startCorners, new Kingdom[]{Kingdom.NONE}, 0);
         playerArea.addCard(startercard, new int[]{40, 40});
     }
+
+    /**
+     * Method for testing countObject() with the three objects
+     * No object is present => Should be 0 for all three and 4 for NONE
+     *
+     * @author Di Carlo Andrea
+     */
     @Test
-    public void TestCounterObjectsStarterCard() {
+    public void TestCounterObjectsStarterCard_NoObjectsArePresent_NONEShouldBe4() {
         assertEquals(0, playerArea.countObject(GameObject.MANUSCRIPT));
         assertEquals(0, playerArea.countObject(GameObject.INKWELL));
         assertEquals(0, playerArea.countObject(GameObject.QUILL));
         assertEquals(4, playerArea.countObject(GameObject.NONE));
     }
+
+    /**
+     * Method for testing countObject() with the three objects
+     * Add a card with 1 object for each objects
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void testAllCountObjects(){
+    public void testAllCountObjects_1OccurrenceForEveryObject(){
         Corners = new Corner[]{
                 new Corner(true, false, GameObject.MANUSCRIPT, Kingdom.NONE),
                 new Corner(true, false, GameObject.INKWELL, Kingdom.NONE),
@@ -154,24 +196,27 @@ public class PlayerAreaTest {
         Card card2 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners, 0);
         playerArea.addCard(card2, new int[]{38, 38});
 
+        // The corner with MANUSCRIPT is now covered
         assertEquals(0, playerArea.countObject(GameObject.MANUSCRIPT));
-
     }
 
+    /**
+     * Re-initialization of PlayerArea for calculating the hidden corners
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @After
-    public void setUptestCountHiddenCorner() {
+    public void setUpTestCountHiddenCorner() {
         //Create matrix area
         boolean[][] Area = new boolean[81][81];
-        for (int row = 0; row < Area.length; row++) {
-            for (int col = 0; col < Area[row].length; col++) {
-                Area[row][col] = true;
-            }
+        for (boolean[] booleans : Area) {
+            Arrays.fill(booleans, true);
         }
 
-        PlayerArea playerArea = new PlayerArea(Area, new ArrayList<Card>());
+        PlayerArea playerArea = new PlayerArea(Area, new ArrayList<>());
 
-        // Create startercard
-        Corner[] startcorners = new Corner[]{
+        // Create starterCard
+        Corner[] startCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
@@ -185,43 +230,62 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(false, Corners, startcorners, new Kingdom[]{Kingdom.NONE}, 0);
-        playerArea.addCard(startercard, new int[]{40, 40});}
+        Card startercard = new StarterCard(false, Corners, startCorners, new Kingdom[]{Kingdom.NONE}, 0);
+        playerArea.addCard(startercard, new int[]{40, 40});
+    }
+
+    /**
+     * Method for testing countHiddenCorner() after a gold card with such condition is played
+     * The card covers one corner, so the method should return 1
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void Test1CountHiddenCornerGoldCard() {
-
-        // Add goldcard with kingdom INSECTKINGDOM
+    public void TestCountHiddenCornerGoldCard_Covers1Corner() {
+        // Add goldCard with kingdom INSECTKINGDOM
         Kingdom[] resources = new Kingdom[]{Kingdom.NONE};
-        Card cardgold1 = new GoldCard(false, Kingdom.INSECTKINGDOM, 0, Corners, resources, ConditionPoint.HIDDENCORNER, 0);
-        playerArea.addCard(cardgold1, new int[]{41, 41});
+        Card goldCard1 = new GoldCard(false, Kingdom.INSECTKINGDOM, 0, Corners, resources, ConditionPoint.HIDDENCORNER, 0);
+        playerArea.addCard(goldCard1, new int[]{41, 41});
 
+        // Cover one corner
         assertEquals(1, playerArea.countHiddenCorner(new int[]{41, 41}));
     }
+
+    /**
+     * Method for testing countHiddenCorner() after a gold card with such condition is played
+     * The card covers two corners, so the method should return 2
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void Test2CountHiddenCornerGoldCard() {
+    public void TestCountHiddenCornerGoldCard_Cover2Corners() {
         Kingdom[] resources = new Kingdom[]{Kingdom.NONE};
         Card card1 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners, 0);
-        Card cardgold2 = new GoldCard(false, Kingdom.INSECTKINGDOM, 0, Corners, resources, ConditionPoint.HIDDENCORNER, 0);
+        Card goldCard2 = new GoldCard(false, Kingdom.INSECTKINGDOM, 0, Corners, resources, ConditionPoint.HIDDENCORNER, 0);
         playerArea.addCard(card1, new int[]{42, 40});
-        playerArea.addCard(cardgold2, new int[]{41, 39});
+        playerArea.addCard(goldCard2, new int[]{41, 39});
 
+        // Gold card covers two corners
         assertEquals(2, playerArea.countHiddenCorner(new int[]{41, 39}));
     }
 
+    /**
+     * Re-initialization of PlayerArea for calculating the pattern
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @After
-    public void setUptestCountPattern() {
-        //Create matrix area
+    public void setUpTestCountPattern() {
+        // Create matrix area
         boolean[][] Area = new boolean[81][81];
-        for (int row = 0; row < Area.length; row++) {
-            for (int col = 0; col < Area[row].length; col++) {
-                Area[row][col] = true;
-            }
+        for (boolean[] booleans : Area) {
+            Arrays.fill(booleans, true);
         }
 
-        PlayerArea playerArea = new PlayerArea(Area, new ArrayList<Card>());
+        PlayerArea playerArea = new PlayerArea(Area, new ArrayList<>());
 
-        // Create startercard
-        Corner[] startcorners = new Corner[]{
+        // Create starterCard
+        Corner[] startCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
@@ -235,13 +299,18 @@ public class PlayerAreaTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
 
-        Card startercard = new StarterCard(false, Corners, startcorners, new Kingdom[]{Kingdom.NONE}, 0);
+        Card startercard = new StarterCard(false, Corners, startCorners, new Kingdom[]{Kingdom.NONE}, 0);
         playerArea.addCard(startercard, new int[]{40, 40});
     }
 
+    /**
+     * Method for testing countPattern() when there is the diagonal pattern with 3 plant cards
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void TestDiag3PlantKingdom() {
-        //Test diagon 3 Plantkingdom
+    public void TestCountPatter_DiagonalPatternWith3PlantCards() {
+        // Test diagonal pattern with 3 plant cards
         Card card1 = new GamingCard(false, Kingdom.PLANTKINGDOM, 0, Corners, 0);
         playerArea.addCard(card1, new int[]{39, 39});
 
@@ -251,12 +320,18 @@ public class PlayerAreaTest {
         Card card3 = new GamingCard(false, Kingdom.PLANTKINGDOM, 0, Corners, 0);
         playerArea.addCard(card3, new int[]{37, 37});
 
+        // One patter is found
         assertEquals(1, playerArea.countPattern(Kingdom.PLANTKINGDOM, Pattern.PRIMARYDIAGONAL));
     }
 
+    /**
+     * Method for testing countPattern() when there is the diagonal pattern with 3 animal cards
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void TestDiag3AnimalKingdom() {
-        //Test diagon 3 Animalkingdom
+    public void TestCountPattern_DiagonalPatternWith3AnimalCards() {
+        // Test diagonal pattern with 3 animal cards
         Card card4 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners, 0);
         playerArea.addCard(card4, new int[]{41, 39});
 
@@ -266,12 +341,18 @@ public class PlayerAreaTest {
         Card card6 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners, 0);
         playerArea.addCard(card6, new int[]{43, 37});
 
+        // Found 1 pattern
         assertEquals(1, playerArea.countPattern(Kingdom.ANIMALKINGDOM, Pattern.SECONDARYDIAGONAL));
     }
 
+    /**
+     * Method for testing countPattern() when there is the diagonal pattern with 3 insect cards
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void TestDiag3InsectKingdom() {
-        //Test diagon 3 Insectkingdom
+    public void TestCountPattern_DiagonalPatternWith3InsectCards() {
+        // Test diagonal pattern with 3 insect cards
         Card card7 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners, 0);
         playerArea.addCard(card7, new int[]{41, 41});
 
@@ -281,12 +362,18 @@ public class PlayerAreaTest {
         Card card9 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners, 0);
         playerArea.addCard(card9, new int[]{43, 43});
 
+        // Found 1 pattern
         assertEquals(1, playerArea.countPattern(Kingdom.INSECTKINGDOM, Pattern.PRIMARYDIAGONAL));
     }
 
+    /**
+     * Method for testing countPattern() when there is the diagonal pattern with 3 fungi cards
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void TestDiag3FungiKingdom() {
-        //Test diagon 3 FungiKingdom
+    public void TestCountPattern_DiagonalPatternWith3FungiCards() {
+        // Test diagonal pattern with 3 fungi cards
         Card card10 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners, 0);
         playerArea.addCard(card10, new int[]{44, 36});
 
@@ -296,13 +383,18 @@ public class PlayerAreaTest {
         Card card12 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners, 0);
         playerArea.addCard(card12, new int[]{46, 34});
 
+        // Found 1 pattern
         assertEquals(1, playerArea.countPattern(Kingdom.FUNGIKINGDOM, Pattern.SECONDARYDIAGONAL));
     }
 
-
+    /**
+     * Method for testing countPattern() when there is the pattern with 2 fungi cards and 1 plant card
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void Test2Fungi1PlantKingdom() {
-        //Test 2Fungi and 1Plant
+    public void TestCountPattern_PatternWith2FungiCardsAnd1PlantCard() {
+        // Test pattern with 2 fungi cards and 1 plant card
         Card card13 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners, 0);
         playerArea.addCard(card13, new int[]{44, 44});
 
@@ -312,12 +404,18 @@ public class PlayerAreaTest {
         Card card15 = new GamingCard(false, Kingdom.PLANTKINGDOM, 0, Corners, 0);
         playerArea.addCard(card15, new int[]{47, 45});
 
+        // Found 1 pattern
         assertEquals(1, playerArea.countPattern(Kingdom.FUNGIKINGDOM, Pattern.LOWERRIGHT));
     }
 
+    /**
+     * Method for testing countPattern() when there is the pattern with 2 plant cards and 1 insect card
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void Test2Plant1InsectKingdom() {
-        //Test 2Plant 1 Insect
+    public void TestCountPattern_PatternWith2PlantCardsAnd1InsectCard() {
+        // Test pattern with 2 plant cards and 1 insect card
         Card card3 = new GamingCard(false, Kingdom.PLANTKINGDOM, 0, Corners, 0);
         playerArea.addCard(card3, new int[]{37, 37});
 
@@ -327,12 +425,18 @@ public class PlayerAreaTest {
         Card card17 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners, 0);
         playerArea.addCard(card17, new int[]{40, 36});
 
+        // Found 1 pattern
         assertEquals(1, playerArea.countPattern(Kingdom.PLANTKINGDOM, Pattern.LOWERLEFT));
     }
 
+    /**
+     * Method for testing countPattern() when there is the pattern with 2 animal cards and 1 fungi card
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void Test2Animal1FungiKingdom() {
-        //Test 2Animal 1 Fungi
+    public void TestCountPattern_PatternWith2AnimalCardsAnd1FungiCard() {
+        // Test pattern with 2 animal cards and 1 fungi card
         Card card6 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners, 0);
         playerArea.addCard(card6, new int[]{43, 37});
 
@@ -342,12 +446,18 @@ public class PlayerAreaTest {
         Card card19 = new GamingCard(false, Kingdom.FUNGIKINGDOM, 0, Corners, 0);
         playerArea.addCard(card19, new int[]{40, 38});
 
+        // Found 1 pattern
         assertEquals(1, playerArea.countPattern(Kingdom.ANIMALKINGDOM, Pattern.UPPERRIGHT));
     }
 
+    /**
+     * Method for testing countPattern() when there is the pattern with 2 insect cards and 1 animal card
+     *
+     * @author Di Carlo Andrea, Gallo Fabio
+     */
     @Test
-    public void Test2Insect1AnimalKingdom() {
-        //Test 2Insect 1 Animal
+    public void TestCountPattern_PatternWith2InsectCardsAnd1AnimalCard() {
+        // Test pattern with 2 insect cards and 1 animal card
         Card card20 = new GamingCard(false, Kingdom.ANIMALKINGDOM, 0, Corners, 0);
         playerArea.addCard(card20, new int[]{45, 37});
 
@@ -357,8 +467,7 @@ public class PlayerAreaTest {
         Card card22 = new GamingCard(false, Kingdom.INSECTKINGDOM, 0, Corners, 0);
         playerArea.addCard(card22, new int[]{48, 38});
 
+        // Found 1 pattern
         assertEquals(1, playerArea.countPattern(Kingdom.INSECTKINGDOM, Pattern.UPPERLEFT));
-
     }
 }
-

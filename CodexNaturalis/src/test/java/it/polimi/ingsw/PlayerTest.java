@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.exception.*;
 import it.polimi.ingsw.model.game.Color;
 import it.polimi.ingsw.model.game.Player;
 import it.polimi.ingsw.model.game.PlayerArea;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,17 +12,22 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-
-//TO DO: test di playCard, calculateObjectivePoint
+/**
+ * Class for testing Player class
+ *
+ * @author Foini Lorenzo, Gallo Fabio
+ */
 public class PlayerTest {
     private Player player;
     private ObjectiveCard[] commonObjectives, commonObjectives2;
 
-
+    /**
+     * Initialized player's parameters
+     *
+     * @author Foini Lorenzo, Gallo Fabio
+     */
     @Before
     public void setUp() {
-
-
         //2 sets of common objectives, to test different cases, only one secret objective
 
         ObjectiveCard secretObjective = new ObjectiveCard(2, new GameObject[]{GameObject.NONE}, Pattern.UPPERRIGHT, Kingdom.ANIMALKINGDOM, 0);
@@ -37,27 +41,22 @@ public class PlayerTest {
         commonObjectives2 = new ObjectiveCard[]{commonObjective1, commonObjective2};
 
         //starter card
-
         Corner[] frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-
         Corner[] backCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.ANIMALKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM)
         };
-
         Kingdom[] kingdoms = new Kingdom[]{Kingdom.PLANTKINGDOM, Kingdom.ANIMALKINGDOM, Kingdom.FUNGIKINGDOM};
-
         StarterCard starterCard = new StarterCard(false, frontCorners, backCorners, kingdoms, 0);
 
         //cards in the hand of the player
-
         ArrayList<GamingCard> hand = new ArrayList<>();
 
         frontCorners = new Corner[]{
@@ -66,13 +65,9 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.QUILL, Kingdom.NONE)
         };
-
         Kingdom[] resources = new Kingdom[]{Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.ANIMALKINGDOM};
-
         GoldCard goldCard1 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 1, frontCorners, resources, ConditionPoint.QUILL, 0);
-
         hand.add(goldCard1);
-
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -80,13 +75,9 @@ public class PlayerTest {
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-
         resources = new Kingdom[]{Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.PLANTKINGDOM};
-
         GoldCard goldCard2 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 2, frontCorners, resources, ConditionPoint.INKWELL, 0);
-
         hand.add(goldCard2);
-
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.INSECTKINGDOM),
@@ -94,23 +85,17 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-
         GamingCard resourceCard = new GamingCard(true, Kingdom.INSECTKINGDOM, 1, frontCorners, 0);
-
         hand.add(resourceCard);
 
-
         //cards already played on the player area
-
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE)
         };
-
         GamingCard playedResourceCard1 = new GamingCard(true, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0);
-
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
@@ -118,7 +103,6 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-
         GamingCard playedResourceCard2 = new GamingCard(true, Kingdom.PLANTKINGDOM, 0, frontCorners, 0);
 
         frontCorners = new Corner[]{
@@ -127,9 +111,7 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.FUNGIKINGDOM),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-
         GamingCard playedResourceCard3 = new GamingCard(true, Kingdom.FUNGIKINGDOM, 0, frontCorners, 0);
-
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -137,11 +119,8 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-
         resources = new Kingdom[]{Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.FUNGIKINGDOM, Kingdom.PLANTKINGDOM};
-
         GoldCard playedGoldCard1 = new GoldCard(true, Kingdom.FUNGIKINGDOM, 2, frontCorners, resources, ConditionPoint.HIDDENCORNER, 0);
-
 
         frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -149,7 +128,6 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM),
                 new Corner(true, false, GameObject.NONE, Kingdom.PLANTKINGDOM)
         };
-
         GamingCard playedResourceCard4 = new GamingCard(true, Kingdom.PLANTKINGDOM, 0, frontCorners, 0);
 
         frontCorners = new Corner[]{
@@ -158,12 +136,9 @@ public class PlayerTest {
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
                 new Corner(true, true, GameObject.NONE, Kingdom.NONE)
         };
-
         GamingCard playedResourceCard5 = new GamingCard(true, Kingdom.INSECTKINGDOM, 0, frontCorners, 0);
 
-
         //creation of the player area
-
         boolean[][] area = new boolean[81][81];
         for (int i = 0; i < 81; i++) {
             for (int j = 0; j < 81; j++) {
@@ -184,23 +159,17 @@ public class PlayerTest {
         playerArea.addCard(playedResourceCard5, new int[]{42, 40});
 
         //player
-
         player = new Player("Fabio", 0, playerArea, Color.GREEN, secretObjective, starterCard, hand);
-
-
-    }
-
-
-    @After
-    public void tearDown() {
     }
 
     /**
      * Test for setHand method with exactly three cards.
      * Expected behavior: hand set successfully without exceptions.
+     *
+     * @author Foini Lorenzo
      */
     @Test
-    public void setHandTest_handWithThreeCards_handSetSuccessfully() {
+    public void setHandTest_handWithThreeCards_handSetSuccessfully_ShouldNotThrowException() {
         ArrayList<GamingCard> hand = new ArrayList<>();
         Corner[] frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -223,9 +192,11 @@ public class PlayerTest {
     /**
      * Test for setHand method with less than three cards.
      * Expected behavior: InvalidNumCardsPlayerHandException thrown.
+     *
+     * @author Foini Lorenzo
      */
     @Test(expected = InvalidNumCardsPlayerHandException.class)
-    public void setHandTest_handWithLessThanThreeCards_exceptionThrown() throws InvalidNumCardsPlayerHandException {
+    public void setHandTest_handWithLessThanThreeCards_InvalidNumCardsPlayerHandExceptionThrown() throws InvalidNumCardsPlayerHandException {
         ArrayList<GamingCard> hand = new ArrayList<>();
         Corner[] frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -235,15 +206,18 @@ public class PlayerTest {
         };
         hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
+        // Hand has only one card, so exception must be thrown
         player.setHand(hand);
     }
 
     /**
      * Test for setHand method with more than three cards.
      * Expected behavior: InvalidNumCardsPlayerHandException thrown.
+     *
+     * @author Foini Lorenzo
      */
     @Test(expected = InvalidNumCardsPlayerHandException.class)
-    public void setHandTest_handWithMoreThanThreeCards_exceptionThrown() throws InvalidNumCardsPlayerHandException {
+    public void setHandTest_handWithMoreThanThreeCards_InvalidNumCardsPlayerHandExceptionThrown() throws InvalidNumCardsPlayerHandException {
         ArrayList<GamingCard> hand = new ArrayList<>();
         Corner[] frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -257,12 +231,15 @@ public class PlayerTest {
         hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
         hand.add(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
 
+        // Hand has 4 cards, so exception mus be thrown
         player.setHand(hand);
     }
 
     /**
      * Test for addCardHand method adding a card to hand with two cards.
      * Expected behavior: card added successfully.
+     *
+     * @author Foini Lorenzo
      */
     @Test
     public void addCardHandTest_addCardToHandWithTwoCards_cardAddedSuccessfully() {
@@ -288,9 +265,11 @@ public class PlayerTest {
     /**
      * Test for addCardHand method adding a card to a full hand.
      * Expected behavior: HandAlreadyFullException thrown.
+     *
+     * @author Foini Lorenzo
      */
     @Test(expected = HandAlreadyFullException.class)
-    public void addCardHandTest_addCardToFullHand_exceptionThrown() throws HandAlreadyFullException, InvalidNumCardsPlayerHandException {
+    public void addCardHandTest_addCardToFullHand_HandAlreadyFullExceptionThrown() throws HandAlreadyFullException, InvalidNumCardsPlayerHandException {
         ArrayList<GamingCard> hand = new ArrayList<>();
         Corner[] frontCorners = new Corner[]{
                 new Corner(true, false, GameObject.NONE, Kingdom.NONE),
@@ -307,7 +286,12 @@ public class PlayerTest {
         player.addCardHand(new GamingCard(true, Kingdom.ANIMALKINGDOM, 0, frontCorners, 0));
     }
 
-
+    /**
+     * Test for method playCard() when player plays a card in a position when there is already a card
+     * => Should throw InvalidPlayException
+     *
+     * @author Gallo Fabio
+     */
     @Test
     public void playCardTest_occupiedPositionToPlayGiven_ShouldThrowInvalidPlayException_ShouldShowErrorMessage() {
         try {
@@ -321,6 +305,12 @@ public class PlayerTest {
         }
     }
 
+    /**
+     * Test for method playCard() when player plays a card in a position where there aren't cards in the corner of that position
+     * => Should throw InvalidPlayException
+     *
+     * @author Gallo Fabio
+     */
     @Test
     public void playCardTest_positionWithNoCornersWhereToPlayGiven_ShouldThrowInvalidPlayException_ShouldShowErrorMessage() {
         try {
@@ -334,6 +324,12 @@ public class PlayerTest {
         }
     }
 
+    /**
+     * Test for method playCard() when player plays a card in a position which covers to corner of the same card
+     * => Should throw InvalidPlayException
+     *
+     * @author Foini Lorenzo, Gallo Fabio
+     */
     @Test
     public void playCardTest_positionCoveringTwoCornersOfTheSameCardGiven_ShouldThrowInvalidPlayException_ShouldShowErrorMessage() {
         try {
@@ -347,6 +343,12 @@ public class PlayerTest {
         }
     }
 
+    /**
+     * Test for method playCard() when player plays a gold card but there aren't enough resources for playing it
+     * => Should throw InvalidPlayException
+     *
+     * @author Gallo Fabio
+     */
     @Test
     public void playCardTest_goldCardWithNotSatisfiedConditionGiven_ShouldThrowInvalidPlayException_ShouldShowErrorMessage() {
         try {
@@ -361,6 +363,12 @@ public class PlayerTest {
         }
     }
 
+    /**
+     * Test for method playCard() when player plays a card in a position, but the card covers a corner which can't be covered
+     * => Should throw InvalidPlayException
+     *
+     * @author Gallo Fabio
+     */
     @Test
     public void playCardTest_positionCoveringACornerThatCannotBeCoveredGiven_ShouldThrowInvalidPlayException_ShouldShowErrorMessage() {
         try {
@@ -374,6 +382,12 @@ public class PlayerTest {
         }
     }
 
+    /**
+     * Test for method playCard() when player insert an invalid index of the card from his hand
+     * => Should throw InvalidPlayCardIndexException
+     *
+     * @author Gallo Fabio
+     */
     @Test
     public void playCardTest_wrongPositionInHandsGiven_ShouldThrowInvalidPlayCardIndexException_ShouldShowErrorMessage() {
 
@@ -388,6 +402,12 @@ public class PlayerTest {
         }
     }
 
+    /**
+     * Test for method playCard() when player insert an invalid index of the position in the area
+     * => Should throw InvalidPositionAreaException
+     *
+     * @author Gallo Fabio
+     */
     @Test
     public void playCardTest_outOfPlayerAreaPositionGiven_ShouldThrowInvalidPositionAreaException_ShouldShowErrorMessage() {
 
@@ -402,6 +422,12 @@ public class PlayerTest {
         }
     }
 
+    /**
+     * Test for method playCard() when player plays a card in correct way
+     * => Should not throw any exception
+     *
+     * @author Gallo Fabio
+     */
     @Test
     public void playCardTest_normalWorkingPlayGiven() {
         try {
@@ -413,13 +439,25 @@ public class PlayerTest {
 
     }
 
+    /**
+     * Test for method calculateObjectivePoints() given the common objectives
+     * Expect 0 points scored based on player's area and commonObjectives
+     *
+     * @author Gallo Fabio
+     */
     @Test
-    public void calculateObjectivePointsTest_noPoints() {
+    public void calculateObjectivePointsTest_Expect0Points() {
         assertEquals(0, player.calculateObjectivePoints(commonObjectives));
     }
 
+    /**
+     * Test for method calculateObjectivePoints() given the common objectives
+     * Expect 5 points scored based on player's area and commonObjectives2
+     *
+     * @author Gallo Fabio
+     */
     @Test
-    public void calculateObjectivePointsTest_points() {
+    public void calculateObjectivePointsTest_Expect5Points() {
         assertEquals(5, player.calculateObjectivePoints(commonObjectives2));
     }
 }

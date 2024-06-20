@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 /**
  * Class for testing ObjectiveDeck class
  *
- * @author Foini Lorenzo
+ * @author Foini Lorenzo, Gallo Fabio
  */
 public class ObjectiveDeckTest {
     // Create an instance of deck
@@ -57,22 +57,13 @@ public class ObjectiveDeckTest {
     }
 
     /**
-     * Method for tear down test
-     *
-     * @author Foini Lorenzo
-     */
-    @After
-    public void tearDown()
-    {}
-
-    /**
      * Method for testing method deckSize()
      * Must be 16 at the start of the game
      *
      * @author Foini Lorenzo
      */
     @Test
-    public void testDeckSize_ShouldBe16(){
+    public void testDeckSize_ShouldBe16AtStart(){
         // Now there are 16 cards
         assertEquals("Not correct number of cards", 16, deck.deckSize());
     }
@@ -109,7 +100,7 @@ public class ObjectiveDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testDrawTopCard_CorrectDrawAllCards_ShouldNotRaiseException(){
+    public void testDrawTopCard_CorrectDrawAllCards_ShouldNotRaiseEmptyObjectiveDeckException(){
         try{
             int initialDeckSize = deck.deckSize();
             for (int i = 0; i < initialDeckSize; i++) {
@@ -131,7 +122,7 @@ public class ObjectiveDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testDrawTopCardException_DrawFromEmptyDeck_ShouldRaiseException() {
+    public void testDrawTopCardException_DrawFromEmptyDeck_ShouldRaiseEmptyObjectiveDeckException() {
         // Create a new deck, it is empty
         ObjectiveDeck emptyDeck = new ObjectiveDeck(new ArrayList<>());
 

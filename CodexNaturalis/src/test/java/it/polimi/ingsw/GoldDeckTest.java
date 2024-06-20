@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * Class for testing GamingDeck class
  * It tests only for gold deck
  *
- * @author Foini Lorenzo
+ * @author Foini Lorenzo, Gallo Fabio
  */
 public class GoldDeckTest {
     // Create an instance of deck
@@ -398,22 +398,13 @@ public class GoldDeckTest {
     }
 
     /**
-     * Method for tear down test
-     *
-     * @author Foini Lorenzo
-     */
-    @After
-    public void tearDown()
-    {}
-
-    /**
      * Method for testing method deckSize()
      * Must be 40 at the start of the game
      *
      * @author Foini Lorenzo
      */
     @Test
-    public void testDeckSize_ShouldBe40(){
+    public void testDeckSize_ShouldBe40AtStart(){
         // Now there are 40 cards
         assertEquals("Not correct number of cards", 40, deck.deckSize());
     }
@@ -450,7 +441,7 @@ public class GoldDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testDrawTopCard_CorrectDrawAllCards_ShouldNotRaiseException(){
+    public void testDrawTopCard_CorrectDrawAllCards_ShouldNotRaiseEmptyDeckException(){
         try{
             int initialDeckSize = deck.deckSize();
             for (int i = 0; i < initialDeckSize; i++) {
@@ -472,7 +463,7 @@ public class GoldDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testDrawTopCardException_DrawFromEmptyDeck_ShouldRaiseException() {
+    public void testDrawTopCardException_DrawFromEmptyDeck_ShouldRaiseEmptyDeckException() {
         // Create a new deck, it is empty
         GamingDeck emptyDeck = new GamingDeck(new ArrayList<>());
 

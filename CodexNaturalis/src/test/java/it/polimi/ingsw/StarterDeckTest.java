@@ -123,22 +123,13 @@ public class StarterDeckTest {
     }
 
     /**
-     * Method for tear down test
-     *
-     * @author Foini Lorenzo
-     */
-    @After
-    public void tearDown() {
-    }
-
-    /**
      * Method for testing method deckSize()
      * Must be 6 at the start of the game
      *
      * @author Foini Lorenzo
      */
     @Test
-    public void testDeckSize_ShouldBe6() {
+    public void testDeckSize_ShouldBe6AtStart() {
         // Now there are 6 cards
         assertEquals("Not correct number of cards", 6, deck.deckSize());
     }
@@ -175,7 +166,7 @@ public class StarterDeckTest {
      * @author Foini Lorenzo
      */
     @Test
-    public void testDrawTopCard_CorrectDrawAllCards_ShouldNotRaiseException() {
+    public void testDrawTopCard_CorrectDrawAllCards_ShouldNotRaiseEmptyObjectiveDeckException() {
         try {
             int initialDeckSize = deck.deckSize();
             for (int i = 0; i < initialDeckSize; i++) {
@@ -190,14 +181,14 @@ public class StarterDeckTest {
     }
 
     /**
-     * Method for testing exception of method drawTopCard()
+     * Method for testing exception to method drawTopCard()
      * The method tries to draw from an empty deck
      * The exception must be raised adn catch
      *
      * @author Foini Lorenzo
      */
     @Test
-    public void testDrawTopCardException_DrawFromEmptyDeck_ShouldRaiseException() {
+    public void testDrawTopCardException_DrawFromEmptyDeck_ShouldRaiseEmptyObjectiveDeckException() {
         // Create a new deck, it is empty
         GamingDeck emptyDeck = new GamingDeck(new ArrayList<>());
 

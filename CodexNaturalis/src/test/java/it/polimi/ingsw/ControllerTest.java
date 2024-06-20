@@ -28,6 +28,7 @@ public class ControllerTest {
      */
     @Before
     public void setUp() {
+        // Create new controller whit 3 players
         controller = new Controller(3);
         gameTable = controller.getGameTable();
 
@@ -342,7 +343,9 @@ public class ControllerTest {
             player3.setScore(15);
         } catch (NegativeScoreException e) {
             fail("Score should not be negative");
-        }LinkedHashMap<Player, Integer> leaderboard = controller.getLeaderboard();
+        }
+        // Get ordered leaderboard
+        LinkedHashMap<Player, Integer> leaderboard = controller.getLeaderboard();
         List<Player> orderedPlayers = new ArrayList<>(leaderboard.keySet());
 
         assertEquals(player2, orderedPlayers.get(0));
@@ -365,9 +368,11 @@ public class ControllerTest {
         } catch (NegativeScoreException e) {
             fail("Score should not be negative");
         }
+        // Get ordered leaderboard
         LinkedHashMap<Player, Integer> leaderboard = controller.getLeaderboard();
         ArrayList<Player> winners = controller.calculateWinners(leaderboard);
 
+        // Player 2 won
         assertEquals(1, winners.size());
         assertEquals(player2, winners.getFirst());
     }
