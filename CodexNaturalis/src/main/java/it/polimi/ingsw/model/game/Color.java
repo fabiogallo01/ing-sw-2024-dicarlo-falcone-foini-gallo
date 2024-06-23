@@ -6,7 +6,6 @@ package it.polimi.ingsw.model.game;
  * @author Foini Lorenzo
  */
 public enum Color {
-    BLACK,
     BLUE,
     GREEN,
     RED,

@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.cards;
 
 /**
  * Class representing game's cards
- * It is not abstract because during the deserialization of GameTable when client plays with GUI, it casts all teh cards to Card
+ * It is not abstract because during the deserialization of GameTable when client plays with GUI, it casts all the cards to Card
  * => Can't be abstract
  * It is extended by GamingCard (resource card and gold card) and StarterCard
  *
