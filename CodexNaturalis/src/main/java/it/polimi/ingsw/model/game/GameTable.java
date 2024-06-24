@@ -1333,7 +1333,7 @@ public class GameTable {
     public boolean isEnded() {
         // Check if a player has reached at least 20 points
         for (Player player : players) {
-            if (player.getScore() >= 20)
+            if (player.getScore() >= 0)
                 return true;
         }
         // Check if the decks are empty

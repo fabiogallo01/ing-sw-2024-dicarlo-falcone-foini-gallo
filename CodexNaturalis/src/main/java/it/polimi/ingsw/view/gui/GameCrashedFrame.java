@@ -13,6 +13,7 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class GameCrashedFrame extends JFrame {
+    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
     private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
 
     /**
@@ -39,14 +40,14 @@ public class GameCrashedFrame extends JFrame {
 
         // Setting custom image icon
         try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
         this.setContentPane(backgroundPanel);
 
         // Create a transparent panel for labels and button

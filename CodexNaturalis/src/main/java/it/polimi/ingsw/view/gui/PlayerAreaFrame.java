@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class PlayerAreaFrame extends JFrame {
+    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
     private final PlayerArea playerArea; // player's area with the played cards
     private final int numRows;
     private final int numCols;
@@ -44,7 +45,7 @@ public class PlayerAreaFrame extends JFrame {
 
         // Setting custom image icon
         try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -119,7 +120,7 @@ public class PlayerAreaFrame extends JFrame {
         else stringSide="back"; // side: false => back
 
         // Get image from resources
-        String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
+        String path = resourcesPath+stringSide+"\\img_"+cardID+".jpeg";
         try {
             originalImage = ImageIO.read(new File(path));
         } catch (IOException e) {

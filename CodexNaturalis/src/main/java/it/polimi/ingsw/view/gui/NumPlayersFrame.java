@@ -15,6 +15,7 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class NumPlayersFrame extends JFrame {
+    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
     private String selectedNumPlayers; // Contains the number of players as a string
     private final Object lock = new Object(); // Lock for getting clint choice
     private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
@@ -43,14 +44,14 @@ public class NumPlayersFrame extends JFrame {
 
         // Setting custom image icon
         try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
         this.setContentPane(backgroundPanel);
 
         // Create a transparent panel for labels and button

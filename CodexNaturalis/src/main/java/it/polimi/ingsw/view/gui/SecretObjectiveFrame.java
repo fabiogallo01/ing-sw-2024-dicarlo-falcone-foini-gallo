@@ -16,6 +16,7 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class SecretObjectiveFrame extends JFrame{
+    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
     private String selectedSecretCard; // Index of the selected secret objective card as string: "1" or "2"
     private final Object lock = new Object(); // Lock for getting clint choice
     private final Font customFont = new Font("SansSerif", Font.BOLD, 15); // Create a custom Font
@@ -54,14 +55,14 @@ public class SecretObjectiveFrame extends JFrame{
 
         // Setting custom image icon
         try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
         this.setContentPane(backgroundPanel);
 
         // Create a transparent panel for labels and button
@@ -247,7 +248,7 @@ public class SecretObjectiveFrame extends JFrame{
      */
     private ImageIcon getImage(int id, String side) {
 
-        String path = "CodexNaturalis\\resources\\"+side+"\\img_" + id + ".jpeg";
+        String path = resourcesPath+side+"\\img_" + id + ".jpeg";
         try {
             BufferedImage cardImage = ImageIO.read(new File(path));
             Image scaledImage = cardImage.getScaledInstance(width, 100, Image.SCALE_SMOOTH);

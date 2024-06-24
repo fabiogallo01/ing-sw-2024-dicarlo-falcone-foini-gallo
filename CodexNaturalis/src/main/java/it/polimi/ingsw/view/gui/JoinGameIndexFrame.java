@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
  * @author Foini Lorenzo
  */
 public class JoinGameIndexFrame extends JFrame {
+    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
     private String selectedGame; // contains the selected game to join
     private final Object lock = new Object(); // Lock for getting clint choice
     private final Font labelFont = new Font("SansSerif", Font.BOLD, 18); // Used font for labels
@@ -49,24 +50,16 @@ public class JoinGameIndexFrame extends JFrame {
         this.setSize(1000, 500);
         this.setLayout(new BorderLayout());
 
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
-            this.setIconImage(icon);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-
         // Setting custom image icon from resource
         try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
         this.setContentPane(backgroundPanel);
 
         // Create a transparent panel for labels and button

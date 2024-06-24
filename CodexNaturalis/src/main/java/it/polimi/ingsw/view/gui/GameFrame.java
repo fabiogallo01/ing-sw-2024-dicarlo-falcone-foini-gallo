@@ -22,6 +22,7 @@ import java.util.ArrayList;
  * @author Foini Lorenzo
  */
 public class GameFrame extends JFrame {
+    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
     private final PrintWriter out; // Client PrintWriter
     private final int NUM_ROWS = 81;
     private final int NUM_COLS = 81;
@@ -75,7 +76,7 @@ public class GameFrame extends JFrame {
 
         // Setting custom image icon
         try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -321,9 +322,6 @@ public class GameFrame extends JFrame {
      * @author Foini Lorenzo
      */
     public JScrollPane createPanelCenter(){
-        // Create new font for buttons
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
-
         // Get client's area
         PlayerArea playerArea = clientPlayer.getPlayerArea();
 
@@ -624,7 +622,7 @@ public class GameFrame extends JFrame {
         else stringSide="back"; // side: false => back
 
         // Get image from resources
-        String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
+        String path = resourcesPath+stringSide+"\\img_"+cardID+".jpeg";
         try {
             originalImage = ImageIO.read(new File(path));
         } catch (IOException e) {

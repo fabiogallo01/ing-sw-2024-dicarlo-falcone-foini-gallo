@@ -19,6 +19,7 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class DrawCardFrame extends JFrame {
+    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
     private final Object lock = new Object(); // Lock for getting clint choice
     private final GameTable gameTable; // It represents the gameTable of the match
     private int indexSelectedCard;
@@ -55,14 +56,14 @@ public class DrawCardFrame extends JFrame {
 
         // Setting custom image icon
         try {
-            Image icon = ImageIO.read(new File("CodexNaturalis\\resources\\Logo.png"));
+            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
             this.setIconImage(icon);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel("CodexNaturalis\\resources\\Screen.jpg");
+        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
         this.setContentPane(backgroundPanel);
 
         // Create a transparent panel for labels and button
@@ -267,7 +268,7 @@ public class DrawCardFrame extends JFrame {
         else stringSide="back"; // side: false => back
 
         // Get image from resources
-        String path = "CodexNaturalis\\resources\\"+stringSide+"\\img_"+cardID+".jpeg";
+        String path = resourcesPath+stringSide+"\\img_"+cardID+".jpeg";
         try {
             originalImage = ImageIO.read(new File(path));
         } catch (IOException e) {
