@@ -337,8 +337,9 @@ public class GameFrame extends JFrame {
                 // Check if in position (i,j) of player's area there is a card or not
                 // If there is card => Add such card's image
                 if(playerArea.getArea()[i][j]){ // If is true => Cell is empty
-                    button = new JButton("( " + i + " , " + j + " )");
-                    button.setFont(buttonFont);
+                    button = new JButton();
+                    // Set button background when disable
+                    button.setBackground(Color.LIGHT_GRAY);
                 }else{ // If is false => There is a card in such position (i,j)
                     // Get card
                     int[] position = new int[2];
@@ -521,6 +522,10 @@ public class GameFrame extends JFrame {
                 if(card.getSide()) out.println("front");
                 else out.println("back");
                 enableButtons(gridButtons,true); // Enable buttons of the grid
+                // Set button background when enable
+                for(JButton button: gridButtons){
+                    button.setBackground(Color.WHITE);
+                }
                 enableButtons(handCardsImageButtons,false); // Disable buttons of the images of the cards in hand
                 enableButtons(handCardsSelectButtons,false); // Disable buttons for playing the cards in hand
             });

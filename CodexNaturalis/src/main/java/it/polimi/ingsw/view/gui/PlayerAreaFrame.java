@@ -14,7 +14,6 @@ public class PlayerAreaFrame extends JFrame {
     private final PlayerArea playerArea; // player's area with the played cards
     private final int numRows;
     private final int numCols;
-    private final Font customFont = new Font("SansSerif", Font.BOLD, 15); // Used font
 
     /**
      * PlayerAreaFrame constructor, it calls method init() for initialization of the frame
@@ -62,8 +61,7 @@ public class PlayerAreaFrame extends JFrame {
                 // Check if in position (i,j) of player's area there is a card or not
                 // If there is card => Add such card's image in the label
                 if(playerArea.getArea()[i][j]){ // If is true => Cell is empty
-                    label = new JLabel("( " + i + " , " + j + " )");
-                    label.setFont(customFont);
+                    label = new JLabel();
                 }else{ // If is false => There is a card in such position (i,j)
                     // Get card
                     int[] position = new int[2];
