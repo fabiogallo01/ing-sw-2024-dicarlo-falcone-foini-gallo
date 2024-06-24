@@ -5,7 +5,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -16,7 +15,7 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class StarterCardFrame extends JFrame {
-    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
+    private final String resourcesPath = "/it/polimi/ingsw/view/resources/";
     private String selectedSide; // Store selected side
     private final Object lock = new Object(); // Lock for getting clint choice
     private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
@@ -45,17 +44,31 @@ public class StarterCardFrame extends JFrame {
         this.setSize(600, 400);
         this.setLayout(new BorderLayout());
 
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
-            this.setIconImage(icon);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        // Setting custom image icon from resource
+        // Get logo image from URL
+        java.net.URL logoImageUrl = getClass().getResource(resourcesPath+"Logo.png");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it
+            try {
+                Image icon = ImageIO.read(logoImageUrl);
+                this.setIconImage(icon);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("Didn't find such image");
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
-        this.setContentPane(backgroundPanel);
+        // Get screen image from URL
+        java.net.URL screenImageUrl = getClass().getResource(resourcesPath+"Screen.jpg");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it as background
+            BackgroundPanel backgroundPanel = new BackgroundPanel(screenImageUrl);
+            this.setContentPane(backgroundPanel);
+        } else {
+            System.out.println("Didn't find such image");
+        }
 
         // Create a transparent panel for labels and button
         JPanel transparentPanel = new JPanel(new GridBagLayout());
@@ -116,49 +129,53 @@ public class StarterCardFrame extends JFrame {
      * @author Foini Lorenzo
      */
     public void addImageButton(JPanel mainPanel, int starterCardID, String side){
-        String starterPath;
-        // Get path to the front image of the card
-        starterPath = resourcesPath+side+"\\img_" + starterCardID + ".jpeg";
+        // Get image from resources
+        java.net.URL imageUrl = getClass().getResource(resourcesPath+side+"/img_" + starterCardID + ".jpeg");
 
-        try {
-            // Get card's image
-            BufferedImage cardImage = ImageIO.read(new File(starterPath));
-            ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(200, 150, Image.SCALE_SMOOTH));
-            JLabel cardLabel = new JLabel(cardIcon);
-            // Set alignment
-            cardLabel.setHorizontalAlignment(JLabel.CENTER);
-            cardLabel.setVerticalAlignment(JLabel.CENTER);
-            cardLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add margin
+        if (imageUrl != null) {
+            // An image is found, so try to set it
+            try {
+                // Get card's image
+                BufferedImage cardImage = ImageIO.read(imageUrl);
+                ImageIcon cardIcon = new ImageIcon(cardImage.getScaledInstance(200, 150, Image.SCALE_SMOOTH));
+                JLabel cardLabel = new JLabel(cardIcon);
+                // Set alignment
+                cardLabel.setHorizontalAlignment(JLabel.CENTER);
+                cardLabel.setVerticalAlignment(JLabel.CENTER);
+                cardLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add margin
 
-            // Create new button for getting client choice of the side
-            // It also closes this window
-            JButton confirmButton = new JButton(side.toUpperCase());
-            confirmButton.setPreferredSize(new Dimension(200, 40)); // Set preferred size
-            confirmButton.setFont(customFont); // Set custom font
-            confirmButton.setForeground(Color.BLACK); // Set text color
-            confirmButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
+                // Create new button for getting client choice of the side
+                // It also closes this window
+                JButton confirmButton = new JButton(side.toUpperCase());
+                confirmButton.setPreferredSize(new Dimension(200, 40)); // Set preferred size
+                confirmButton.setFont(customFont); // Set custom font
+                confirmButton.setForeground(Color.BLACK); // Set text color
+                confirmButton.setBorder(new LineBorder(Color.BLACK, 2)); // Set border
 
-            // Add listener when client click on "FRONT" => Set frame's parameter
-            confirmButton.addActionListener(e -> {
-                selectedSide = side;
-                this.dispose(); // Close the window
-                synchronized (lock) {
-                    lock.notify(); // Notify waiting thread
-                }
-            });
+                // Add listener when client click on "FRONT" => Set frame's parameter
+                confirmButton.addActionListener(e -> {
+                    selectedSide = side;
+                    this.dispose(); // Close the window
+                    synchronized (lock) {
+                        lock.notify(); // Notify waiting thread
+                    }
+                });
 
-            // Create new panel for adding image label and button
-            JPanel cardPanel = new JPanel(new BorderLayout());
-            cardPanel.setOpaque(false);
+                // Create new panel for adding image label and button
+                JPanel cardPanel = new JPanel(new BorderLayout());
+                cardPanel.setOpaque(false);
 
-            // Add label and button to cardPanel
-            cardPanel.add(cardLabel, BorderLayout.CENTER);
-            cardPanel.add(confirmButton, BorderLayout.SOUTH);
+                // Add label and button to cardPanel
+                cardPanel.add(cardLabel, BorderLayout.CENTER);
+                cardPanel.add(confirmButton, BorderLayout.SOUTH);
 
-            // Add cardPanel in mainPanel
-            mainPanel.add(cardPanel);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+                // Add cardPanel in mainPanel
+                mainPanel.add(cardPanel);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("Didn't find such image");
         }
     }
 

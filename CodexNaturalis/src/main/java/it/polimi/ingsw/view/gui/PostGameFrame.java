@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author Foini Lorenzo
  */
 public class PostGameFrame extends JFrame {
-    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
+    private final String resourcesPath = "/it/polimi/ingsw/view/resources/";
     private final Font customFont = new Font("SansSerif", Font.BOLD, 18); // Used font
 
     /**
@@ -47,17 +47,31 @@ public class PostGameFrame extends JFrame {
         this.setSize(800, 400);
         this.setLayout(new GridLayout(4, 1));
 
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
-            this.setIconImage(icon);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        // Setting custom image icon from resource
+        // Get logo image from URL
+        java.net.URL logoImageUrl = getClass().getResource(resourcesPath+"Logo.png");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it
+            try {
+                Image icon = ImageIO.read(logoImageUrl);
+                this.setIconImage(icon);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("Didn't find such image");
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
-        this.setContentPane(backgroundPanel);
+        // Get screen image from URL
+        java.net.URL screenImageUrl = getClass().getResource(resourcesPath+"Screen.jpg");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it as background
+            BackgroundPanel backgroundPanel = new BackgroundPanel(screenImageUrl);
+            this.setContentPane(backgroundPanel);
+        } else {
+            System.out.println("Didn't find such image");
+        }
 
         // Create a transparent panel for labels and button
         JPanel transparentPanel = new JPanel(new GridBagLayout());

@@ -9,7 +9,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
  * @author Foini Lorenzo
  */
 public class GameFrame extends JFrame {
-    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
+    private final String resourcesPath = "/it/polimi/ingsw/view/resources/";
     private final PrintWriter out; // Client PrintWriter
     private final int NUM_ROWS = 81;
     private final int NUM_COLS = 81;
@@ -74,12 +73,19 @@ public class GameFrame extends JFrame {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH); // MAX dimension
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
-            this.setIconImage(icon);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        // Setting custom image icon from resource
+        // Get logo image from URL
+        java.net.URL logoImageUrl = getClass().getResource(resourcesPath+"Logo.png");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it
+            try {
+                Image icon = ImageIO.read(logoImageUrl);
+                this.setIconImage(icon);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("Didn't find such image");
         }
 
         // Call to function createPanelNorth() for creating new panel to be added in the content pane
@@ -615,23 +621,28 @@ public class GameFrame extends JFrame {
     private ImageIcon getImageFromID(int cardID, boolean side, int width, int height){
         BufferedImage originalImage; // Original image with its size
         Image scaledImage; // Same image as before but with parameters size
-        ImageIcon imageIcon; // ImageIcon to return
+        ImageIcon imageIcon = null; // ImageIcon to return
 
         String stringSide;
         if(side) stringSide="front"; // side: true => front
         else stringSide="back"; // side: false => back
 
         // Get image from resources
-        String path = resourcesPath+stringSide+"\\img_"+cardID+".jpeg";
-        try {
-            originalImage = ImageIO.read(new File(path));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        java.net.URL imageUrl = getClass().getResource(resourcesPath+stringSide+"/img_"+cardID+".jpeg");
+        if (imageUrl != null) {
+            // An image is found, so try to set it
+            try {
+                originalImage = ImageIO.read(imageUrl);
 
-        // Re-dimensioning the image
-        scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        imageIcon = new ImageIcon(scaledImage);
+                // Re-dimensioning the image
+                scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                imageIcon = new ImageIcon(scaledImage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.out.println("Didn't find such image");
+        }
 
         return imageIcon;
     }

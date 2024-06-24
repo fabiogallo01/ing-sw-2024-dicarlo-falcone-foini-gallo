@@ -5,7 +5,6 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -16,7 +15,7 @@ import java.io.IOException;
  * @author Foini Lorenzo
  */
 public class SecretObjectiveFrame extends JFrame{
-    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
+    private final String resourcesPath = "/it/polimi/ingsw/view/resources/";
     private String selectedSecretCard; // Index of the selected secret objective card as string: "1" or "2"
     private final Object lock = new Object(); // Lock for getting clint choice
     private final Font customFont = new Font("SansSerif", Font.BOLD, 15); // Create a custom Font
@@ -53,17 +52,31 @@ public class SecretObjectiveFrame extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
-        // Setting custom image icon
-        try {
-            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
-            this.setIconImage(icon);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        // Setting custom image icon from resource
+        // Get logo image from URL
+        java.net.URL logoImageUrl = getClass().getResource(resourcesPath+"Logo.png");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it
+            try {
+                Image icon = ImageIO.read(logoImageUrl);
+                this.setIconImage(icon);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("Didn't find such image");
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
-        this.setContentPane(backgroundPanel);
+        // Get screen image from URL
+        java.net.URL screenImageUrl = getClass().getResource(resourcesPath+"Screen.jpg");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it as background
+            BackgroundPanel backgroundPanel = new BackgroundPanel(screenImageUrl);
+            this.setContentPane(backgroundPanel);
+        } else {
+            System.out.println("Didn't find such image");
+        }
 
         // Create a transparent panel for labels and button
         JPanel transparentPanel = new JPanel(new GridBagLayout());
@@ -247,16 +260,21 @@ public class SecretObjectiveFrame extends JFrame{
      * @author Foini Lorenzo
      */
     private ImageIcon getImage(int id, String side) {
-
-        String path = resourcesPath+side+"\\img_" + id + ".jpeg";
-        try {
-            BufferedImage cardImage = ImageIO.read(new File(path));
-            Image scaledImage = cardImage.getScaledInstance(width, 100, Image.SCALE_SMOOTH);
-            return new ImageIcon(scaledImage);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            return null;
+        // Get image from resources
+        java.net.URL imageUrl = getClass().getResource(resourcesPath+side+"/img_"+id+".jpeg");
+        if (imageUrl != null) {
+            // An image is found, so try to set it
+            try {
+                BufferedImage cardImage = ImageIO.read(imageUrl);
+                Image scaledImage = cardImage.getScaledInstance(width, 100, Image.SCALE_SMOOTH);
+                return new ImageIcon(scaledImage);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("Didn't find such image");
         }
+        return null;
     }
 
     /**

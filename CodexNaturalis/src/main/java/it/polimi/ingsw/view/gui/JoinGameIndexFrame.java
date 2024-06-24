@@ -4,7 +4,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.regex.Pattern;
  * @author Foini Lorenzo
  */
 public class JoinGameIndexFrame extends JFrame {
-    private final String resourcesPath = "CodexNaturalis\\src\\main\\java\\it\\polimi\\ingsw\\view\\resources\\";
+    private final String resourcesPath = "/it/polimi/ingsw/view/resources/";
     private String selectedGame; // contains the selected game to join
     private final Object lock = new Object(); // Lock for getting clint choice
     private final Font labelFont = new Font("SansSerif", Font.BOLD, 18); // Used font for labels
@@ -51,16 +50,30 @@ public class JoinGameIndexFrame extends JFrame {
         this.setLayout(new BorderLayout());
 
         // Setting custom image icon from resource
-        try {
-            Image icon = ImageIO.read(new File(resourcesPath+"Logo.png"));
-            this.setIconImage(icon);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        // Get logo image from URL
+        java.net.URL logoImageUrl = getClass().getResource(resourcesPath+"Logo.png");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it
+            try {
+                Image icon = ImageIO.read(logoImageUrl);
+                this.setIconImage(icon);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("Didn't find such image");
         }
 
         // Create background panel and set it
-        BackgroundPanel backgroundPanel = new BackgroundPanel(resourcesPath+"Screen.jpg");
-        this.setContentPane(backgroundPanel);
+        // Get screen image from URL
+        java.net.URL screenImageUrl = getClass().getResource(resourcesPath+"Screen.jpg");
+        if (logoImageUrl != null) {
+            // An image is found, so try to set it as background
+            BackgroundPanel backgroundPanel = new BackgroundPanel(screenImageUrl);
+            this.setContentPane(backgroundPanel);
+        } else {
+            System.out.println("Didn't find such image");
+        }
 
         // Create a transparent panel for labels and button
         JPanel transparentPanel = new JPanel(new GridBagLayout());

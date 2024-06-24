@@ -15,10 +15,10 @@ import java.io.IOException;
 public class BackgroundPanel extends JPanel {
     private Image backgroundImage;
 
-    public BackgroundPanel(String filePath) {
+    public BackgroundPanel(java.net.URL fileUrl) {
         try {
             // Set image
-            backgroundImage = ImageIO.read(new File(filePath));
+            backgroundImage = ImageIO.read(fileUrl);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
