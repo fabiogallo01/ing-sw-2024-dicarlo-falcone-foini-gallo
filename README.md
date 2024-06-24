@@ -14,7 +14,7 @@ Each player can choose to play using either the Textual User Interface (TUI) or 
 
 ## Features
 We have implemented  the following advanced features:
-| Feature                          | Implemented        |
+|             Feature              |    Implemented     |
 |----------------------------------|--------------------|
 | Simplified rules                 | :heavy_check_mark: |
 | Complete rules                   | :heavy_check_mark: |
@@ -30,10 +30,10 @@ We have implemented  the following advanced features:
 AF: Advanced feature (not present in the board game).
 
 ## Coverage
-| Package    |   Classes    |    Method     |     Lines     |
+|  Package   |   Classes    |    Method     |     Lines     |
 |------------|--------------|---------------|---------------|
-| Model      |  100% (1/1)  |  100% (20/20) |  90% (80/88)  |
-| Controller | 100% (29/29) | 94% (126/134) | 90% (767/846) |
+| Controller | 100% (1/1)   | 100% (20/20)  | 90% (80/88)   |
+| Model      | 100% (29/29) | 94% (126/134) | 90% (767/846) |
 
 
 ## Used tools
@@ -46,19 +46,6 @@ AF: Advanced feature (not present in the board game).
 | __StarUML__     | UML and sequence diagram generation tool         |
 
 ## How to run the JAR
-### From IntelliJ's terminal
-1. Access the package CodexNaturalis/deliverables/Final/jar
-2. Right-click on Server.jar
-   1 Press "Run"
-3. Right click on Client.jar
-   - Press "More Run/Debug"
-   - Press "Modify Run Configuration..."
-   - In "Programs arguments" insert:
-      * X.X.X.X stands for server's IP (Default: localhost => It only works for clients launched on the same machine as the server)
-      * TUI or GUI for playing with such UI (Case unsensitive, default: GUI => Start GUI if no parameter is insert)
-   - Press "Apply" or "Ok"
-4. Press "Run"
-
 ### From Window's terminal
 1. Download Client.jar and Server.jar from package CodexNaturalis/deliverables/Final/jar
 2. Open Window's terminal
@@ -73,6 +60,18 @@ For running the client:
    Where:
       - X.X.X.X stands for server's IP (Default: localhost => It only works for clients launched on the same machine as the server)
       - UI can be TUI or GUI for playing with such UI (Case unsensitive, default: GUI => Start GUI if no parameter is insert)
+### From IntelliJ's terminal
+1. Access the package CodexNaturalis/deliverables/Final/jar
+2. Right-click on Server.jar
+   1 Press "Run"
+3. Right click on Client.jar
+   - Press "More Run/Debug"
+   - Press "Modify Run Configuration..."
+   - In "Programs arguments" insert:
+      * X.X.X.X stands for server's IP (Default: localhost => It only works for clients launched on the same machine as the server)
+      * TUI or GUI for playing with such UI (Case unsensitive, default: GUI => Start GUI if no parameter is insert)
+   - Press "Apply" or "Ok"
+4. Press "Run"
 
 ## License
 
