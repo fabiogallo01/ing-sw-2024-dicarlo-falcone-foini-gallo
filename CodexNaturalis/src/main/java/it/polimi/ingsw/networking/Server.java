@@ -35,9 +35,9 @@ public class Server {
 
             // This loop will accept all the new client connections
             while (true) {
-                // Need to synchronized on controllers for correct access to controllers
+                // Need to synchronize on controllers for correct access to controllers
                 synchronized (controllers) {
-                    // use Iterator for iterate through controllers
+                    // use Iterator to iterate through controllers
                     Iterator<Controller> iterator = controllers.iterator();
                     while (iterator.hasNext()) {
                         // Get next
@@ -57,7 +57,7 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
 
-                // Create and start new handler for the connected client
+                // Create and start a new handler for the connected client
                 ClientHandler clientHandler = new ClientHandler(socket, controllers);
                 new Thread(clientHandler).start();
             }
