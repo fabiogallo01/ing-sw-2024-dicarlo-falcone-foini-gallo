@@ -119,6 +119,7 @@ public class CreateJoinFrame extends JFrame {
         // Create new panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setOpaque(false);
 
         // First button: create new game
         JButton createButton = new JButton("CREATE NEW GAME");

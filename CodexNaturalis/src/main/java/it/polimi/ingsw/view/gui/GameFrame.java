@@ -336,42 +336,52 @@ public class GameFrame extends JFrame {
         // Add button in the grid
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
-                JButton button;
+                // Insert button only in cell where i+j%2==0
+                // In the other cells is impossible to play a card given the rules
+                if((i+j)%2==0){
+                    // Create button
+                    JButton button;
+                    // Check if in position (i,j) of player's area there is a card or not
+                    // If there is card => Add such card's image
+                    if(playerArea.getArea()[i][j]){ // If is true => Cell is empty
+                        button = new JButton();
+                        // Set button background when disable
+                        button.setBackground(Color.LIGHT_GRAY);
+                    }else{ // If is false => There is a card in such position (i,j)
+                        // Get card
+                        int[] position = new int[2];
+                        position[0] = i;
+                        position[1] = j;
+                        Card card = playerArea.getCardByPosition(position);
 
-                // Check if in position (i,j) of player's area there is a card or not
-                // If there is card => Add such card's image
-                if(playerArea.getArea()[i][j]){ // If is true => Cell is empty
-                    button = new JButton();
-                    // Set button background when disable
-                    button.setBackground(Color.LIGHT_GRAY);
-                }else{ // If is false => There is a card in such position (i,j)
-                    // Get card
-                    int[] position = new int[2];
-                    position[0] = i;
-                    position[1] = j;
-                    Card card = playerArea.getCardByPosition(position);
+                        // Create new button with image
+                        button = new JButton(getImageFromID(card.getID(), card.getSide(),175, 75));
+                        button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),175, 75));
+                    }
 
-                    // Create new button with image
-                    button = new JButton(getImageFromID(card.getID(), card.getSide(),175, 75));
-                    button.setDisabledIcon(getImageFromID(card.getID(), card.getSide(),175, 75));
+                    // Add action listener
+                    int finalI = i;
+                    int finalJ = j;
+                    button.addActionListener(e -> {
+                        // Send selected position to the server
+                        out.println(finalI);
+                        out.println(finalJ);
+                        enableButtons(gridButtons, false); // Disable buttons of the grid
+                        enableButtons(handCardsImageButtons,true); // Enable buttons of the images of cards in hand
+                    });
+
+                    button.setPreferredSize(new Dimension(175, 75));
+                    panel.add(button);
+
+                    // Add the button to the list of grid buttons
+                    gridButtons.add(button);
+                }else{
+                    // In this cell is impossible to play a card
+                    // Insert an empty label
+                    JLabel emptyLabel = new JLabel();
+                    emptyLabel.setBackground(Color.LIGHT_GRAY);
+                    panel.add(emptyLabel);
                 }
-
-                // Add action listener
-                int finalI = i;
-                int finalJ = j;
-                button.addActionListener(e -> {
-                    // Send selected position to the server
-                    out.println(finalI);
-                    out.println(finalJ);
-                    enableButtons(gridButtons, false); // Disable buttons of the grid
-                    enableButtons(handCardsImageButtons,true); // Enable buttons of the images of cards in hand
-                });
-
-                button.setPreferredSize(new Dimension(175, 75));
-                panel.add(button);
-
-                // Add the button to the list of grid buttons
-                gridButtons.add(button);
             }
         }
         enableButtons(gridButtons, false); // Disable buttons of the grid
