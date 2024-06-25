@@ -1,4 +1,5 @@
 # Prova Finale di Ingegneria del Software - A.A. 2023/2024
+
 ![alt text](CodexNaturalis/src/main/java/it/polimi/ingsw/view/resources/Logo.png)
 
 Implementation of the board game [**Codex Naturalis**](https://www.craniocreations.it/prodotto/codex-naturalis).<br>
@@ -13,7 +14,8 @@ Each player can choose to play using either the Textual User Interface (TUI) or 
 - [__Gallo Fabio__](https://github.com/fabiogallo01) - 10742348
 
 ## Features
-We have implemented  the following advanced features:
+
+We have implemented the following features:
 |             Feature              |    Implemented     |
 |----------------------------------|--------------------|
 | Simplified rules                 | :heavy_check_mark: |
@@ -22,14 +24,15 @@ We have implemented  the following advanced features:
 | GUI                              | :heavy_check_mark: |
 | Socket                           | :heavy_check_mark: |
 | RMI                              | :x:                |
-| AD: Multiple matches             | :heavy_check_mark: |
-| AD: Persistence                  | :x:                |
-| AD: Resilience to disconnections | :x:                |
-| AD : Chat                        | :x:                |
+| AF: Multiple matches             | :heavy_check_mark: |
+| AF: Persistence                  | :x:                |
+| AF: Resilience to disconnections | :x:                |
+| AF : Chat                        | :x:                |
 
 AF: Advanced feature (not present in the board game).
 
 ## Coverage
+
 |  Package   |   Classes    |    Method     |     Lines     |
 |------------|--------------|---------------|---------------|
 | Controller | 100% (1/1)   | 100% (20/20)  | 90% (80/88)   |
@@ -46,6 +49,7 @@ AF: Advanced feature (not present in the board game).
 | __StarUML__     | UML and sequence diagram generation tool         |
 
 ## How to run the JAR
+
 ### From Window's terminal
 1. Download Client.jar and Server.jar from package CodexNaturalis/deliverables/Final/jar
 2. Open Window's terminal
@@ -60,6 +64,7 @@ For running the client:
    Where:
       - X.X.X.X stands for server's IP (Default: localhost => It only works for clients launched on the same machine as the server)
       - UI can be TUI or GUI for playing with such UI (Case unsensitive, default: GUI => Start GUI if no parameter is insert)
+
 ### From IntelliJ's terminal
 1. Access the package CodexNaturalis/deliverables/Final/jar
 2. Right-click on Server.jar
@@ -72,6 +77,10 @@ For running the client:
       * TUI or GUI for playing with such UI (Case unsensitive, default: GUI => Start GUI if no parameter is insert)
    - Press "Apply" or "Ok"
 4. Press "Run"
+
+__DISCLAIMERS:__ 
++ The jar has only been tested on Windows systems, so the correct execution of the jars from MAC and Linux is not guaranteed.
++ If the client is running with TUI, it's not guaranteed that the colors will actually works, it depends on the terminal used (support or not ANSI escape codes).
 
 ## License
 
