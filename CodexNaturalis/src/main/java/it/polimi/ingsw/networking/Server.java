@@ -30,7 +30,8 @@ public class Server {
         // Create new server socket
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             // Print server IP (using method getWirelessIPAddress()) and port of the connection
-            System.out.println("Server IP: " + getWirelessIPAddress().getHostAddress() + "\nServer is listening on port: " + PORT + "\n");
+            getWirelessIPAddress();
+            System.out.println("\nServer is listening on port: " + PORT + "\n");
 
             // This loop will accept all the new client connections
             while (true) {
@@ -119,7 +120,7 @@ public class Server {
      * @throws SocketException if happen
      * @author Gallo Fabio
      */
-    public static InetAddress getWirelessIPAddress() throws SocketException {
+    public static void getWirelessIPAddress() throws SocketException {
         try {
             // Iterate all NICs (Network Interface Cards)
             for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
@@ -131,14 +132,15 @@ public class Server {
                         InetAddress inetAddr = inetAddrs.nextElement();
                         if (!inetAddr.isLoopbackAddress() && inetAddr.isSiteLocalAddress()) {
                             // Found a non-loop back site-local address, return it immediately
-                            return inetAddr;
+                            System.out.println("Server IP: " + inetAddr.getHostAddress());
+                            return;
                         }
                     }
                 }
             }
             throw new SocketException("No wireless LAN address found.");
         } catch (Exception e) {
-            throw new SocketException("Failed to determine wireless LAN address: " + e);
+            System.out.println("Failed to determine wireless LAN address: " + e);
         }
     }
 }
