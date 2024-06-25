@@ -50,9 +50,9 @@ AF: Advanced feature (not present in the board game).
 
 ## How to run the JAR
 
-### From Window's terminal
+### From Windows' terminal
 1. Download Client.jar and Server.jar from package CodexNaturalis/deliverables/Final/jar
-2. Open Window's terminal
+2. Open Windows' terminal
 
 For running the server:
 1. Move to the same folder of the Server.jar
@@ -63,7 +63,7 @@ For running the client:
 2. Insert: `java -jar Client.jar X.X.X.X UI`
    Where:
       - X.X.X.X stands for server's IP (Default: localhost => It only works for clients launched on the same machine as the server)
-      - UI can be TUI or GUI for playing with such UI (Case insensitive, default: GUI => Start GUI if no parameter is insert)
+      - UI can be TUI or GUI for playing with such UI (Case insensitive, default: GUI => Start GUI if no parameter is inserted)
 
 ### From IntelliJ's terminal
 1. Access the package CodexNaturalis/deliverables/Final/jar
@@ -74,12 +74,12 @@ For running the client:
    - Press "Modify Run Configuration..."
    - In "Programs arguments" insert:
       * X.X.X.X stands for server's IP (Default: localhost => It only works for clients launched on the same machine as the server)
-      * TUI or GUI for playing with such UI (Case insensitive, default: GUI => Start GUI if no parameter is insert)
+      * TUI or GUI for playing with such UI (Case insensitive, default: GUI => Start GUI if no parameter is inserted)
    - Press "Apply" or "Ok"
 4. Press "Run"
 
 __DISCLAIMERS:__ 
-+ The jar has only been tested on Windows and macOS systems, so the correct execution of the jars from Linux is not guaranteed.
++ The jar has only been tested on Windows, so the correct execution of the jars from macOS and Linux is not guaranteed.
 + If the client is running with TUI, it's not guaranteed that the colors will actually work, it depends on the terminal used (support or not ANSI escape codes).
 
 ## License
