@@ -16,6 +16,7 @@ Each player can choose to play using either the Textual User Interface (TUI) or 
 ## Features
 
 We have implemented the following features:
+
 |             Feature              |    Implemented     |
 |----------------------------------|--------------------|
 | Simplified rules                 | :heavy_check_mark: |
@@ -78,7 +79,7 @@ For running the client:
    - Press "Apply" or "Ok"
 4. Press "Run"
 
-__DISCLAIMERS:__ 
+__DISCLAIMERS:__
 + The jar has only been tested on Windows, so the correct execution of the jars from macOS and Linux is not guaranteed.
 + If the client is running with TUI, it's not guaranteed that the colors will actually work, it depends on the terminal used (support or not ANSI escape codes).
 
