@@ -8,10 +8,10 @@ Each player can choose to play using either the Textual User Interface (TUI) or 
 
 ## Group members
 
-- [__Di Carlo Andrea__](https://github.com/AndreaDiC11) - 10829826
-- [__Falcone Giacomo__](https://github.com/giacomofalcone) - 10804110
-- [__Foini Lorenzo__](https://github.com/LorenzoFoini) - 10828129
-- [__Gallo Fabio__](https://github.com/fabiogallo01) - 10742348
+- [__Di Carlo Andrea__](https://github.com/AndreaDiC11)
+- [__Falcone Giacomo__](https://github.com/giacomofalcone)
+- [__Foini Lorenzo__](https://github.com/LorenzoFoini)
+- [__Gallo Fabio__](https://github.com/fabiogallo01)
 
 ## Features
 
